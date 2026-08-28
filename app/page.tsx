@@ -11,7 +11,7 @@ export default function Home() {
   const adicionar=(list:FileList|null)=>{if(!list)return;setFiles(current=>[...current,...Array.from(list).filter(file=>!current.some(item=>item.name===file.name&&item.size===file.size))])};
   const tamanho=(bytes:number)=>bytes<1024*1024?`${Math.max(1,Math.round(bytes/1024))} KB`:`${(bytes/1024/1024).toFixed(1)} MB`;
   return <main>
-    <header className="topbar"><div className="brand"><div className="brandMark">P</div><div><strong>PORTORIUM</strong><span>CONSULTORIA INTERNACIONAL</span></div></div><div className="productName"><span>Classificador</span> Vetorial</div><button className="user" aria-label="Usuário">WT</button></header>
+    <header className="topbar"><div className="brand"><img src="/grupo-portorium.png" alt="Grupo Portorium"/></div><div className="productName"><span>Classificador</span> Vetorial</div><button className="user" aria-label="Usuário">WT</button></header>
     <section className="workspace">
       <aside className="sidebar"><button className="newAnalysis" onClick={()=>{setResult(null);setError("")}}>＋ Nova análise</button><nav><a className="active">⌕ Analisar mercadoria</a></nav><div className="sourceTitle">BASES CONSULTADAS</div>{bases.map(([country,detail,kind])=><div className="source" key={country}><span className="sourceDot"/><div><strong>{country}</strong><small>{detail}</small><em>{kind}</em></div></div>)}<div className="security"><span>◆</span><p><strong>Arquitetura RAG controlada</strong>Consulta orientada por bases vetoriais selecionadas, com chave protegida no servidor e revisão humana indispensável.</p></div></aside>
       <div className="content">
