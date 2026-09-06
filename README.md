@@ -1,6 +1,6 @@
 # Classificador Vetorial Portorium — versão Vercel
 
-Aplicação para consultar o Prompt `CLASSIFICAÇÃO FISCAL 2408` pela Responses API da OpenAI, com descrição textual e até seis documentos por análise.
+Aplicação para consultar o Prompt `CLASSIFICAÇÃO FISCAL 2408` pela Responses API da OpenAI, com descrição textual e até dez documentos por análise.
 
 ## Publicação sem expor a API key
 
@@ -17,8 +17,8 @@ Digite uma descrição ou anexe documentos e clique em **Analisar mercadoria**. 
 
 ## Limites desta versão
 
-- máximo de 6 documentos por análise;
-- máximo de 20 MB por documento;
+- máximo de 10 documentos por análise;
+- máximo de 10 MB por documento;
 - a chave precisa pertencer ao mesmo projeto OpenAI que contém o Prompt e seus Vector Stores;
 - o Prompt utilizado é a versão 1.
 
