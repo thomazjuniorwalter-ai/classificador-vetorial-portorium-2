@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "auth:user": "node scripts/create-auth-user.mjs"
   },
   "dependencies": {
     "next": "16.2.6",
