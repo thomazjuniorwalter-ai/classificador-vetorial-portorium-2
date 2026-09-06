@@ -1,6 +1,6 @@
 # Classificador Vetorial Portorium — versão Vercel
 
-Aplicação para consultar o Prompt `CLASSIFICAÇÃO FISCAL 2408` pela Responses API da OpenAI, com descrição textual e até seis documentos por análise.
+Aplicação para consultar o Prompt `CLASSIFICAÇÃO FISCAL 2408` pela Responses API da OpenAI, com autenticação individual, descrição textual e até dez documentos por análise.
 
 ## Publicação sem expor a API key
 
@@ -8,8 +8,26 @@ Aplicação para consultar o Prompt `CLASSIFICAÇÃO FISCAL 2408` pela Responses
 2. Na Vercel, selecione **Add New → Project** e importe o repositório.
 3. Abra **Settings → Environment Variables**.
 4. Cadastre `OPENAI_API_KEY` com sua chave e selecione Production, Preview e Development.
-5. Não use prefixo `NEXT_PUBLIC_`: isso exporia a chave no navegador.
-6. Clique em **Deploy**. Se a variável for incluída depois da primeira publicação, faça **Redeploy**.
+5. Cadastre `PORTORIUM_AUTH_SECRET` com um segredo aleatório de pelo menos 32 caracteres.
+6. Cadastre `PORTORIUM_AUTH_USERS` com o vetor JSON de usuários gerado conforme a seção abaixo.
+7. Não use prefixo `NEXT_PUBLIC_` nessas variáveis: isso exporia dados no navegador.
+8. Clique em **Deploy**. Se as variáveis forem incluídas depois da primeira publicação, faça **Redeploy**.
+
+## Usuários individuais
+
+Crie uma senha provisória forte para cada colaborador e gere o registro protegido:
+
+```bash
+npm run auth:user -- "usuario" "Nome completo" "senha-com-12-ou-mais-caracteres"
+```
+
+O comando devolve um objeto JSON sem a senha original. Reúna os objetos em um vetor e grave-o em `PORTORIUM_AUTH_USERS`:
+
+```json
+[{"username":"usuario","name":"Nome completo","salt":"...","hash":"...","active":true}]
+```
+
+Para bloquear uma pessoa, altere apenas o seu campo `active` para `false` e faça uma nova publicação. As sessões duram oito horas e deixam de funcionar imediatamente se o usuário for desativado.
 
 ## Teste
 
@@ -17,8 +35,9 @@ Digite uma descrição ou anexe documentos e clique em **Analisar mercadoria**. 
 
 ## Limites desta versão
 
-- máximo de 6 documentos por análise;
-- máximo de 20 MB por documento;
+- máximo de 10 documentos por análise;
+- máximo de 10 MB por documento;
+- acesso somente por usuários ativos cadastrados no servidor;
 - a chave precisa pertencer ao mesmo projeto OpenAI que contém o Prompt e seus Vector Stores;
 - o Prompt utilizado é a versão 1.
 
