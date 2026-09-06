@@ -1,0 +1,25 @@
+name: Validar convites Microsoft 365
+on:
+  push:
+    branches:
+      - codex/login-documentos
+      - codex/logins-individuais
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  validar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Testes de envio com Microsoft simulada
+        run: node --test tests/invitation-mail.test.mjs
+      - name: Instalar dependências fixadas
+        run: npm ci
+      - name: Compilar sem credenciais de produção
+        run: npm run build
