@@ -7,6 +7,7 @@ const MAX_FILE_SIZE = 10 * 1024 * 1024;
 const ALLOWED_EXTENSIONS = [
   "pdf", "doc", "docx", "xls", "xlsx", "csv", "txt", "md", "png", "jpg", "jpeg", "webp",
 ];
+const FILE_SEARCH_EXTENSIONS = new Set(["pdf", "doc", "docx", "txt", "md"]);
 
 async function readJson(response: Response) {
   const raw = await response.text();
@@ -43,7 +44,11 @@ export async function POST(request: Request) {
 
   try {
     const form = new FormData();
-    form.append("purpose", "user_data");
+    // Documentos longos são pesquisados por recuperação vetorial, evitando
+    // que o texto integral de todos os anexos ocupe a janela de contexto.
+    // Planilhas e imagens continuam como input_file, pois não são aceitas
+    // pelo File Search.
+    form.append("purpose", FILE_SEARCH_EXTENSIONS.has(extension) ? "assistants" : "user_data");
     form.append("file", file, file.name);
     const upload = await fetch("https://api.openai.com/v1/files", {
       method: "POST",
