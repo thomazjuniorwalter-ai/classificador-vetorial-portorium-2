@@ -22,24 +22,52 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
     setMessage("");
-    const { error: requestError } = await createClient().auth.signInWithOtp({
-      email: normalizedEmail,
-      options: { shouldCreateUser: true },
-    });
-    setLoading(false);
+    try {
+      const { error: requestError } = await createClient().auth.signInWithOtp({
+        email: normalizedEmail,
+        options: { shouldCreateUser: true },
+      });
 
-    if (requestError) {
+      if (requestError) {
+        console.error("[auth] Falha ao solicitar código", {
+          code: requestError.code,
+          message: requestError.message,
+          status: requestError.status,
+        });
+
+        if (/rate|seconds|limit/i.test(requestError.message)) {
+          setError("Aguarde um pouco antes de solicitar outro código.");
+          return;
+        }
+
+        const reference = [
+          requestError.code,
+          requestError.status ? `HTTP ${requestError.status}` : "",
+        ]
+          .filter(Boolean)
+          .join(" · ");
+
+        setError(
+          `Falha no serviço de e-mail: ${requestError.message}${
+            reference ? ` (${reference})` : ""
+          }`
+        );
+        return;
+      }
+
+      setEmail(normalizedEmail);
+      setCodeSent(true);
+      setMessage("Código enviado. Verifique também a pasta de lixo eletrônico.");
+    } catch (cause) {
+      console.error("[auth] Falha de comunicação ao solicitar código", cause);
       setError(
-        /rate|seconds|limit/i.test(requestError.message)
-          ? "Aguarde um pouco antes de solicitar outro código."
-          : "Não foi possível enviar o código. Tente novamente."
+        `Falha de comunicação com o serviço de login: ${
+          cause instanceof Error ? cause.message : "erro não identificado"
+        }`
       );
-      return;
+    } finally {
+      setLoading(false);
     }
-
-    setEmail(normalizedEmail);
-    setCodeSent(true);
-    setMessage("Código enviado. Verifique também a pasta de lixo eletrônico.");
   }
 
   async function verifyCode(event: FormEvent) {
@@ -140,4 +168,3 @@ export default function LoginPage() {
     </main>
   );
 }
-
