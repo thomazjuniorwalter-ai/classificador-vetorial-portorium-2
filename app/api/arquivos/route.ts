@@ -1,4 +1,5 @@
 import { createUploadToken, verifyUploadToken } from "../../lib/upload-token";
+import { getPortalAccess, portalAccessResponse } from "../../lib/auth";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -19,6 +20,9 @@ async function readJson(response: Response) {
 }
 
 export async function POST(request: Request) {
+  const access = await getPortalAccess("classificador");
+  if (access.status !== "authorized") return portalAccessResponse(access);
+
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return Response.json({ error: "A chave da API ainda não foi configurada no servidor." }, { status: 503 });
 
@@ -76,6 +80,9 @@ export async function POST(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  const access = await getPortalAccess("classificador");
+  if (access.status !== "authorized") return portalAccessResponse(access);
+
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) return Response.json({ ok: false }, { status: 503 });
   try {
