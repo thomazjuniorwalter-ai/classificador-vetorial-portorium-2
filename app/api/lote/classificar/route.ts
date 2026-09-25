@@ -59,6 +59,12 @@ export async function POST(request: Request) {
     });
     const data: any = await response.json();
     if (!response.ok) {
+      console.error("[triagem-lote] Falha na API de classificação", {
+        status: response.status,
+        codigo: data?.error?.code,
+        tipo: data?.error?.type,
+        requisicao: response.headers.get("x-request-id"),
+      });
       return Response.json({ error: data?.error?.message || "A análise desta mercadoria falhou." }, { status: response.status });
     }
     const texto = extrairTexto(data);
@@ -72,7 +78,8 @@ export async function POST(request: Request) {
       return Response.json({ error: "A NCM sugerida veio em formato inválido." }, { status: 502 });
     }
     return Response.json({ ncm: ncm || "", confianca: ncm ? resultado.confianca : 0 });
-  } catch {
+  } catch (problema) {
+    console.error("[triagem-lote] Falha inesperada", problema instanceof Error ? problema.name : "erro desconhecido");
     return Response.json({ error: "Não foi possível concluir esta mercadoria. Tente novamente." }, { status: 502 });
   }
 }

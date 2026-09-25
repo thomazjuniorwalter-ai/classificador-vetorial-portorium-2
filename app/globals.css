@@ -38,6 +38,7 @@
 .batchColumns{display:grid;grid-template-columns:minmax(200px,270px) minmax(0,1fr);gap:24px;margin-top:18px}
 .batchColumns label,.batchColumns legend{font-size:13px;color:#43474b;font-weight:700}
 .batchColumns select{width:100%;margin-top:8px;border:1px solid #bfc2c6;padding:11px;border-radius:5px;background:white;font-size:14px}
+.batchColumns .batchColumnHelp{margin:8px 0 0;font-size:12px;line-height:1.45;color:#62666b}
 .batchColumns fieldset{border:0;padding:0;margin:0;min-width:0}
 .batchColumns legend{padding:0;margin-bottom:7px}
 .batchChecks{display:flex;flex-wrap:wrap;gap:8px 16px}
@@ -58,6 +59,7 @@
 .batchTable td{border-bottom:1px solid #ebecee;padding:13px 11px;vertical-align:top;color:#484c50}
 .batchTable tr:last-child td{border-bottom:0}
 .batchTable .batchProduct{max-width:320px;line-height:1.4;overflow-wrap:anywhere}
+.batchFailure{display:block;color:#962334;max-width:260px;line-height:1.4;overflow-wrap:anywhere}
 .signal{display:inline-block;padding:6px 9px;border-radius:999px;font-size:11px;line-height:1.25;font-weight:700;white-space:nowrap}
 .signalGreen{background:#dff2e5;color:#15613c}.signalYellow{background:#fff0c5;color:#735509}.signalRed{background:#fde0e3;color:#922633}
 .batchLink{border:0;background:transparent;padding:0;color:#bc2433;text-decoration:underline;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}

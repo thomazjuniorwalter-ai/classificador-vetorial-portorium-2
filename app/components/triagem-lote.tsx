@@ -51,7 +51,8 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
       const elegiveis = recebida.colunas.filter((coluna) => coluna.indice !== ncm?.indice &&
         !colunaDeClassificacao(coluna.titulo));
       const provaveis = elegiveis.filter((coluna) =>
-        /produto|mercador|descri|compos|func|aplica|material|tecnic|uso|modelo/i.test(coluna.titulo));
+        /produto|mercador|descri|compos|func|aplica|material|tecnic|uso|modelo/i.test(
+          coluna.titulo.normalize("NFD").replace(/[\u0300-\u036f]/g, "")));
       setPlanilha(recebida);
       setColunaNcm(ncm?.indice ?? "");
       setColunasTecnicas((provaveis.length ? provaveis : elegiveis.slice(0, 1))
@@ -95,40 +96,61 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
     const controller = new AbortController();
     controlador.current = controller;
     setAnalisando(true); setErro(""); setFinalizadas(itens.length - pendentes.length);
-    let proxima = 0;
+    let proxima = 1;
+    let interromperPorFalha = false;
+    let falhasEmSerie = 0;
+    let mensagemAnterior = "";
+
+    async function processar(item: Item): Promise<boolean> {
+      try {
+        // Somente dados técnicos seguem à OpenAI: a NCM do cliente não é enviada.
+        const response = await fetch("/api/lote/classificar", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ descricao: item.descricao }), signal: controller.signal,
+        });
+        const data = await response.json().catch(() => null);
+        if (!response.ok) throw new Error(mensagemResposta(data, `A análise retornou erro ${response.status}.`));
+        if (!data || typeof data !== "object") throw new Error("A análise terminou sem resultado válido.");
+        const resultado = data as { ncm: string; confianca: number };
+        const ncm = normalizarNcm(resultado.ncm) || "";
+        if (!Number.isInteger(resultado.confianca) || resultado.confianca < 0 || resultado.confianca > 100) {
+          throw new Error("A confiança recebida é inválida.");
+        }
+        setResultados((atual) => ({ ...atual, [item.linha]: {
+          ncm, confianca: resultado.confianca,
+          sinal: sinalizarTriagem(item.ncmCliente, ncm, resultado.confianca),
+        } }));
+        falhasEmSerie = 0;
+        mensagemAnterior = "";
+        return true;
+      } catch (problema) {
+        if (controller.signal.aborted) return false;
+        const mensagem = problema instanceof Error ? problema.message : "Falha nesta linha.";
+        setResultados((atual) => ({ ...atual, [item.linha]: { erro: mensagem } }));
+        falhasEmSerie = mensagem === mensagemAnterior ? falhasEmSerie + 1 : 1;
+        mensagemAnterior = mensagem;
+        if (falhasEmSerie >= 2) interromperPorFalha = true;
+        setErro(`Linha ${item.linha}: ${mensagem}${interromperPorFalha ? " O restante do lote não foi enviado porque a mesma falha se repetiu." : ""}`);
+        return false;
+      } finally {
+        if (!controller.signal.aborted) setFinalizadas((total) => total + 1);
+      }
+    }
 
     async function trabalhador() {
-      while (proxima < pendentes.length && !controller.signal.aborted) {
-        const item = pendentes[proxima++];
-        try {
-          // Somente dados técnicos seguem à OpenAI: a NCM do cliente não é enviada.
-          const response = await fetch("/api/lote/classificar", {
-            method: "POST", headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ descricao: item.descricao }), signal: controller.signal,
-          });
-          const data = await response.json();
-          if (!response.ok) throw new Error(mensagemResposta(data, "Falha na análise desta linha."));
-          const ncm = normalizarNcm(data.ncm) || "";
-          if (!Number.isInteger(data.confianca) || data.confianca < 0 || data.confianca > 100) {
-            throw new Error("A confiança recebida é inválida.");
-          }
-          setResultados((atual) => ({ ...atual, [item.linha]: {
-            ncm, confianca: data.confianca,
-            sinal: sinalizarTriagem(item.ncmCliente, ncm, data.confianca),
-          } }));
-        } catch (problema) {
-          if (controller.signal.aborted) break;
-          setResultados((atual) => ({ ...atual, [item.linha]: {
-            erro: problema instanceof Error ? problema.message : "Falha nesta linha.",
-          } }));
-        } finally {
-          if (!controller.signal.aborted) setFinalizadas((total) => total + 1);
-        }
+      while (proxima < pendentes.length && !controller.signal.aborted && !interromperPorFalha) {
+        await processar(pendentes[proxima++]);
       }
     }
 
     try {
-      await Promise.all([trabalhador(), trabalhador()]);
+      // Uma linha confirma que a análise funciona antes de enviar o restante do lote.
+      const primeiraOk = await processar(pendentes[0]);
+      if (primeiraOk && !controller.signal.aborted) {
+        await Promise.all([trabalhador(), trabalhador()]);
+      } else if (!controller.signal.aborted) {
+        setErro((atual) => `${atual} As demais mercadorias não foram enviadas.`);
+      }
       if (controller.signal.aborted) setErro("Triagem interrompida. Os resultados concluídos foram preservados.");
     } finally {
       controlador.current = null; setAnalisando(false);
@@ -186,25 +208,26 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
     </section>
     {planilha && <section className="batchConfig">
       <h2>2. Confira as colunas</h2><p><strong>{planilha.planilha}</strong> · aba “{planilha.aba}” · {planilha.linhas.length} mercadorias</p>
-      <div className="batchColumns"><div><label htmlFor="colunaNcm">NCM informada pelo cliente</label>
+      <div className="batchColumns"><div><label htmlFor="colunaNcm">Em qual coluna está a NCM que você já usa?</label>
         <select id="colunaNcm" value={colunaNcm} disabled={analisando}
           onChange={(event) => { const proximaColuna = Number(event.target.value) || ""; setColunaNcm(proximaColuna); setColunasTecnicas((atual) => atual.filter((indice) => indice !== proximaColuna)); setResultados({}); setFinalizadas(0); setErro(""); }}>
           <option value="">Selecione a coluna</option>
           {planilha.colunas.map((coluna) => <option key={coluna.indice} value={coluna.indice}>{coluna.titulo}</option>)}
-        </select></div>
+        </select><p className="batchColumnHelp">{colunaNcm === "" ? "Escolha a coluna da planilha que contém os códigos NCM usados por você." :
+          `“${planilha.colunas.find((coluna) => coluna.indice === colunaNcm)?.titulo}” é um título da sua planilha. Se já apareceu aqui, pode deixar como está.`}</p></div>
         <fieldset disabled={analisando}><legend>Informações técnicas que serão pesquisadas (até 6 colunas)</legend>
           <div className="batchChecks">{planilha.colunas.filter((coluna) => coluna.indice !== colunaNcm && !colunaDeClassificacao(coluna.titulo))
             .map((coluna) => <label key={coluna.indice}><input type="checkbox" checked={colunasTecnicas.includes(coluna.indice)}
               onChange={(event) => alterarColunas(event.target.checked ? [...colunasTecnicas, coluna.indice].slice(0, 6) :
                 colunasTecnicas.filter((indice) => indice !== coluna.indice))} /> {coluna.titulo}</label>)}</div>
         </fieldset></div>
-      <p className="batchPrivacy">A NCM indicada pelo cliente fica fora da pesquisa. Ela só é comparada com a sugestão após a análise.</p>
+      <p className="batchPrivacy">O programa pesquisa usando apenas as informações técnicas marcadas ao lado. Depois, compara a NCM sugerida com a NCM da sua planilha.</p>
       <div className="batchActions"><button type="button" className="analyze" disabled={analisando || importando} onClick={() => void analisar()}>
         {analisando ? `Analisando ${finalizadas} de ${planilha.linhas.length}…` : concluidas || falhas ? "Analisar linhas pendentes ou com falha" : `Iniciar triagem de ${planilha.linhas.length} mercadorias`}
       </button>{analisando && <button type="button" className="batchSecondary" onClick={() => controlador.current?.abort()}>Interromper</button>}
         {(concluidas > 0 || falhas > 0) && <button type="button" className="batchSecondary" disabled={exportando || analisando}
           onClick={() => void exportar()}>{exportando ? "Gerando Excel…" : "Baixar resultado em Excel"}</button>}</div>
-      <p className="batchCost">Cada mercadoria analisada gera uma chamada à API e custo por utilização. Linhas com erro podem ser reenviadas sem refazer as concluídas.</p>
+      <p className="batchCost">Primeiro analisamos uma mercadoria. Se funcionar, seguimos com as demais. Cada mercadoria analisada gera uma chamada à API e custo por utilização.</p>
     </section>}
     {erro && <div className="apiError" role="alert"><strong>Atenção</strong><span>{erro}</span></div>}
     {planilha && (analisando || concluidas > 0 || falhas > 0) && <section className="batchResults">
@@ -223,7 +246,7 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
           <td>{resultado && "ncm" in resultado ? resultado.ncm ? ncmExibicao(resultado.ncm) : "Não determinada" : "—"}</td>
           <td>{resultado && "confianca" in resultado ? `${resultado.confianca}%` : "—"}</td>
           <td>{resultado && "sinal" in resultado ? <span className={`signal signal${resultado.sinal[0].toUpperCase()}${resultado.sinal.slice(1)}`}>{ROTULO[resultado.sinal]}</span> :
-            resultado && "erro" in resultado ? <span title={resultado.erro}>Falhou · tente novamente</span> : "Aguardando"}</td>
+            resultado && "erro" in resultado ? <span className="batchFailure">Falhou: {resultado.erro}</span> : "Aguardando"}</td>
           <td><button type="button" className="batchLink" onClick={() => onAprofundar(descricao)}>Aprofundar →</button></td>
         </tr>;
       })}</tbody></table></div>
