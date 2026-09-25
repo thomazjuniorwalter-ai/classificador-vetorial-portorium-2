@@ -32,6 +32,31 @@ uma probabilidade estatística certificada nem garantia de acerto.
 O resultado é apoio técnico. A consulta formal de classificação fiscal à RFB é
 regida pela Instrução Normativa RFB nº 2.057, de 9 de dezembro de 2021.
 
+## Triagem de mercadorias em lote
+
+A aba **Triagem em lote** recebe planilhas `.xlsx` de até 2 MB, com títulos de
+coluna na primeira linha e até 50 mercadorias por rodada. A pessoa escolhe a
+coluna que contém a NCM do cliente e até seis colunas com características
+técnicas. Por exemplo: `Produto`, `Descrição técnica`, `Composição`, `Função` e
+`NCM do cliente`. Valores que dependem de fórmulas devem ser colados como
+valores antes do envio; células vazias e NCM inválidas são indicadas antes de
+qualquer chamada paga à API.
+
+Cada mercadoria gera uma análise independente pelo mesmo prompt versionado da
+consulta individual. **A NCM do cliente não é enviada à OpenAI**; o servidor
+recebe apenas o texto técnico e retorna `ncm` e `confianca`. A comparação é
+feita no aplicativo: verde quando há coincidência e confiança estimada de pelo
+menos 80%; vermelho quando há divergência e confiança estimada de pelo menos
+80%; amarelo para os demais casos, incluindo NCM não determinada. Trata-se
+de priorização para revisão, não de confirmação, refutação ou probabilidade
+estatisticamente validada. O usuário pode aprofundar cada linha na análise
+individual e baixar a lista em Excel. Os resultados são mantidos na sessão do
+navegador enquanto a página estiver aberta; não há histórico persistente.
+
+Cada linha consultada consome uma chamada à API da OpenAI. A triagem processa
+duas linhas em paralelo, mantém resultados parciais após interrupção e permite
+repetir apenas as linhas que falharam.
+
 ## Execução local opcional
 
 Crie `.env.local` a partir de `.env.example`, cadastre a chave e execute `npm install` e `npm run dev`.
