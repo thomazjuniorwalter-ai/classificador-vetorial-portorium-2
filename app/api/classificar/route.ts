@@ -1,11 +1,10 @@
 import { verifyUploadToken } from "../../lib/upload-token";
 import { getPortalAccess, portalAccessResponse } from "../../lib/auth";
+import { PROMPT_ID, PROMPT_VERSION } from "../../lib/classificador-prompt";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
-const PROMPT_ID = "pmpt_6a8c915448488195b7d29a0139bb18b1060faf2026a90e91";
-const PROMPT_VERSION = "1";
 const MAX_FILES = 10;
 const MAX_TOTAL_FILE_SIZE = 50 * 1024 * 1024;
 const FILE_SEARCH_EXTENSIONS = new Set(["pdf", "doc", "docx", "txt", "md"]);
