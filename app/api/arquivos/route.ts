@@ -27,7 +27,6 @@ export async function POST(request: Request) {
   if (!apiKey) return Response.json({ error: "A chave da API ainda não foi configurada no servidor." }, { status: 503 });
 
   let file: File;
-  let duimp = false;
   try {
     const form = await request.formData();
     const value = form.get("arquivo");
@@ -35,15 +34,11 @@ export async function POST(request: Request) {
       return Response.json({ error: "Selecione um documento válido." }, { status: 400 });
     }
     file = value;
-    duimp = form.get("tipo") === "duimp";
   } catch {
     return Response.json({ error: "Não foi possível receber o documento." }, { status: 400 });
   }
 
   const extension = file.name.split(".").pop()?.toLowerCase() || "";
-  if (duimp && extension !== "pdf") {
-    return Response.json({ error: "O conferidor aceita PDFs nesta versão." }, { status: 400 });
-  }
   if (!ALLOWED_EXTENSIONS.includes(extension)) {
     return Response.json({ error: `O formato de ${file.name} não é compatível.` }, { status: 400 });
   }
@@ -57,7 +52,7 @@ export async function POST(request: Request) {
     // que o texto integral de todos os anexos ocupe a janela de contexto.
     // Planilhas e imagens continuam como input_file, pois não são aceitas
     // pelo File Search.
-    form.append("purpose", duimp ? "user_data" : FILE_SEARCH_EXTENSIONS.has(extension) ? "assistants" : "user_data");
+    form.append("purpose", FILE_SEARCH_EXTENSIONS.has(extension) ? "assistants" : "user_data");
     form.append("file", file, file.name);
     const upload = await fetch("https://api.openai.com/v1/files", {
       method: "POST",
