@@ -32,6 +32,22 @@ uma probabilidade estatística certificada nem garantia de acerto.
 O resultado é apoio técnico. A consulta formal de classificação fiscal à RFB é
 regida pela Instrução Normativa RFB nº 2.057, de 9 de dezembro de 2021.
 
+## Relatório da classificação em PDF e Word
+
+Depois de uma análise individual, **Baixar PDF** e **Baixar Word** exportam o
+resultado em arquivo paginado, com identidade Portorium, NCM sugerida,
+confiança estimada, descrição aduaneira, justificativa e referências presentes
+na resposta, informações pendentes e aviso de revisão humana. O relatório
+inclui o analista, a data, o identificador da análise, a descrição e os nomes
+dos anexos usados naquela execução. Alterações posteriores nos campos não
+modificam esses dados do relatório. Não são inventadas fontes adicionais.
+
+A geração ocorre no navegador, sem nova chamada à OpenAI ou novo envio dos
+documentos. O Word é editável. No PDF, caracteres não suportados pela fonte
+padrão são representados pelo código Unicode. A exportação Excel da triagem
+em lote permanece disponível; cada item pode ser aprofundado para gerar seu
+relatório completo em PDF ou Word.
+
 ## Triagem de mercadorias em lote
 
 A aba **Triagem em lote** recebe planilhas `.xlsx` de até 2 MB, com títulos de
@@ -60,3 +76,8 @@ repetir apenas as linhas que falharam.
 ## Execução local opcional
 
 Crie `.env.local` a partir de `.env.example`, cadastre a chave e execute `npm install` e `npm run dev`.
+
+
+## Parecer e recuperação normativa
+A análise individual exporta PDF e Word editável como parecer técnico preliminar, com objeto, elementos técnicos, fundamentação, arquivos recuperados, conclusão, pendências, disclaimer e campos para revisão profissional. Os documentos exportados preservam a resposta recebida; não inventam fundamentos ausentes.
+Anexos pesquisáveis são lidos em uma chamada separada (gpt-5-mini). A chamada de classificação usa as ferramentas do prompt armazenado, sem substituí-las pela base temporária dos anexos. Há uma chamada adicional de API quando existem anexos pesquisáveis. A resposta distingue trecho não recuperado de documento ausente do acervo. Os nomes retornados pela pesquisa não certificam vigência ou aplicabilidade. O inventário e a configuração do acervo permanente ainda precisam ser verificados no projeto OpenAI.

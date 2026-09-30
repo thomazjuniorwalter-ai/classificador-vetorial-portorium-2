@@ -66,3 +66,10 @@
 .batchLegend{background:#fff9f9;border-left:4px solid #e52b3b}
 .batchLegend strong{font-size:16px}.batchLegend p{font-size:13px;line-height:1.55;margin:9px 0 0;color:#54585b}
 @media(max-width:850px){.workspace .sidebar{display:block;padding:10px 16px}.sidebar .newAnalysis,.sidebar .sourceTitle,.sidebar .source,.sidebar .security{display:none}.sidebar nav{display:flex;gap:5px}.sidebar nav button{width:auto;font-size:13px}.batchIntro h1{font-size:31px}.batchUpload{align-items:flex-start;flex-direction:column}.batchColumns{grid-template-columns:1fr}.batchResultsHead{align-items:flex-start;flex-direction:column}.batchTotals{justify-content:flex-start}}
+
+.reportDownloads{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:20px 0;padding:16px;background:white;border:1px solid #dce4ea;border-radius:8px}
+.reportDownloads strong{margin-right:auto;font-size:15px}
+.reportDownloads button{border:0;border-radius:5px;background:#d92333;color:white;font-weight:700;padding:12px 18px;cursor:pointer}
+.reportDownloads button:disabled{opacity:.6;cursor:wait}
+.reportDownloads button:focus-visible{outline:3px solid #393c42;outline-offset:3px}
+.reportDownloads p{flex-basis:100%;color:#a51d2b;margin:0}
