@@ -53,7 +53,10 @@ export async function POST(request: Request) {
     // Planilhas e imagens continuam como input_file, pois não são aceitas
     // pelo File Search.
     form.append("purpose", FILE_SEARCH_EXTENSIONS.has(extension) ? "assistants" : "user_data");
-    form.append("file", file, file.name);
+    // O serviço de recuperação exige a extensão em minúsculas (.PDF -> .pdf).
+    // O nome original é preservado no token e na interface.
+    const uploadFilename = file.name.slice(0, file.name.lastIndexOf(".") + 1) + extension;
+    form.append("file", file, uploadFilename);
     const upload = await fetch("https://api.openai.com/v1/files", {
       method: "POST",
       headers: { Authorization: `Bearer ${apiKey}` },
