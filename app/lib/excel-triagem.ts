@@ -16,7 +16,7 @@ export type PlanilhaTriagem = {
 export class ErroPlanilha extends Error {}
 
 // Limita o tamanho antes de descompactar e analisar o conteúdo no servidor.
-function verificarTamanhoZip(bytes: Buffer) {
+export function verificarTamanhoZip(bytes: Buffer) {
   const inicioBusca = Math.max(0, bytes.length - 65_557);
   let fim = -1;
   for (let posicao = bytes.length - 22; posicao >= inicioBusca; posicao--) {

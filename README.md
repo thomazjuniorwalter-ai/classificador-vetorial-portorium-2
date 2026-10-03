@@ -81,3 +81,33 @@ Crie `.env.local` a partir de `.env.example`, cadastre a chave e execute `npm in
 ## Parecer e recuperação normativa
 A análise individual exporta PDF e Word editável como parecer técnico preliminar, com objeto, elementos técnicos, fundamentação, arquivos recuperados, conclusão, pendências, disclaimer e campos para revisão profissional. Os documentos exportados preservam a resposta recebida; não inventam fundamentos ausentes.
 Anexos pesquisáveis são lidos em uma chamada separada (gpt-5-mini). A chamada de classificação usa as ferramentas do prompt armazenado, sem substituí-las pela base temporária dos anexos. Há uma chamada adicional de API quando existem anexos pesquisáveis. A resposta distingue trecho não recuperado de documento ausente do acervo. Os nomes retornados pela pesquisa não certificam vigência ou aplicabilidade. O inventário e a configuração do acervo permanente ainda precisam ser verificados no projeto OpenAI.
+
+
+## Catálogo de Produtos — preparação e auditoria
+
+A aba Catálogo consulta o JSON oficial de vínculos NCM/atributos do Portal Único,
+com cache de uma hora e identificação de versão, vigência e fonte. Considera
+atributos de importação com objetivo Produto, listas oficiais e condições
+aninhadas. A NCM deve ser revisada pela pessoa; este módulo não a classifica.
+
+As sugestões usam gpt-5-mini e só entram quando o valor é válido no domínio
+oficial e o trecho existe literalmente na descrição ou em arquivo recuperado.
+Todo valor sugerido exige revisão humana. A leitura de anexos utiliza uma base
+vetorial temporária removida ao final. Estruturas especiais não suportadas ficam
+sinalizadas para revisão manual; atributos multivalorados são preenchidos
+manualmente nesta etapa.
+
+A auditoria recebe JSON de produtos ou XLSX de até 2 MB/50 linhas. No Excel, use
+colunas NCM, Denominação, Descrição e códigos ATT_...; valores múltiplos são
+separados por |. Fórmulas devem ser coladas como valores. O relatório verifica
+preenchimento, condições e domínio dos atributos, sem confirmar a NCM.
+
+Os downloads são documentos de revisão Portorium, não arquivos prontos para
+importação. Os dados ficam apenas na sessão; baixe antes de sair. Esta etapa
+não autentica no Siscomex nem transmite cadastros. Usa a autorização já existente
+do Classificador. A leitura autenticada do catálogo é a próxima fase.
+
+Validação: npm test (18 testes), npm run build e conferência de tela em desktop
+e celular. A base oficial completa foi percorrida sem erro de resolução de NCM.
+Os testes de IA usam respostas simuladas; a primeira execução real com OpenAI
+ainda precisa ser conferida no ambiente de revisão.
