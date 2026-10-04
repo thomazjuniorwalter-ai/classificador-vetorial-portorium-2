@@ -81,3 +81,8 @@ Crie `.env.local` a partir de `.env.example`, cadastre a chave e execute `npm in
 ## Parecer e recuperação normativa
 A análise individual exporta PDF e Word editável como parecer técnico preliminar, com objeto, elementos técnicos, fundamentação, arquivos recuperados, conclusão, pendências, disclaimer e campos para revisão profissional. Os documentos exportados preservam a resposta recebida; não inventam fundamentos ausentes.
 Anexos pesquisáveis são lidos em uma chamada separada (gpt-5-mini). A chamada de classificação usa as ferramentas do prompt armazenado, sem substituí-las pela base temporária dos anexos. Há uma chamada adicional de API quando existem anexos pesquisáveis. A resposta distingue trecho não recuperado de documento ausente do acervo. Os nomes retornados pela pesquisa não certificam vigência ou aplicabilidade. O inventário e a configuração do acervo permanente ainda precisam ser verificados no projeto OpenAI.
+
+
+### Atualização de decisões Cosit
+
+Piloto de coleta de ementas oficiais, revisão de íntegra e busca vetorial suplementar: [operação e limites](data/cosit/README.md). O piloto não está ativado no armazenamento de produção; a aprovação de íntegra e o store dedicado são necessários.

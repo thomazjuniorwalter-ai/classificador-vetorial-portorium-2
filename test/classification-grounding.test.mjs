@@ -11,6 +11,7 @@ function loadRoute() {
     module, exports:module.exports, Response, process:{env:{OPENAI_API_KEY:'test-only'}}, setTimeout,
     fetch:(...args)=>globalThis.fetch(...args),
     require:(name)=> {
+      if(name.endsWith('/cosit-retrieval')) return {retrieveCosit:async()=>({context:'',sources:[],status:'not_configured'}),cositInstructions:''};
       if(name.endsWith('/auth')) return {getPortalAccess:async()=>({status:'authorized'})};
       if(name.endsWith('/upload-token')) return {verifyUploadToken:()=>({fileId:'file_qa',filename:'Ficha.PDF',size:100})};
       if(name.endsWith('/classificador-prompt')) return {PROMPT_ID:'prompt_qa',PROMPT_VERSION:'1'};
@@ -54,3 +55,4 @@ test('rastreabilidade deduplica somente arquivos realmente retornados',()=>{
   assert.deepEqual(retrievedSourceNames({output:[{type:'file_search_call',results:[{filename:'TEC.pdf'},{filename:'TEC.pdf'}]},{content:[{annotations:[{type:'file_citation',filename:'NESH.pdf'}]}]}]}),['TEC.pdf','NESH.pdf']);
   assert.deepEqual(retrievedSourceNames({output:[]}),[]);
 });
+

@@ -1,3 +1,5 @@
+import { retrieveCosit, cositInstructions } from "../../../lib/cosit-retrieval";
+import { normativeInstructions } from "../../../lib/classification-grounding";
 import { getPortalAccess, portalAccessResponse } from "../../../lib/auth";
 import { PROMPT_ID, PROMPT_VERSION } from "../../../lib/classificador-prompt";
 import { normalizarNcm } from "../../../lib/triagem";
@@ -44,15 +46,16 @@ export async function POST(request: Request) {
   }
 
   try {
+    const cosit = await retrieveCosit(descricao, key);
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         prompt: { id: PROMPT_ID, version: PROMPT_VERSION },
         store: false,
-        input: [{ role: "user", content: [{
+        input: [{ role: "developer", content: normativeInstructions + "\n" + cositInstructions }, { role: "user", content: [{
           type: "input_text",
-          text: `Faça uma classificação independente da mercadoria abaixo, seguindo o mesmo método do Classificador Portorium. A NCM informada pelo cliente não está disponível nesta consulta. Responda somente com a NCM sugerida e a confiança qualitativa estimada de 0 a 100. Se os dados não permitirem determinar uma NCM, devolva ncm vazia e confiança 0. Não produza justificativa, descrição aduaneira ou informações adicionais.\n\nInformações técnicas da mercadoria:\n${descricao}`,
+          text: `Faça uma classificação independente da mercadoria abaixo, seguindo o mesmo método do Classificador Portorium. A NCM informada pelo cliente não está disponível nesta consulta. Responda somente com a NCM sugerida e a confiança qualitativa estimada de 0 a 100. Se os dados não permitirem determinar uma NCM, devolva ncm vazia e confiança 0. Não produza justificativa, descrição aduaneira ou informações adicionais.\n\nInformações técnicas da mercadoria:\n${descricao}\n\n${cosit.context}`,
         }] }],
         text: { format: { type: "json_schema", name: "triagem_classificacao", strict: true, schema } },
       }),
@@ -77,9 +80,10 @@ export async function POST(request: Request) {
     if (resultado.ncm && !ncm) {
       return Response.json({ error: "A NCM sugerida veio em formato inválido." }, { status: 502 });
     }
-    return Response.json({ ncm: ncm || "", confianca: ncm ? resultado.confianca : 0 });
+    return Response.json({ ncm: ncm || "", confianca: ncm ? resultado.confianca : 0, cositRetrievalStatus: cosit.status });
   } catch (problema) {
     console.error("[triagem-lote] Falha inesperada", problema instanceof Error ? problema.name : "erro desconhecido");
     return Response.json({ error: "Não foi possível concluir esta mercadoria. Tente novamente." }, { status: 502 });
   }
 }
+

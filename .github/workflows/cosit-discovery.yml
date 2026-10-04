@@ -1,0 +1,42 @@
+name: Descobrir decisões Cosit
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 12 * * *'
+permissions:
+  contents: write
+  pull-requests: write
+concurrency:
+  group: cosit-discovery
+  cancel-in-progress: false
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validar coletor
+        run: python -m unittest discover -s test -p 'test_cosit*.py'
+      - name: Coletar ementas oficiais (janela de 60 dias)
+        run: python scripts/collect-cosit.py
+      - name: Propor atualização do catálogo
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if git diff --quiet -- data/cosit/candidates.json; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          branch="cosit/discovery-${GITHUB_RUN_ID}"
+          git switch -c "$branch"
+          git add data/cosit/candidates.json
+          git commit -m 'Atualiza fila de ementas Cosit para revisão'
+          git push origin "$branch"
+          gh pr create --base main --head "$branch" --title 'Novas ementas Cosit para revisão' --body 'Coleta oficial de ementas. Não promove íntegra, vigência ou indexação vetorial. Conferir alterações e relações com decisões anteriores antes de aprovar.'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: catalogo-cosit-${{ github.run_id }}
+          path: data/cosit/candidates.json
