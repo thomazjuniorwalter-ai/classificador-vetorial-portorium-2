@@ -22,6 +22,19 @@ jobs:
         run: python -m unittest discover -s test -p 'test_cosit*.py'
       - name: Coletar ementas oficiais (janela de 60 dias)
         run: python scripts/collect-cosit.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Sincronizar íntegra diretamente quando configurada
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_COSIT_VECTOR_STORE_ID: ${{ secrets.OPENAI_COSIT_VECTOR_STORE_ID }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ] || [ -z "$OPENAI_COSIT_VECTOR_STORE_ID" ]; then
+            echo 'Sincronização pendente de conexão ao vetorial.'
+            exit 0
+          fi
+          node scripts/sync-cosit.mjs
       - name: Propor atualização do catálogo
         env:
           GH_TOKEN: ${{ github.token }}
@@ -32,9 +45,9 @@ jobs:
           branch="cosit/discovery-${GITHUB_RUN_ID}"
           git switch -c "$branch"
           git add data/cosit/candidates.json
-          git commit -m 'Atualiza fila de ementas Cosit para revisão'
+          git commit -m 'Atualiza catálogo de ementas Cosit'
           git push origin "$branch"
-          gh pr create --base main --head "$branch" --title 'Novas ementas Cosit para revisão' --body 'Coleta oficial de ementas. Não promove íntegra, vigência ou indexação vetorial. Conferir alterações e relações com decisões anteriores antes de aprovar.'
+          gh pr create --base main --head "$branch" --title 'Novas ementas Cosit' --body 'Catálogo de ementas oficiais. A sincronização de íntegra ocorre separadamente, sem aprovação manual de decisões, quando fonte completa e conexão vetorial estão disponíveis. Ementas não comprovam íntegra nem vigência.'
       - uses: actions/upload-artifact@v4
         if: always()
         with:

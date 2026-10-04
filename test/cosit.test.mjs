@@ -8,8 +8,8 @@ import {validateManifest} from '../scripts/sync-cosit.mjs';
 const fullText = 'Íntegra fictícia para teste. '.repeat(40);
 const hash = createHash('sha256').update(fullText).digest('hex');
 const record = {id:'BR-COSIT-SC-1-2026', title:'SC Cosit 1/2026', sourceUrl:'https://normas.receita.fazenda.gov.br/test',
- sha256:hash, abstractSha256:'abstract-hash', textPath:'data/cosit/full/test.txt', reviewStatus:'approved',
- reviewedBy:'test', reviewedAt:'2026-10-04', validityCheckedAt:'2026-10-04', integrity:'full', jurisdiction:'BR'};
+ sha256:hash, abstractSha256:'abstract-hash', textPath:'data/cosit/full/test.txt', ingestionStatus:'ready',
+ collectedAt:'2026-10-04', integrity:'full', jurisdiction:'BR'};
 const candidates = [{id:record.id, sha256:'abstract-hash', abstract:'Somente ementa'}];
 function library(fetch, records = [record]) {
  const module={exports:{}};
@@ -18,10 +18,10 @@ function library(fetch, records = [record]) {
  require:name=>name.includes('approved')?{records}: {records:candidates}});
  return module.exports;
 }
-test('somente íntegra revisada e correspondente à ementa atual é elegível',()=>{
+test('somente íntegra coletada e correspondente à ementa atual é elegível',()=>{
  const api=library();
  assert.equal(api.eligibleDecisions([record],candidates).length,1);
- for(const change of [{integrity:'abstract'},{reviewStatus:'retired'},{abstractSha256:'old'},{jurisdiction:'US'},{reviewedBy:''}])
+ for(const change of [{integrity:'abstract'},{ingestionStatus:'retired'},{abstractSha256:'old'},{jurisdiction:'US'},{collectedAt:''}])
   assert.equal(api.eligibleDecisions([{...record,...change}],candidates).length,0);
 });
 test('pesquisa envia filtros e descarta versões antigas mesmo retornadas pelo serviço',async()=>{
@@ -44,6 +44,7 @@ test('manifesto vazio não consulta corpus',async()=>{
 });
 test('sincronização valida origem, integridade e hash antes de upload',async()=>{
  assert.equal((await validateManifest([record],candidates,async()=>fullText)).length,1);
+ assert.equal(Object.hasOwn(record,'reviewedBy'),false); // No manual review required.
  for (const change of [{sourceUrl:'https://example.com/ato'},{integrity:'abstract'},{sha256:'0'.repeat(64)}, {textPath:'../../secret.txt'}, {abstractSha256:'old'}])
   await assert.rejects(validateManifest([{...record,...change}],candidates,async()=>fullText));
  await assert.rejects(validateManifest([record,record],candidates,async()=>fullText));

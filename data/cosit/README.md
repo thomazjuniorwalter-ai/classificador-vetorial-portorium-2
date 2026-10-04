@@ -1,48 +1,49 @@
-# Piloto de atualização Cosit
+# Piloto Cosit — incorporação direta
 
-O catálogo `candidates.json` contém **ementas**, não decisões completas. No teste de 04/10/2026, a consulta oficial entre 01/09/2026 e 04/10/2026 retornou 53 Soluções de Consulta Cosit de classificação de mercadorias e nenhuma Solução de Divergência nesse intervalo. Nenhuma íntegra foi indexada. Este recorte não constitui inventário histórico nem certificação de vigência.
+Walter autorizou em 04/10/2026 a inclusão direta no vetorial, sem revisão manual prévia de decisões. A autorização vale para documentos completos obtidos de fontes oficiais. O código não exige aprovador nem parecer de vigência para indexar. Validação técnica de origem, identidade, hash, duplicatas e íntegra permanece.
 
-## Coleta
+## Estado comprovado
+
+A consulta oficial entre 01/09/2026 e 04/10/2026 retornou 53 ementas de Soluções de Consulta Cosit sobre classificação, datadas entre 03 e 30/09/2026, e nenhuma Solução de Divergência no intervalo. Os acessos automáticos testados à íntegra em Normas/NormasInternet2 retornaram HTTP403. Nenhuma íntegra real foi indexada. O armazenamento OpenAI do Classificador ainda não está acessível nesta sessão. A integração em produção e a captura automática de íntegra continuam pendentes; retirar a revisão não resolve esses bloqueios técnicos.
+
+## Coleta de ementas
 
 `python scripts/collect-cosit.py --from 2026-09-01 --to 2026-10-04`
 
-O coletor usa o formulário público do portal Atos Decisórios da Receita, com sessão e ViewState, filtros de Cosit, assunto e tipo de ato. Descobre os valores dos filtros pelos rótulos oficiais. Divide intervalos com mais de 100 resultados; interrompe se um único dia ultrapassar esse limite. Confere contagens, datas e tipos; falhas preservam o catálogo anterior e retornam erro. Identidade: jurisdição, órgão, tipo, número e ano; SHA-256 identifica mudanças da ementa. Não presume que uma decisão removida da pesquisa foi revogada.
+Usa o formulário público do portal Atos Decisórios da Receita, com sessão/ViewState e filtros pelos rótulos oficiais. Confere contagens, datas e tipo; divide intervalos maiores que100 resultados e falha se um único dia exceder100. Falhas preservam o catálogo anterior. Identidade: jurisdição, órgão, tipo, número e ano. SHA-256 identifica mudanças de texto. Não presume que desaparecimento significa revogação. Sinais de alteração/reforma são metadados, sem exigir revisão manual.
 
-O workflow `cosit-discovery.yml`, depois de integrado à branch padrão, consulta uma janela móvel de 60 dias diariamente e abre PRs para alterações. Essa janela pode não detectar publicações tardias mais antigas: executar reconciliação histórica com intervalos maiores periodicamente. GitHub deve permitir que Actions crie PRs. Falhas ficam visíveis no workflow; artefatos podem conter o último catálogo, não uma coleta bem-sucedida. PRs repetidos podem ocorrer enquanto alterações anteriores não forem integradas.
+`candidates.json` contém ementas, com `ingestionStatus=pending_full_text`. Mudanças produzem `changed_requires_recapture` e preservam versões anteriores. Esses estados significam pendência técnica de obter texto completo correspondente, não aprovação humana.
 
-## Íntegra e revisão
+## Documentos completos
 
-Os acessos automáticos testados ao sistema Normas e ao endpoint público de íntegra do NormasInternet2 retornaram HTTP 403. Não houve tentativa de contornar o bloqueio. É necessário obter a íntegra oficial por um canal autorizado, inclusive download manual, e revisar antes da indexação. O Classif também não é dependência deste coletor.
-
-Salvar o texto completo oficial em `data/cosit/full/<identificador>.txt`. Registrar em `approved.json`:
+O arquivo `approved.json` mantém seu nome original por compatibilidade, mas agora representa o manifesto técnico e não uma lista de aprovações humanas. Textos oficiais completos devem ser capturados em `data/cosit/full/<identificador>.txt`, com:
 
 | Campo | Conteúdo |
 |---|---|
-| id | Identidade presente no catálogo de ementas |
-| title / sourceUrl | Identificação da decisão e link oficial específico |
-| textPath / sha256 | Caminho da íntegra e hash SHA-256 dos bytes UTF-8 |
-| abstractSha256 | Hash da ementa revisada do catálogo |
+| id | Identidade do catálogo de ementas |
+| title / sourceUrl | Identificação e link oficial específico |
+| textPath / sha256 | Caminho da íntegra e SHA-256 dos bytes UTF-8 |
+| abstractSha256 | Hash da ementa correspondente |
 | jurisdiction / integrity | `BR` / `full` |
-| reviewStatus | `approved`; usar `retired` para retirar da nova busca |
-| reviewedBy / reviewedAt | Responsável pela conferência da íntegra e data |
-| validityCheckedAt | Data da conferência de alterações, revogações, reformas, retificações e relações |
+| ingestionStatus | `ready` para inclusão direta; `retired` para retirada |
+| collectedAt | Data da captura oficial |
 
-A revisão humana deve verificar número, data, produto, NCM, fundamentos e identidade da íntegra; uma ementa ou uma simples contagem de caracteres não comprova completude. O código verifica campos, origem, hash, duplicatas e correspondência à ementa. **Não verifica sozinho o efeito jurídico ou a completude documental.** Reavaliar relações antes de aprovar uma decisão que reforma outra. Atualizações sem aprovação ficam fora da busca; hash da ementa alterado suspende o texto associado até nova revisão.
+Não são necessários `reviewedBy`, `reviewedAt` ou `validityCheckedAt`. A captura deve obter efetivamente a íntegra: apenas declarar `integrity=full` ou superar500 caracteres não prova completude. O sincronizador rejeita origem não oficial, caminho inválido, duplicatas, hash divergente e texto igual à ementa. A captura automática da íntegra por um canal acessível ainda precisa ser conectada; não há conversão automática de ementa em decisão completa.
 
-## Armazenamento vetorial
+## Sincronização e busca
 
-Usar um vector store dedicado ao piloto, no mesmo projeto OpenAI acessível pela aplicação. Configurar `OPENAI_COSIT_VECTOR_STORE_ID` no servidor e no ambiente controlado do sincronizador; este utiliza `OPENAI_API_KEY` existente. Não armazenar chaves no repositório. Os acessos ao projeto de produção/armazenamento não estavam disponíveis nesta sessão; sincronização real ainda não executada.
+Usar um store dedicado no mesmo projeto OpenAI da aplicação. O sincronizador e o servidor precisam de `OPENAI_COSIT_VECTOR_STORE_ID`; o sincronizador usa `OPENAI_API_KEY` existente, sem chaves no repositório.
 
 `node scripts/sync-cosit.mjs`
 
-O sincronizador valida todo o manifesto antes de fazer alterações, lista os arquivos já vinculados, reaproveita documentos com a mesma identidade/hash, retira versões antigas da pesquisa por atributos, envia novos textos e só os aprova depois da indexação concluir. Não cria automaticamente um store, não apaga arquivos e não altera as bases normativas existentes. Executar em ambiente controlado após a aprovação de cada manifesto; não há upload vetorial automático por cron neste piloto. Mudanças nas relações jurídicas exigem revisão e nova sincronização. Se o upload concluir e a vinculação falhar, pode restar arquivo órfão no projeto OpenAI; conferir o inventário antes de repetir nesse caso.
+Valida todos os documentos antes de alterar o store, reaproveita identidade/hash existentes, retira versões antigas por atributos, envia novos textos e marca `status=indexed` após a indexação completar. Não há aprovação manual. Não cria store nem apaga arquivos ou altera as bases originais. Documentos não disponíveis no manifesto ficam retirados no store dedicado. Em falha entre upload e vinculação, conferir possíveis arquivos órfãos antes de repetir.
 
-As rotas individual e em lote fazem uma busca suplementar no store dedicado e preservam as ferramentas do prompt salvo. Filtram arquivos aprovados/íntegros brasileiros e conferem identidade/hash contra o manifesto atual antes de enviar trechos ao modelo. As fontes realmente recuperadas entram na rastreabilidade da análise individual. `cositRetrievalStatus` distingue `not_configured`, `retrieved`, `no_matches` e `unavailable`. Indisponibilidade mantém a análise pelas bases atuais, sem alegar que não existem decisões. O manifesto inicial está vazio: o comportamento atual permanece até configurar o store e aprovar uma íntegra.
+O workflow diário, depois de integrado à branch padrão, coleta ementas e executa a sincronização direta se os secrets `OPENAI_API_KEY` e `OPENAI_COSIT_VECTOR_STORE_ID` estiverem configurados. Sem secrets, registra a pendência. O PR do catálogo serve para versionar ementas; não é aprovação de decisões nem condição para o envio vetorial daquela execução. O workflow não obtém sozinho a íntegra. Janela móvel de60dias não substitui reconciliação histórica; GitHub deve permitir que Actions abra PRs. PRs repetidos podem ocorrer enquanto alterações não forem integradas. Artefatos de execuções com falha podem conter o catálogo anterior.
 
-## Verificação e próximos passos
+As rotas individual e em lote preservam ferramentas do prompt salvo e fazem busca suplementar de textos brasileiros completos indexados. Conferem identidade/hash do manifesto e ementa correspondente, excluindo versões antigas. Citam somente trechos recuperados. A data de coleta não certifica vigência ou aplicabilidade jurídica. `cositRetrievalStatus` distingue falta de configuração, recuperação, ausência de correspondência e indisponibilidade. Manifesto inicial vazio: a integração não está ativa em produção.
+
+## Verificação
 
 `npm test`, `python -m unittest discover -s test -p 'test_cosit*.py'`, `npx tsc --noEmit`, `npm run build`.
 
-Foram testadas coleta real das 53 ementas, rejeição de páginas de erro/truncadas, divisão de intervalos, repetição sem duplicatas, revisão de alterações, elegibilidade, filtros e descarte de versões antigas, falha de busca e validação de manifestos. As chamadas de upload/busca OpenAI são simuladas nos testes; aprovação e indexação ponta a ponta de uma decisão real dependem do acesso ao store e da obtenção de uma íntegra oficial.
-
-Antes de ativar: integrar o PR, permitir o workflow, configurar o store dedicado, obter/revisar uma decisão completa, sincronizar, fazer uma consulta de recuperação conhecida e conferir o parecer e a fonte. Brasil é a única jurisdição habilitada. CROSS/EUA e outras bases ficam para conectores posteriores, com taxonomia e jurisdição próprias.
+Os testes cobrem elegibilidade sem aprovador, filtros, versões antigas, indisponibilidade e validação técnica, além do coletor. Busca é simulada; upload/indexação real dependem da íntegra oficial e do acesso ao store. Próximo teste concreto: capturar uma íntegra real, sincronizar sem revisão manual e conferir sua recuperação no Classificador. EUA e outras jurisdições ficam para conectores posteriores.

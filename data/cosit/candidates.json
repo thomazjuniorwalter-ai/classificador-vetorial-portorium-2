@@ -12,14 +12,14 @@
       "decisionDate": "2026-09-30",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8429.52.12"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM 8429.52.12\nMercadoria: Escavadora hidráulica, autopropulsada, sobre esteiras, com superestrutura capaz de rotação 360°, cabine do operador, motor a diesel com potência nominal de 15,4 kW a 2.400 rpm, caçamba com capacidade de 0,08 m³ comandada por braços e lanças mecânicas acionados por sistema hidráulico; com comprimento de 4.262 mm, largura de 1.500 mm e altura de 2.490 mm e peso operacional de 2.750 kg.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul constante da Tarifa Externa Comum, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, e alterações posteriores.",
       "sha256": "3bf76437978efd20c695df61167aa62e87e2c7965f69879bb944c46fe2a2d899",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98344-2026",
@@ -31,14 +31,14 @@
       "decisionDate": "2026-09-30",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8429.52.12"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM 8429.52.12\nMercadoria: Escavadora hidráulica, autopropulsada, sobre esteiras, com superestrutura capaz de rotação 360°, cabine do operador, motor a diesel com potência nominal de 15,4 kW a 2.400 rpm e caçamba com capacidade de 0,08 m³; com comprimento de 4.260 mm, largura de 1.500 mm e altura de 2.490 mm, e peso operacional de 2.700 kg.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul constante da Tarifa Externa Comum, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, e alterações posteriores.",
       "sha256": "7088e7b7cc40986224dfb79e1c9876e1b6ee55fa9980b3e89a19516619d9958d",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98343-2026",
@@ -50,14 +50,14 @@
       "decisionDate": "2026-09-30",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8432.31.90"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM 8432.31.90\nMercadoria: Implemento agrícola para dosagem, distribuição e deposição controlada de sementes, constituído por três reservatórios de sementes com capacidade de 221 litros cada, sistema dosador acionado por motor hidráulico acoplado a redutor mecânico, mangueiras hidráulicas, cinco hastes para abertura de fendas superficiais no solo e rolo destorroador para incorporação superficial das sementes; capaz de operar em solo não previamente preparado (plantio direto) e ser acoplado a outros implementos agrícolas, sem perda de sua função própria e específica de semeadura, conhecido como conjunto semeador para culturas de cobertura.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul constante da Tarifa Externa Comum, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 27 de janeiro 1992, e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023, e alterações posteriores.",
       "sha256": "86e1552ef737675ab2c1fe578cd462034a9df0e1bf28b1caa5207834d5dfe1a0",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98342-2026",
@@ -69,14 +69,14 @@
       "decisionDate": "2026-09-30",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "3824.99.89"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 3824.99.89\nMercadoria: Preparação para a nutrição de plantas, oferecendo os oligoelementos cálcio (em forma quelatada, em teor mínimo de 10%), manganês e zinco (na forma de sulfato de manganês e sulfato de zinco, e fornecidos em teores mínimos de 0,1% cada); apresentada na forma de pó branco microgranulado, aplicada por via foliar (pulverização agrícola); acondicionada em sacos plásticos de 1, 3 ou 5 kg, ou em sacos kraft de 10 kg.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 c/c RGI 3 b) da TEC, constante da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "c1284dd226b07bad43ad72b6efd51127b6420dca10333c39be7356570154241a",
-      "requiresRelationshipReview": true
+      "hasRelationshipSignals": true
     },
     {
       "id": "BR-COSIT-SC-98341-2026",
@@ -88,14 +88,14 @@
       "decisionDate": "2026-09-30",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "3105.10.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 3105.10.00\nEx Tipi: sem enquadramento\nMercadoria: Fertilizante mineral misto, constituído por hidróxido de potássio e quelato de ferro-EDTA, fonte do macronutriente essencial potássio em teor mínimo (K2O equivalente) de 4%, e do micronutriente ferro (Fe) em teor mínimo de 13%, adequado para aplicação foliar; apresentado na forma de pó amarelo; acondicionado em saco plástico de 1, 3 ou 5 kg ou em saco kraft de 10 kg.\nDispositivos Legais: RGI 1 (Nota 6 do Cap. 31) e RGI 6 da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "23d29299c7fde6944c67805162ccfdbea0d97cc5eae7a8c3bdca6f8cc97880ee",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98340-2026",
@@ -107,14 +107,14 @@
       "decisionDate": "2026-09-30",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8429.52.12"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM 8429.52.12\nMercadoria: Escavadora hidráulica, autopropulsada, sobre esteiras, com superestrutura capaz de efetuar rotação de 360°, cabine do operador, motor a diesel com potência nominal de 18,2 kW a 2.200 rpm, caçamba com capacidade de 0,10 m³; com comprimento de 4.915 mm, largura de 1.700 mm, altura de 2.530 mm e peso operacional de 3.790 kg.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul constante da Tarifa Externa Comum, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022; e atualizações posteriores.",
       "sha256": "ef374423e8ce1d43f5b0a67b59de5cd1396a03dfb439556eb4307d403bb147b6",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98339-2026",
@@ -126,14 +126,14 @@
       "decisionDate": "2026-09-29",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8429.52.12"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM 8429.52.12\nMercadoria: Escavadora hidráulica, autopropulsada, sobre esteiras, com superestrutura capaz de efetuar rotação de 360°, cabine do operador, motor a diesel com potência nominal de 18,2 kW a 2.200 rpm, caçamba com capacidade de 0,10 m³; com comprimento de 4.960 mm, largura de 1.700 mm, altura de 2.530 mm e peso operacional de 3.790 kg.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul constante da Tarifa Externa Comum, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022; e atualizações posteriores.",
       "sha256": "86bb3d9ddcd76108ac55e1391968e13c8d290b6f5b641e0f9a2c1021e7803293",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98338-2026",
@@ -145,14 +145,14 @@
       "decisionDate": "2026-09-29",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "9019.20.30"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM 9019.20.30\nMercadoria: Aparelho destinado a fornecer suporte ventilatório a pacientes com insuficiência respiratória, garantindo troca gasosa adequada por meio do controle preciso de pressão, volume, fluxo e FiO2, de forma automática, de acordo com os parâmetros configurados pelo profissional de saúde, para uso adulto, pediátrico e neonatal em unidades de tratamento intensivo (UTI), denominado comercialmente ventilador pulmonar.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 (Nota 3 do Capítulo 90 e Nota 3 da Seção XVI) da Nomenclatura Comum do Mercosul constante da Tarifa Externa Comum, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022; e subsídios extraídos das Notas Explicativas do Sistema Harmonizado, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992 e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023, e atualizações posteriores.",
       "sha256": "5c9c2223fa3c88f39f0739ce6351ed287e28ef207adfe6a6f5474b70e410d5cc",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98337-2026",
@@ -164,14 +164,14 @@
       "decisionDate": "2026-09-24",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "2105.00.10"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nReforma de ofício a Solução de Consulta Cosit no 98.059, de 15 de março de 2018.\nCódigo NCM: 2105.00.10\nMercadoria: Preparação alimentícia congelada, de consistência cremosa, à base de polpa de açaí, xarope de guaraná e polpa de banana, com adição de água, xarope de glicose, estabilizante e aroma idêntico ao natural de guaraná, acompanhada de cereal integral de aveia em compartimento próprio, pronta para consumo no estado em que se encontra, apresentada em embalagem de plástico de 220 g, comercialmente denominada  \"creme de açaí e banana com granola\" .\nDispositivos Legais: RGI 1, RGI 3 b) e RGC 1 da NCM constante da TEC, aprovada pela Resolução Gecex nº 272, de 2021, e da Tipi, aprovada pelo Decreto. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 1992, e atualizadas pela Instrução Normativa RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "b08dc17898945a8e152e262d218faa6b9ecc3a101cc81c74c55b4638585c83bc",
-      "requiresRelationshipReview": true
+      "hasRelationshipSignals": true
     },
     {
       "id": "BR-COSIT-SC-98336-2026",
@@ -183,14 +183,14 @@
       "decisionDate": "2026-09-21",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8711.60.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 8711.60.00\nMercadoria: Aparelho de propulsão elétrica, concebido para o transporte de uma pessoa em vias de circulação de baixa velocidade, composto por duas rodas independentes situadas lado a lado, de 6,5 ou 8 polegadas, com arcos protetores; dois motores elétricos brushless de 85 W, um em cada extremidade; bateria de lítio; porta de carregamento de 3 pinos AC 100-240_V, 50/60 Hz; pedal de borracha; faróis dianteiros de LED; sensores giroscópicos e microprocessadores embutidos, responsáveis por manter o equilíbrio do veículo e do condutor; com velocidade máxima de 12 km/h, peso de 5,55 kg e medidas de 59 x 18 x 16 cm; disponível em diversas cores; comercialmente denominado hoverboard elétrico.\nDispositivos Legais: RGI 1 e RGI 6 da NCM constante da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; Parecer de Classificação da OMA 8711.60/2, aprovado pela IN RFB nº 2.171, de 2 de janeiro de 2024; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "7ebb9023eeb412ce6207418acb7f67b47080b5de005e1cbb93851daf13339ec4",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98335-2026",
@@ -202,14 +202,14 @@
       "decisionDate": "2026-09-21",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8487.90.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 8487.90.00\nMercadoria: Anel de vedação composto de elastômero fluorado vulcanizado (FPM), material responsável pela vedação, e aço (estrutura interna) apresentando lamela de proteção contra pó e lábio de vedação e mola tensora interna, com diâmetro exterior de 205 mm, interior de 180 mm e altura de 15 mm, utilizado na parte traseira da árvore de manivelas (virabrequim), para impedir a saída do óleo lubrificante e a entrada de poeira e detritos, denominado comercialmente como retentor.\nDispositivos Legais: RGI 1 e RGI 6 da NCM constante da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "8a17baef44ca4fa165342df47094eb5419d1c5054b3c0ed2dc748d47d3ca78e2",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98334-2026",
@@ -221,14 +221,14 @@
       "decisionDate": "2026-09-21",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8487.90.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 8487.90.00\nMercadoria: Anel de vedação composto de estrutura interna em aço, revestida de elastômero de poliacrilato (ACM), material responsável pela vedação estática, e politetrafluoretileno (PTFE), apresentando lamela de proteção contra pó e lábio de vedação, com diâmetro exterior de 159 mm e interior de 136 mm, altura de 13 mm e peso igual a 157 g, utilizado na parte frontal da árvore de manivelas (virabrequim) para impedir a saída do óleo lubrificante e a entrada de poeira e detritos, denominado comercialmente como retentor.\nDispositivos Legais: RGI 1, e RGI 6 da NCM constante da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "73d979d983f70a11ef4b4c4bc7da7607da6d7d4ebe0a8a9ad41eed5df962f587",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98333-2026",
@@ -240,14 +240,14 @@
       "decisionDate": "2026-09-21",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "5603.14.30"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 5603.14.30\nMercadoria: Toalha de mesa, de peso total (gramatura) de 170 g/m2, constituída por uma folha de polímero de cloreto de vinila (PVC) não alveolar, com peso (gramatura) de 100 g/m2, combinada em uma das faces com um suporte de falso tecido (tecido não tecido) de filamentos de polipropileno (PP), com peso (gramatura) de 70 g/m2, com impressão externa meramente acessória à sua utilização principal; usada para proteção e ornamentação geral de mesa, apresentada em rolos de 50 m de comprimento e 1,35 m de largura.\nDispositivos Legais: RGI 1 (Nota 7 da Seção XI e Nota 3 do Cap. 56), RGI 6 (Nota 1 a) do Cap. 54) e RGC 1 da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; Parecer de Classificação da OMA 5603.14/1, aprovado pela IN RFB nº 2.171, de 2024; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "34f288add36b6d0d5afccc5b250e85ab33ebe1e3314657ebf02671542c232b79",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98332-2026",
@@ -259,14 +259,14 @@
       "decisionDate": "2026-09-18",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "2710.19.32"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 2710.19.32\nMercadoria: Preparação à base de hidrocarbonetos de petróleo altamente refinados (CAS 74869-22-0), em teor superior a 82%, contendo ainda álcoois etoxilados/ propoxilados; utilizada na lubrificação de fios têxteis oriundos especialmente de materiais sintéticos, com ação antiestática e protetiva; apresentada na forma de um líquido límpido, levemente amarelado, acondicionada em bombona plástica de 20 litros, tambor metálico de 200 litros ou contêiner plástico de 1.000 litros, comercialmente denominada óleo (ou agente) de encimagem.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "2376fdb96b50cc5b6ba160996dfd0ad806f0c6041ebd65efe7963cbefc81803a",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98331-2026",
@@ -278,14 +278,14 @@
       "decisionDate": "2026-09-18",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "3919.10.10"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 3919.10.10\nEx Tipi: 01\nMercadoria: Fita autoadesiva de polipropileno biorientado (BOPP), transparente, revestida de adesivo (tipo acrílico à base de água ou tipo hot melt) em uma das faces, utilizada para fechamento de embalagens por simples pressão à temperatura ambiente; apresentada em rolo de largura variando de 4,5 a 7 cm, acondicionada em caixa contendo 72 rolos.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; RGC/Tipi -1; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "30d5dd685a31e40c52ee40527e1b6bf768c2a4e892e28104087fb378d1c82e29",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98330-2026",
@@ -297,14 +297,14 @@
       "decisionDate": "2026-09-18",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8504.40.40"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 8504.40.40\nMercadoria: Módulo de energia para aerogeradores, constituído por banco de ultracapacitores, retificador e controlador de carga e descarga, que converte corrente alternada de 85 a 305 V em corrente contínua de 12,1 a 16,1 V, armazena energia e a fornece em momento oportuno (principalmente em situações de emergência e queda de energia) para sistema de posicionamento de pás de aerogeradores, denominado comercialmente de PEM (Pitch Energy Module).\nDispositivos Legais: RGI 1 (Nota 2 a) da Seção XVI), RGI 6 e RGC 1 da NCM constante da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "b35b31128f67c2e891bc5fa3c4e6f1a3d7f985efb706a9afbca56a84ec2539c5",
-      "requiresRelationshipReview": true
+      "hasRelationshipSignals": true
     },
     {
       "id": "BR-COSIT-SC-98329-2026",
@@ -316,14 +316,14 @@
       "decisionDate": "2026-09-18",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8483.90.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 8483.90.00\nMercadoria: Roda dentada de poliacetal, com diâmetro de 92 mm e peso de 45,5 g, para uso na movimentação da base de fresadoras.\nDispositivos Legais: RGI 1 (Nota 2 a) da Seção XVI) e RGI 6 da NCM constante da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "ebb4a4d00b60c939288979c37cd960c3b5c4c5cfe48f8a04277aa0b743a50363",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98328-2026",
@@ -335,14 +335,14 @@
       "decisionDate": "2026-09-18",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8456.11.19"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 8456.11.19\nMercadoria: Máquina portátil de comando numérico para gravação e recorte a laser em metais, polímeros, cerâmicas, madeira, entre outros materiais; com dimensões de 295 x 130 x 432 mm, peso líquido de 1,6 kg e potência do laser entre 5 e 12 W; controlada por software via interface USB ou Wi-Fi; apresentada numa caixa contendo a máquina desmontada, fonte de alimentação, manual do usuário e acessórios diversos, como elevadores de altura e óculos de proteção.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "049fb0d045d52263baba379fde4f0f7e01a6216100860f33d231dfbe977b63a7",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98327-2026",
@@ -354,14 +354,14 @@
       "decisionDate": "2026-09-18",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "9027.50.90"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 9027.50.90\nMercadoria: Medidor digital automatizado de permeabilidade do solo, também denominado permeâmetro, próprio para ser instalado sobre um pequeno poço para medir a taxa de infiltração da água e a condutividade hidráulica do solo saturado, com a utilização de um sensor de pressão diferencial e de sensores ópticos de nível de líquido; provido de módulo eletrônico com interface de operação e conectividade USB e Bluetooth, conjunto de medição a ser inserido no poço, reservatório de 4,6 L, receptor GPS e tripé; acompanhado de trados e escova para abertura do poço, mochila de proteção, entre outros acessórios.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "03616a9f99c8d51e7a44f71409f3238e9c445ff550d8c302cde56c3ab526df31",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98326-2026",
@@ -373,14 +373,14 @@
       "decisionDate": "2026-09-18",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8541.21.20"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 8541.21.20\nMercadoria: Transistor bipolar de junção (BJT) do tipo NPN, em encapsulamento plástico SOT-23, próprio para montagem em superfície (SMD), com capacidade de dissipação inferior a 1 W.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "03aef72f92c3a0e1d93bbc01a4867b2590a8c8162a8c6d81d599bc6e322fa958",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98325-2026",
@@ -392,14 +392,14 @@
       "decisionDate": "2026-09-17",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "2103.90.21"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 2103.90.21\nMercadoria: Tempero composto de alho, cebola hidratada e ácido cítrico, na forma de pasta, utilizado para dar sabor aos alimentos, embalado em frasco contendo 500 g.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da NCM constante da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "c56168507ccab04a7fe34870c6166884e5ca24fa5160fa38f035379b8473ada8",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98324-2026",
@@ -411,14 +411,14 @@
       "decisionDate": "2026-09-17",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "3004.90.29"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 3004.90.29\nMercadoria: Medicamento de uso veterinário apresentado na forma líquida, para administração por via oral, à base de cloreto cobaltoso, sulfato cúprico e citrato férrico amoniacal (substâncias ativas) em solução aquosa, álcool benzílico e bissulfato de sódio (aditivos); apropriado para prevenir e tratar deficiências de cobre, cobalto e ferro em bovinos e ovinos; apresentado em cartucho de papel cartão contendo 1 frasco de PET âmbar com 100 ml.\nDispositivos Legais: RGI 1 (Nota 2 da Seção VI), RGI 6 e RGC 1 da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "2a18086eb550efb740e63aaf503b78fadcc1689e12654e660644d7bb0bf300ec",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98323-2026",
@@ -430,14 +430,14 @@
       "decisionDate": "2026-09-14",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "6307.90.90"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 6307.90.90\nMercadoria: Pista portátil para pousos e decolagens de drones com 75 cm de diâmetro confeccionada em tecido de poliéster com bordas arrematadas por tiras de Nylon e estruturada com fios metálicos, apresentada em conjunto com três estacas plásticas de fixação e fitas refletivas em plástico adesivo, própria para delimitar uma área para pousos e decolagens de drones; acompanha capa de transporte em tecido de poliéster.\nDispositivos Legais: RGI 1, RGI 3 b), RGI 6 e RGC 1 da NCM constante da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023.",
       "sha256": "b19e5e088197e89a047cda76507a38ae4b505ae0cc2d06cc3d5fca8e6598dc40",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98322-2026",
@@ -449,14 +449,14 @@
       "decisionDate": "2026-09-14",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "9021.29.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 9021.29.00\nMercadoria: Artefato de titânio próprio para ser utilizado em implantes dentários como estrutura intermediária entre o implante osseointegrado e a coroa, constituído por uma peça sólida em formato cilíndrico ou cônico, apresentado em comprimentos e diâmetros variados, embalado individualmente em blister selado com papel de grau cirúrgico acondicionado em envelope de papel cartão branco, denominado de pilar protético.\nDispositivos Legais: RGI 1 e RGI 6 da NCM constante da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023.",
       "sha256": "b3132f0da72fcbcb8f3f316423a33971cafbd0527c376ce1a7abb9621e7e6e3c",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98321-2026",
@@ -468,14 +468,14 @@
       "decisionDate": "2026-09-14",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "0000.00.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 0000.00.00\nMercadoria: Não configura sortido acondicionado para venda a retalho o conjunto de artigos variados, próprio para utilização em práticas de aprendizado, apresentado em embalagem única, constituído por blocos, carrinho para experimentos, massa medida 50 g, placa de PVC, rolete para movimento retilíneo, transferidor de 90° com seta indicadora, tripé estrela com cabo, cronômetro digital manual, dinamômetros, fixadores, rampas, hastes e manípulos, acondicionados em maleta de transporte.\nCada constituinte do conjunto segue o seu próprio regime de classificação.\nDispositivos Legais: RGI 1 e RGI 3 b) da NCM constante da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023.",
       "sha256": "acba1f46d90bd0c7305e49cb15902b8d4b8fe47d8a341ccc10ae68608c62d1bf",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98320-2026",
@@ -487,14 +487,14 @@
       "decisionDate": "2026-09-14",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "0000.00.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 0000.00.00\nMercadoria: Não configura sortido acondicionado para venda a retalho o conjunto de artigos variados, próprio para utilização em práticas de aprendizado, apresentado em embalagem única, constituído por motor elétrico de corrente alternada, temporizador de atraso, alicate de corte, chave de fenda, controlador lógico programável, braço robótico programável de 6 graus de liberdade, sensores, disjuntores, contadores, cartão de memória, cabos adaptadores e fonte de energia, acondicionados em maleta de transporte.\nCada constituinte do conjunto segue o seu próprio regime de classificação.\nDispositivos Legais: RGI 1 e RGI 3 b) da NCM constante da TEC, aprovada pela Res. Gecex nº 272, de 2021, e da Tipi, aprovada pelo Dec. nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Dec. nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023.",
       "sha256": "128b408c56420f03dbc7a89f8aa60dcde5ae63f8c3a110d450c579da729e81b0",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98319-2026",
@@ -506,14 +506,14 @@
       "decisionDate": "2026-09-14",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "3924.90.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM 3924.90.00\nMercadoria: Persiana rolô blackout em PVC para utilização comercial e residencial, acionada por corrente lateral, acompanhada de kit de instalação, nas dimensões de 120 cm x 140 cm, 160 cm x 140 cm, 180 cm x 160 cm, 180 cm x 230 cm, 70 cm x 140 cm e 100 cm x 140 cm e nas cores chumbo, cinza e bege.\nDispositivos Legais: RGI 1 e RGI 6 da NCM constante da TEC, aprovada pela Resolução Gecex nº 272, de 2021, e da Tipi, aprovada pelo Decreto. nº 11.158, de 2022, e alterações posteriores.",
       "sha256": "8fa1db02976cf6bc125992f40861a51f9f1e68e1cbfb1ab0417ac1dc0d9785aa",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98318-2026",
@@ -525,14 +525,14 @@
       "decisionDate": "2026-09-14",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "3926.90.90"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 3926.90.90\nEx Tipi: sem enquadramento\nMercadoria: Rodízio giratório de roda dupla com trava, constituído de carcaça e rodas de resina plástica, centro da roda de poliamida, superfície de rodagem em poliuretano e rolamento de aço, adequado para usos diversos; com roda de 100 mm de diâmetro e 73 mm de largura.\nDispositivos Legais: RGI 1, RGI 3b), RGI 6 e RGC 1 da NCM constante na TEC, aprovada pela Resolução Gecex nº 272, de 2021, e na Tipi aprovada pelo Decreto nº 11.158, de 2022, e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "f3f9320f3ae38a927a4a021c9c96568d1fe841296ff3c484a35b80d2f8e320f1",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98317-2026",
@@ -544,14 +544,14 @@
       "decisionDate": "2026-09-14",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8430.31.90"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 8430.31.90\nMercadoria: Unidade funcional projetada para construção de túneis metroviários em geologia mista, com diâmetro de escavação de aproximadamente 11,67 m, comprimento total aproximado de 129 metros e peso total de cerca de 2.600 toneladas, com formato cilíndrico tubular seguido de uma estrutura de comboio linear sobre rodas, composta por roda de corte (cuttingwheel) com discos de corte e elementos de sobre corte; couraça articulada (shield); eretor com capacidade nominal de capacidade (de projeto) igual ou superior 380 kN utilizado para montagem das aduelas pré-fabricadas para formação do anel de concreto para revestimento estrutural do túnel; cilindros hidráulicos para o avanço do equipamento; misturadores e bombas de bentonita; misturadores e bombas injetoras de polímeros; misturadores e injetores de tensoativos; cabine de controle de operação; compartimentos de suporte operacional para refeições, atendimento médico e administrativo; câmara de refúgio com capacidade de até 20 pessoas; tanques e bombas injetoras de bi-componentes para grauteamento; compressores com capacidade nominal (de projeto) igual ou superior a 85kW, tanques de ar; tanque de dejetos; ventiladores e dutos; gabinetes elétricos de distribuição; câmaras hiperbáricas capazes de suportar pressões nominais (de projeto), na frente de escavação, iguais ou superiores a 6 bar no modo EPB; e unidade de apoio (back-up), denominada máquina de perfuração de túneis autopropulsada (Tuneladora/TBM) de modo duplo (EPB - Earth Pressure Balance e Modo Aberto).\nDispositivos Legais: RGI 1 (Nota 4 da Seção XVI), RGI 6 e RGC 1 da NCM constante na TEC, aprovada pela Resolução Gecex nº 272, de 2021, e na Tipi aprovada pelo Decreto nº 11.158, de 2022, e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "6b312e32efcf5372e4ac04c2b8a88193728c28c0b4fa1e4976fbe2fba6fe0db7",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98316-2026",
@@ -563,14 +563,14 @@
       "decisionDate": "2026-09-14",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "4823.90.99"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 4823.90.99\nMercadoria: Artigo constituído por fitas de papel kraft sobrepostas e coladas em intervalos alternados, formando uma estrutura de células hexagonais, utilizado como enchimento de divisórias e portas, apresentado em peças, comercialmente denominado colmeia de papel.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da NCM constante na TEC, aprovada pela Resolução Gecex nº 272, de 2021, e na Tipi aprovada pelo Decreto nº 11.158, de 2022, e alterações posteriores.",
       "sha256": "c368ffc7e69185b8a3ebcc5cb9646d0c6e1828a3c086dd9043907d60f9064272",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98315-2026",
@@ -582,14 +582,14 @@
       "decisionDate": "2026-09-14",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "5910.00.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 5910.00.00\nMercadoria: Correia transportadora contínua em nylon para máquina elevadora de grãos, com largura entre 100 e 700 mm e espessura aproximada de 3 a 4 mm.\nDispositivos Legais: RGI 1 da NCM constante na TEC, aprovada pela Resolução Gecex nº 272, de 2021, e na Tipi aprovada pelo Decreto nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "9416f0e689799c658fc83857f78df8a3e29c498dc5b02143a9327f3eb7f8b12f",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98314-2026",
@@ -601,14 +601,14 @@
       "decisionDate": "2026-09-14",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "0000.00.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 0000.00.00\nMercadoria: Não configura sortido acondicionado para venda a retalho, nos termos da RGI 3 b), conjunto de artigos variados, utilizado em aulas práticas, apresentado em maleta com alça, constituído por: um copo interno do calorímetro 200 ml em alumínio e tampa com furo para termômetro, um carretel de linha, um becker de vidro de 250 ml ou 300 ml, três corpos de teste em alumínio, três corpos de teste em ferro, um béquer de vidro de 100 ml ou 150 ml com pé de plástico, um aquecedor elétrico 220V/60Hz, 700W, com plugue brasileiro, um termômetro de -10°c a 110°c, um termômetro clínico, uma maleta, com alça e identificada, para transporte.\nCada artigo do conjunto segue o seu próprio regime de classificação.\nDispositivos Legais: RGI 1 e RGI 3b da NCM constante na TEC, aprovada pela Resolução Gecex nº 272, de 2021, e na Tipi aprovada pelo Decreto nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "607e33f9870efb9ef167ae2a0cb7faf755137a70bb677427cc0e862508b7bf0e",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98313-2026",
@@ -620,14 +620,14 @@
       "decisionDate": "2026-09-14",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "0000.00.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 0000.00.00\nMercadoria: Não configura sortido acondicionado para venda a retalho, nos termos da RGI 3 b), conjunto de artigos variados, utilizado em aulas práticas, apresentado em maleta com alça, constituído por: dois becker de vidro de 100ml, um becker de vidro de 500ml, uma haste de vidro 10x200mm, um kit espátula metálica de 150mm, um vidro relógio com diâmetro de 80mm, dez tubos de ensaio de vidro 15x150 mm, um suporte de plástico para tubos de ensaio, um frasco volumétrico de vidro de 100 ml com rolha de cortiça, um erlenmeyer de boca estreita de vidro 100 ml, um becker de vidro de 100 ml, um funil de vidro de haste curta 75 mm, uma pipeta graduada de vidro 10 ml - comprimento 20 cm, um pipetador tipo pera - 25 m, um termômetro químico 0-100°C, um kit LED completo, três jacarés fixados à tampa, uma pisseta graduada de polietileno com bico curvo - 250 ml, uma bandeja branca/material PP.\nCada artigo do conjunto segue o seu próprio regime de classificação.\nDispositivos Legais: RGI 1 e RGI 3 b) da NCM constante na TEC, aprovada pela Resolução Gecex nº 272, de 2021, e na Tipi aprovada pelo Decreto nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "0972ef3c0fe835ecc0e3dca179d49c13241116091badf7f7ebb4ab6f040393e2",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98312-2026",
@@ -639,14 +639,14 @@
       "decisionDate": "2026-09-14",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "0000.00.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 0000.00.00\nMercadoria: Não configura sortido acondicionado para venda a retalho, nos termos da RGI 3 b), conjunto de artigos variados, utilizado em aulas práticas, apresentado em maleta com alça, constituído por: um acessório para associação de molas, um carretel de fio com 120 m, um cronômetro digital manual, dois dinamômetros 1 n, dois dinamômetro 5 n, dois fixadores magnéticos com grampo de metal para dinamômetro, dois fixadores magnéticos para painel de força, duas hastes ø12,7 mm x 405 mm com rosca externa m6x10, duas hastes ø12,7 mm x 405 mm com rosca interna m6x15, quatro cabos de latão niquelado m3x10, doze massas medidas com gancho 50 g (øxa) 28,56 x 9,36 mm, um painel de metal 650 x 500 mm com grampos de fixação, um pin para suspensão - pêndulo - transportador, uma placa com furo para centro de gravidade, uma placa trapezoidal para centro de gravidade, uma régua de policarbonato escala 400 mm com manta magnética, uma polia dupla fixa ø50mm, uma polia simples fixa ø50 mm, uma polia dupla móvel ø40 mm - ø50 mm, uma polia simples móvel ø50 mm, um transferidor pendular 360 graus acrílico branco 2 mm, um trilho 400 mm 18 furos 4 mm com régua milimétrica, uma fita de aço 2 m, dois tripés tipo estrela 1 kg cabo m6x25 com sapatas.\nCada artigo do conjunto segue o seu próprio regime de classificação.\nDispositivos Legais: RGI 1 e RGI 3 b) da NCM constante na TEC, aprovada pela Resolução Gecex nº 272, de 2021, e na Tipi aprovada pelo Decreto nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "c235122287fa2abe52d7387ea8e62d993fb8f0d627f08ebb3aee3072e7963c4c",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98311-2026",
@@ -658,14 +658,14 @@
       "decisionDate": "2026-09-14",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "0000.00.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 0000.00.00\nMercadoria: Não configura sortido acondicionado para venda a retalho, nos termos da RGI 3 b), conjunto de artigos variados, utilizado em aulas práticas, apresentado em maleta de plástico, constituído por: um carregador USB, uma placa de aprendizagem microcontrolador PIC 16F877A, um sensor de temperatura e umidade relativa, um display LCD tela 16X2 caracteres, dois motores de passo 5V com placa de acionamento, um programador para PIC PICKIT3, um cabo USB, dois Driver Motor DC L293D PONTE H, um Conversor A/D ADC0808, um Sensor de ultrassom, um Sensor piezoelétrico, um Sensor capacitivo de toque TTP223B, um Sensor de Pressão MPS20N0040D, um Giroscópio + Acelerômetro 3 eixos MPU6050, um Acelerômetro analógico 3 eixos, um Buzzer, um Amplificador de instrumentação INA128, dois Multiplexador analógico CD4066, dez Eletrodos de ECG, um Sensor de Pulso, um Oxímetro de pulso para dedo, um Sensor de oximetria SPO2, um Monitor de ECG Kit, um 0.96 I2C OLED Display, um ESP32 Microcontrolador com WIFI+BT, um Sensor de EMG, um Tubo flexível transparente de silicone, um Sensor de Fluxo SEA, dois Optoacoplador, um Filtro Passa Baixa Butterworth, um Módulo Extensômetro (strain-gauge), um Conversor DC-DC isolado 3,3 V B0303S-1W, um Conversor DC-DC isolado 5V A0505S-1W, um Conversor USB-Serial CH340, um Gel condutor Ultra Gel ELETRO multigel 100 g, um Micro USB macho/macho, duas Caixas internas, uma maleta para transporte. Cada artigo do conjunto segue o seu próprio regime de classificação.\nDispositivos Legais: RGI 1 e RGI 3 b) da NCM constante na TEC, aprovada pela Resolução Gecex nº 272, de 2021, e na Tipi aprovada pelo Decreto nº 11.158, de 2022; e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992, e atualizadas pela IN RFB nº 2.169, de 2023, e alterações posteriores.",
       "sha256": "7ba7d94862de5f1f7c5f4ea701634322d5d43bd101d8fe9c112183ed2978a086",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98310-2026",
@@ -677,14 +677,14 @@
       "decisionDate": "2026-09-11",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8443.31.15"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo: 8443.31.15\nMercadoria: Impressora multifuncional policromática a laser, com funções de impressão, cópia e digitalização de documentos, possuindo conectividade USB, Ethernet e Wi-Fi, capaz de ser conectada a uma máquina automática de processamento de dados ou a uma rede, alimentada por folhas, com capacidade de impressão de 33 páginas por minuto em papel A4.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul - NCM, constante da Tarifa Externa Comum - TEC, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados - TIPI, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, com subsídios extraídos das Notas Explicativas do Sistema Harmonizado- NESH, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992 e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023.",
       "sha256": "0d5dad3aa8d58b4f08838beaa222c3fb86221b23be29c7185dabc3e3d443fe07",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98309-2026",
@@ -696,14 +696,14 @@
       "decisionDate": "2026-09-11",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8443.31.15"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo: 8443.31.15\nMercadoria: Impressora multifuncional policromática a laser, com funções de impressão, cópia, digitalização de documentos e transmissão de fax, possuindo conectividade USB, Ethernet e Wi-Fi, capaz de ser conectada a uma máquina automática de processamento de dados ou a uma rede, alimentada por folhas, com capacidade de impressão de 27 páginas por minuto em papel A4.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul - NCM, constante da Tarifa Externa Comum - TEC, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados - TIPI, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, com subsídios extraídos das Notas Explicativas do Sistema Harmonizado- NESH, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992 e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023.",
       "sha256": "965409b58b897cdaa56c8899c0fefaa1407edc5e67997f5bbd9f0ca4e78e6d0f",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98308-2026",
@@ -715,14 +715,14 @@
       "decisionDate": "2026-09-11",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8443.31.13"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 8443.31.13\nMercadoria: Impressora multifuncional monocromática a laser, com funções de impressão, cópia e digitalização de documentos, possuindo conectividade USB e Wi-Fi, capaz de ser conectada a uma máquina automática de processamento de dados ou a uma rede sem fio, alimentada por folhas, com capacidade de impressão inferior a 45 páginas por minuto em papel A4, com largura de impressão de 210mm (formato A4).\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul - NCM, constante da Tarifa Externa Comum - TEC, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados - Tipi, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, com subsídios extraídos das Notas Explicativas do Sistema Harmonizado - Nesh, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992 e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023.",
       "sha256": "b02a6ce30b142515a4a1a221fdcd30d364b3075b5f2a06f2d5407086a36fa118",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98307-2026",
@@ -734,14 +734,14 @@
       "decisionDate": "2026-09-11",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8443.31.11"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 8443.31.11\nMercadoria: Impressora multifuncional de jato de tinta líquida, policromática, com funções de impressão, cópia e digitalização de documentos, possuindo conectividade USB, e Wi-Fi, capaz de ser conectada a uma máquina automática de processamento de dados ou a uma rede sem fio, alimentada por folhas, com capacidade de impressão de 22 páginas por minuto em papel A4, com largura de impressão de 210mm (formato A4)\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul - NCM, constante da Tarifa Externa Comum - TEC, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados - Tipi, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022",
       "sha256": "b45c8c1712b684f59fd7e9767220aa16ee1feaad91b3f4f0631a455686115648",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98306-2026",
@@ -753,14 +753,14 @@
       "decisionDate": "2026-09-11",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "7212.40.10"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 7212.40.10\nMercadoria: Chapas retangulares de aço não ligado, com camada de estanho de espessura média 0,25 µm, de tamanhos e pesos iguais a 49,5mmx43,4mm e 2,48g, e 61,5mmx111,36mm e 7,9g (dimensões padronizadas para servir de invólucro para dois modelos de pilhas), litografadas em uma das faces com arte e informações comerciais das pilhas onde o produto será montado após sua transformação em cilindro que servirá de invólucro para as pilhas.\nDispositivos Legais: RGI 1 (Notas 1 ij) e 1 k) do Capítulo 72), RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul - NCM, constante da Tarifa Externa Comum - TEC, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados - Tipi, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, com subsídios extraídos das Notas Explicativas do Sistema Harmonizado- NESH, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992 e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023.",
       "sha256": "ac2d189c19ea77c57733ff31ae9df40d72aceb0d1991d9c4f8ecff8a02cffbfe",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98305-2026",
@@ -772,14 +772,14 @@
       "decisionDate": "2026-09-11",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "7308.90.90"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 7308.90.90\nEx Tipi: Sem enquadramento\nMercadoria: Estrutura de perfis e tubos de aço galvanizado, para fixação ao solo, própria para servir de suporte fixo e inclinado para oito módulos fotovoltaicos em usinas de geração de energia elétrica, tendo como funções acessórias e inerentes a seus componentes equipotencializar os componentes metálicos do arranjo fotovoltaico e servir de caminho para descargas elétricas atmosféricas para o sistema de aterramento utilizado pela usina, com comprimento de 470 cm, largura de 360 cm, altura de 280 cm e peso de 100 kg.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul - NCM, constante da Tarifa Externa Comum - TEC, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados - TIPI, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, com subsídios extraídos das Notas Explicativas do Sistema Harmonizado - Nesh, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992 e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023.",
       "sha256": "236d26c57ebf7e1ebcb40c7395e80c0e1f690d9e3d90ebee1079803625bf43fa",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98304-2026",
@@ -791,14 +791,14 @@
       "decisionDate": "2026-09-11",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8536.49.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 8536.49.00\nMercadoria: Relé temporizador, com energização de 24 a 240V, tendo um ou dois contatos de saída, para ligar e desligar um circuito elétrico ou dois circuitos elétricos ao mesmo tempo. A ligação pode ser imediata, com desligamento no tempo programado pelo usuário, ou efetuada em tempo determinado pelo usuário a partir do acionamento.\nDispositivos Legais: RGI 1 e RGI 6 da Nomenclatura Comum do Mercosul - NCM, constante da Tarifa Externa Comum - TEC, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados - TIPI, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, com subsídios extraídos das Notas Explicativas do Sistema Harmonizado- NESH, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992 e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023.",
       "sha256": "aff3c77731e8144fce10925b3c6820b773906363f1c68188bb11b636505221e0",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98303-2026",
@@ -810,14 +810,14 @@
       "decisionDate": "2026-09-11",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8524.91.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 8524.91.00\nMercadoria: Módulo de visualização de tela plana TFT-LCD com driver, monocromático, para 2 linhas de 16 caracteres, cada caractere com 40 pixels, com dimensões de 84mm x 44mm x 14mm, para incorporação em equipamentos diversos.\nDispositivos Legais: RGI 1 (texto da Nota Legal 7 do Capítulo 85) e RGI 6 da Nomenclatura Comum do Mercosul - NCM, constante da Tarifa Externa Comum - TEC, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados - TIPI, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022.",
       "sha256": "9bd6247ff67d6cd4cf5db918195113c469934a8b6a32e55b4667c33091692aa9",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98301-2026",
@@ -829,14 +829,14 @@
       "decisionDate": "2026-09-09",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8509.80.90"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM 8509.80.90\nMercadoria: Aparelho portátil de uso doméstico para purificação do ar em ambientes com até 25 m², dotado de motor elétrico incorporado para movimentação do ar através do aparelho, pré-filtro, filtro de carvão ativado, filtro HEPA (High Efficiency Particulate Arrestance), lâmpada de esterilização ultravioleta, ionizador, painel de controle sensível ao toque e outros componentes elétricos e eletrônicos, com peso de 4,5 kg, dimensões de 324 x 162 x 409 mm e potência de 55 W.\nDispositivos Legais: RGI 1 (Nota 1 f) do Capítulo 84, Nota 4 b) do Capítulo 85), RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul constante da Tarifa Externa Comum, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022; e em subsídios extraídos das Notas Explicativas do Sistema Harmonizado, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992 e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023.",
       "sha256": "99e7b168981bfea1a2ebce3d7f7df98aadd8c5e5239212febf2f1d704c437edf",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98300-2026",
@@ -848,14 +848,14 @@
       "decisionDate": "2026-09-09",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8509.80.90"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM 8509.80.90\nMercadoria: Aparelho portátil de uso doméstico para purificação do ar em ambientes com até 80 m², dotado de motor elétrico incorporado para movimentação do ar através do aparelho, pré-filtro, filtro de carvão ativado, filtro HEPA (High Efficiency Particulate Arrestance), lâmpada de esterilização ultravioleta, ionizador, painel de controle e outros componentes elétricos e eletrônicos, com peso de 9,3 kg, dimensões de 45 x 24 x 68 cm e potência de 70 W.\nDispositivos Legais: RGI 1 (Nota 1 f) do Capítulo 84, Nota 4 b) do Capítulo 85), RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul constante da Tarifa Externa Comum, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022; e em subsídios extraídos das Notas Explicativas do Sistema Harmonizado, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992 e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023.",
       "sha256": "a20418c2c020c31ecc67aabc410532bbfa7353bd94a610061dd8009162811b4e",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98299-2026",
@@ -867,14 +867,14 @@
       "decisionDate": "2026-09-09",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "2309.90.90"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 2309.90.90\nEx Tipi: sem enquadramento\nMercadoria: Preparação em pó, à base de membrana de casca de ovo parcialmente hidrolisada para alimentação de animais, constituída por proteínas, cálcio, colágeno, ácido hialurônico, glicosaminoglicanos sulfatados, aminoácidos sulfurados e glucosamina, utilizada como matéria-prima na produção de alimentos, petiscos ou suplementos para cães, gatos e cavalos com distúrbios articulares, apresentada em caixas com capacidade de 15 kg.\nDispositivos Legais: RGI/SH 1 (Nota 1 do Capítulo 23), RGI/SH 6 e RGC 1 da Nomenclatura Comum do Mercosul - NCM, constante da Tarifa Externa Comum - TEC, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados - Tipi, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992 e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023.",
       "sha256": "5f4795f98de189071da1b986bf9d057b0e16b7d8d10bd0bbe8f91c12d71f95eb",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98298-2026",
@@ -886,14 +886,14 @@
       "decisionDate": "2026-09-09",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "4420.19.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 4420.19.00\nMercadoria: Objeto para ornamentação de interiores constituído por duas camadas sobrepostas de MDF - Medium Density Fiberboard - revestidas com epóxi (70 %, em peso), em forma de coração, com uma camada decorativa de papel impresso e um ímã localizado na parte posterior para fixação em superfícies metálicas, dimensões de 7,5 cm x 8 cm x 0,8 cm e peso líquido de 28 g.\nDispositivos Legais: RGI/SH 1 (Nota 3 do Capítulo 44) e RGI/SH 6 da Nomenclatura Comum do Mercosul - NCM, constante da Tarifa Externa Comum - TEC, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados - Tipi, aprovada pelo Decreto nº 11.158, de 2022, e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 1992 e atualizadas pela IN RFB nº 2.169, de 2023.",
       "sha256": "593f3dffc2594fdcaf4e8c289dcb8819ad6df6afe7877aaa0bb1919294ba1438",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98297-2026",
@@ -905,14 +905,14 @@
       "decisionDate": "2026-09-09",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8716.90.90"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM:8716.90.90\nMercadoria: Roda de aço para carrinho de mão, provida de pneu maciço de borracha vulcanizada de 3,25 por 8 polegadas, com largura da banda de 54 mm, comercialmente denominada Pneu maciço montado em aro de aço.\nDispositivos Legais: RGI/SH 1, RGI/SH 6 e RGC 1 da Nomenclatura Comum do Mercosul - NCM, constante da Tarifa Externa Comum - TEC, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados - Tipi, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992 e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023.",
       "sha256": "83840787527cf385faac9a9a546c0d6c6469931c64222cd472465d7236ad7ecf",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98296-2026",
@@ -924,14 +924,14 @@
       "decisionDate": "2026-09-09",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "9503.00.80"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 9503.00.80\nMercadoria: Brinquedo constituído por uma goleira (trave) inflável e respectiva rede, uma bola inflável e um adesivo de reparo, utilizado de forma recreativa em piscinas, próprio para crianças acima de três anos, apresentado como um sortido para venda a retalho em uma embalagem, dimensões quando inflado de 130 x 60 x 72 cm e peso de 580 g.\nDispositivos Legais: RGI/SH 1 e RGC 1 da Nomenclatura Comum do Mercosul - NCM, constante da Tarifa Externa Comum - TEC, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados - Tipi, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992 e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023.",
       "sha256": "4a2908b58fd3db32788b068dc27672213acd423631623e6c5080eb1385db0700",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98295-2026",
@@ -943,14 +943,14 @@
       "decisionDate": "2026-09-09",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "3209.90.20"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM: 3209.90.20\nMercadoria: Verniz à base de resina alquídica modificada, disperso em água, fosco, utilizado no acabamento e proteção contra umidade e radiação UV de artefatos internos e externos de madeira, acondicionado em latas com capacidade de 3,6 l.\nDispositivos Legais: RGI/SH 1, RGI/SH 6 e RGC 1 da Nomenclatura Comum do Mercosul - NCM, c constante da Tarifa Externa Comum - TEC, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados - Tipi, aprovada pelo Decreto nº 11.158, de 2022, e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 1992 e atualizadas pela Instrução Normativa RFB nº 2.169, de 2023.",
       "sha256": "78d04a69b4d8cf0971adba7ff255ffbae9473774175ef52332e2c5ae450a6f7b",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98294-2026",
@@ -962,14 +962,14 @@
       "decisionDate": "2026-09-09",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8524.91.00"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM:8524.91.00\nMercadoria: Módulo de visualização de tela plana, constituído por um display LCD TFT de 7, resolução de 800 x 480 pixels, com controlador (driver), mas sem a presença de componentes para converter sinais de vídeo, próprio para integrar diversos dispositivos eletrônicos, com dimensões de 164,9 mm x 100,0 mm x 5,7 mm e peso de 150 g.\nDispositivos Legais: RGI/SH 1 (Nota 7 do Capítulo 85) e RGI/SH 6 da Nomenclatura Comum do Mercosul - NCM, constante da Tarifa Externa Comum - TEC, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados - Tipi, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 27 de janeiro de 1992 e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023.",
       "sha256": "f69237f1de683206968037d967eb78183f0790ac2ba08ae5551cfbe4f81f7a2b",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98293-2026",
@@ -981,14 +981,14 @@
       "decisionDate": "2026-09-03",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "7312.10.90"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM 7312.10.90\nEx da Tipi: sem enquadramento\nMercadoria: Cinta plana do tipo utilizado em tração para elevadores, constituída por fios de aço de alta resistência trançados formando cordas ou cordões, galvanizados, dispostos longitudinalmente em configuração paralela, revestidos externamente com poliuretano termoplástico (TPU) de base poliéter, com adesão química na interface aço-polímero. Os cabos metálicos conferem a resistência mecânica à tração, enquanto o revestimento polimérico atua como superfície funcional de atrito com a polia de tração, além de proporcionar proteção contra abrasão, redução de ruído e estabilização geométrica do conjunto. Possui seção transversal retangular, com espessura de 3,3 mm, comprimento variável conforme a aplicação, largura de 29,5 mm ou 30,0 mm, peso linear de 0,224 kg/m ou 0,248 kg/m e carga mínima de ruptura de 36 kN ou 43 kN, conforme o modelo.\nDispositivos Legais: RGI 1, RGI 2 b), RGI 3 b), RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul constante da Tarifa Externa Comum, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 27 de janeiro 1992, e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023, e alterações posteriores.",
       "sha256": "d7f4f8cc332dd752bb9b818a626880baede25e053778c283f9803f75aeff9070",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     },
     {
       "id": "BR-COSIT-SC-98292-2026",
@@ -1000,14 +1000,14 @@
       "decisionDate": "2026-09-03",
       "sourceUrl": "https://atosdecisorios.receita.fazenda.gov.br/consultaweb/index.jsf",
       "integrity": "abstract",
-      "reviewStatus": "pending_full_text",
+      "ingestionStatus": "pending_full_text",
       "validity": "unverified",
       "ncm": [
         "8424.89.90"
       ],
       "abstract": "Assunto: Classificação de Mercadorias\nCódigo NCM 8424.89.90\nMercadoria: Equipamento de combate a incêndio autopropulsado sobre lagartas (esteiras), à prova de explosão, com operação remota ou programável, destinado a atuar em ambientes operacionais de alto risco, nos quais a presença humana direta é indesejável ou inviável; dotado de canhão para lançamento de água e espuma com alcance superior a 80 metros e vazão aproximada de 80 l/s, sistema de autorresfriamento por aspersão, câmera termográfica (infravermelho), termovisor, detector para monitoramento de gases tóxicos e inflamáveis, dispositivo de elevação para inspeção em diferentes alturas, capacidade de reboque de duas mangueiras de 80 mm por até 100 m; com velocidade reta de 1,5 m/s, tempo de trabalho ininterrupto mínimo de 5h; com dimensões de 1.670 x 890 x 1.360 mm e peso líquido de 730 kg, também denominado robô de combate a incêndio.\nDispositivos Legais: RGI 1, RGI 6 e RGC 1 da Nomenclatura Comum do Mercosul constante da Tarifa Externa Comum, aprovada pela Resolução Gecex nº 272, de 19 de novembro de 2021, e da Tabela de Incidência do Imposto sobre Produtos Industrializados, aprovada pelo Decreto nº 11.158, de 29 de julho de 2022, e subsídios extraídos das Nesh, aprovadas pelo Decreto nº 435, de 27 de janeiro 1992, e atualizadas pela Instrução Normativa RFB nº 2.169, de 29 de dezembro de 2023, e alterações posteriores.",
       "sha256": "f43e7090c6d477f497aeccf8154459f6c34e8ef838e20305500aa9247b5f5d58",
-      "requiresRelationshipReview": false
+      "hasRelationshipSignals": false
     }
   ]
 }

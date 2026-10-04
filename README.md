@@ -85,4 +85,4 @@ Anexos pesquisáveis são lidos em uma chamada separada (gpt-5-mini). A chamada 
 
 ### Atualização de decisões Cosit
 
-Piloto de coleta de ementas oficiais, revisão de íntegra e busca vetorial suplementar: [operação e limites](data/cosit/README.md). O piloto não está ativado no armazenamento de produção; a aprovação de íntegra e o store dedicado são necessários.
+Piloto de coleta de ementas oficiais, incorporação direta de íntegra oficial e busca vetorial suplementar: [operação e limites](data/cosit/README.md). O piloto não está ativado no armazenamento de produção; a íntegra oficial e o store dedicado são necessários. Não exige aprovação manual de decisões.

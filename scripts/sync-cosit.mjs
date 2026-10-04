@@ -1,4 +1,4 @@
-// Run only for reviewed full texts. Credentials stay in the execution environment.
+// Automatically synchronize complete official texts after technical checks. Credentials stay in the execution environment.
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import {createHash} from 'node:crypto';
@@ -10,15 +10,14 @@ export async function validateManifest(records, candidates, readText) {
   for (const record of records) {
     if (ids.has(record.id)) throw new Error('Decisão duplicada no manifesto');
     ids.add(record.id);
-    if (record.reviewStatus !== 'approved') continue;
-    if (record.integrity !== 'full' || record.jurisdiction !== 'BR' || !record.reviewedBy
-      || !record.reviewedAt || !record.validityCheckedAt || !record.title
-      || !/^[a-f0-9]{64}$/.test(record.sha256)) throw new Error('Revisão incompleta: ' + record.id);
+    if (record.ingestionStatus !== 'ready') continue;
+    if (record.integrity !== 'full' || record.jurisdiction !== 'BR' || !record.collectedAt || !record.title
+      || !/^[a-f0-9]{64}$/.test(record.sha256)) throw new Error('Metadados incompletos: ' + record.id);
     const url = new URL(record.sourceUrl);
     if (url.protocol !== 'https:' || !(url.hostname === 'receita.fazenda.gov.br' || url.hostname.endsWith('.receita.fazenda.gov.br')
       || ['www.gov.br', 'www.in.gov.br'].includes(url.hostname))) throw new Error('Fonte não oficial');
     const candidate = candidates.find(item => item.id === record.id);
-    if (!candidate || candidate.sha256 !== record.abstractSha256) throw new Error('Ementa alterada; nova revisão necessária');
+    if (!candidate || candidate.sha256 !== record.abstractSha256) throw new Error('Ementa alterada; recapturar íntegra correspondente');
     if (!/^data\/cosit\/full\/[a-zA-Z0-9_.-]+\.txt$/.test(record.textPath)) throw new Error('Caminho de íntegra inválido');
     const text = await readText(record.textPath);
     if (createHash('sha256').update(text).digest('hex') !== record.sha256) throw new Error('Hash da íntegra divergente');
@@ -31,7 +30,7 @@ export async function validateManifest(records, candidates, readText) {
 async function main() {
   const manifest = JSON.parse(await fs.readFile(path.join(root, 'data/cosit/approved.json'), 'utf8'));
   const candidates = JSON.parse(await fs.readFile(path.join(root, 'data/cosit/candidates.json'), 'utf8'));
-  // Validate EVERYTHING before mutations. Human approval attests completeness and legal relationships.
+  // Validate every document before mutations; no human approval gate.
   const documents = await validateManifest(manifest.records, candidates.records, relative => fs.readFile(path.join(root, relative), 'utf8'));
   const key = process.env.OPENAI_API_KEY;
   const store = process.env.OPENAI_COSIT_VECTOR_STORE_ID;
@@ -65,7 +64,7 @@ async function main() {
       && item.attributes?.decision_id === record.id && item.attributes?.sha256 === record.sha256);
     const attributes = {collector:'cosit-pilot', jurisdiction:'BR', integrity:'full', status:'pending',
       decision_id: record.id, sha256: record.sha256, source_url: record.sourceUrl,
-      title: record.title, validity_checked_at: record.validityCheckedAt};
+      title: record.title, collected_at: record.collectedAt};
     if (!file) {
       const form = new FormData();
       form.append('purpose', 'assistants');
@@ -78,9 +77,9 @@ async function main() {
       file = await api(`${base}/${file.id}`, undefined, 'GET');
     }
     if (file.status !== 'completed') throw new Error('Indexação não concluída: ' + record.id);
-    await api(`${base}/${file.id}`, {attributes: {...attributes, status:'approved'}});
+    await api(`${base}/${file.id}`, {attributes: {...attributes, status:'indexed'}});
   }
-  console.log(JSON.stringify({status:'synchronized', reviewedFullTexts:documents.length}));
+  console.log(JSON.stringify({status:'synchronized', fullTexts:documents.length}));
 }
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   main().catch(error => {console.error(error.message); process.exitCode = 1;});
