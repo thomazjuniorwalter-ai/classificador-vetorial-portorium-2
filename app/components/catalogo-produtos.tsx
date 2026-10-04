@@ -1,5 +1,6 @@
 'use client';
 import { useState } from 'react';
+import CatalogoSiscomex from './catalogo-siscomex';
 import { avaliarCadastro, type RegrasCatalogo, type ValoresCatalogo, type EvidenciaCatalogo, type CampoCatalogo } from '../lib/catalogo';
 type Evidencias = Record<string, EvidenciaCatalogo>;
 type Auditoria = { versaoBase: string; auditadoEm: string; resultados: { nome: string; ncm: string; status: string; achados: string[]; completude?: number | null; regras?: RegrasCatalogo; valores?: ValoresCatalogo; descricao?: string }[] };
@@ -98,6 +99,11 @@ export default function CatalogoProdutos({ initialNcm = '', initialDescricao = '
   }
   return <section className='catalogArea'>
     <div className='batchIntro'><span className='eyebrow'>CATÁLOGO DE PRODUTOS · PORTORIUM</span><h1>Prepare o cadastro.<br /><i>Revise com evidências.</i></h1><p>Atributos oficiais da NCM, sugestões rastreáveis e pendências para revisão humana.</p></div>
+    <CatalogoSiscomex disabled={!!busy} onProdutos={async produtos => {
+      setBusy('Auditando os produtos consultados…'); setError(''); setAuditoria(null);
+      try { setAuditoria(await resposta(await fetch('/api/catalogo/auditar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(produtos) }))); setModo('auditar'); }
+      catch (e) { setError((e as Error).message); } finally { setBusy(''); }
+    }} />
     <div className='catalogTabs' role='group' aria-label='Funções do catálogo'><button disabled={!!busy} className={modo === 'preparar' ? 'selected' : ''} onClick={() => { setModo('preparar'); setError(''); }}>Preparar produto</button><button disabled={!!busy} className={modo === 'auditar' ? 'selected' : ''} onClick={() => { setModo('auditar'); setError(''); }}>Auditar arquivo</button></div>
     {error && <div className='apiError' role='alert'><strong>Não foi possível concluir</strong><span>{error}</span></div>}
     {busy && <p className='catalogNotice' role='status'>{busy}</p>}

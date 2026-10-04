@@ -111,3 +111,11 @@ Validação: npm test (18 testes), npm run build e conferência de tela em deskt
 e celular. A base oficial completa foi percorrida sem erro de resolução de NCM.
 Os testes de IA usam respostas simuladas; a primeira execução real com OpenAI
 ainda precisa ser conferida no ambiente de revisão.
+
+### Consulta autenticada ao Catálogo (fase 2, versão de teste)
+
+Na aba Catálogo de Produtos, a consulta usa o par Client-Id/Client-Secret gerado no Portal Único com perfil IMPEXP. O usuário informa o CPF do catálogo ou o CNPJ raiz (8 dígitos), escolhe Produção ou Treinamento/Validação e pode filtrar por NCM. As chaves não são persistidas, os campos são apagados ao enviar e os tokens permanecem apenas na execução do servidor. A rota exige a autorização existente e origem do próprio aplicativo; mensagens externas não são devolvidas ao navegador.
+
+O servidor autentica em `/portal/api/autenticar/chave-acesso` e consulta por GET `/catp/api/ext/produto`, sem endpoints de manutenção. Resultados parciais são identificados. O teste limita a consulta a 50 produtos e 2 MB; catálogos maiores precisam de filtro. O resultado pode ser levado à auditoria vigente de atributos. Produtos com modalidade AMBOS também podem ser auditados para importação. Não há sincronização permanente ou transmissão de cadastros.
+
+Contrato conferido em 04/10/2026: https://docs.portalunico.siscomex.gov.br/api/plat/plat-auth.json e https://docs.portalunico.siscomex.gov.br/api/catp/catp.json. Os testes locais usam transporte simulado; a autenticação e a consulta reais dependem do teste pelo usuário com suas chaves. O Siscomex pode bloquear autenticações repetidas em menos de 60 segundos.

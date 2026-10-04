@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     const resultados = produtos.map((produto, index) => {
       const nome = String(produto.denominacao || produto.descricao || `Produto ${index + 1}`).slice(0, 200);
       try {
-        if (produto.modalidade && produto.modalidade !== 'IMPORTACAO') throw new Error('Produto de exportação: auditoria disponível apenas para importação.');
+        if (produto.modalidade && !['IMPORTACAO', 'AMBOS'].includes(produto.modalidade)) throw new Error('Produto de exportação: auditoria disponível apenas para importação.');
         const regras = regrasPorNcm(base, produto.ncm, data), valores = valoresDoProduto(produto);
         for (const campo of regras.campos) if (campo.pai && valores[campo.codigo]) valores[campo.chave] = valores[campo.codigo];
         const avaliacao = avaliarCadastro(regras, valores);
