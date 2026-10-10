@@ -81,3 +81,48 @@ Crie `.env.local` a partir de `.env.example`, cadastre a chave e execute `npm in
 ## Parecer e recuperação normativa
 A análise individual exporta PDF e Word editável como parecer técnico preliminar, com objeto, elementos técnicos, fundamentação, arquivos recuperados, conclusão, pendências, disclaimer e campos para revisão profissional. Os documentos exportados preservam a resposta recebida; não inventam fundamentos ausentes.
 Anexos pesquisáveis são lidos em uma chamada separada (gpt-5-mini). A chamada de classificação usa as ferramentas do prompt armazenado, sem substituí-las pela base temporária dos anexos. Há uma chamada adicional de API quando existem anexos pesquisáveis. A resposta distingue trecho não recuperado de documento ausente do acervo. Os nomes retornados pela pesquisa não certificam vigência ou aplicabilidade. O inventário e a configuração do acervo permanente ainda precisam ser verificados no projeto OpenAI.
+
+
+## Catálogo de Produtos — preparação e auditoria
+
+A aba Catálogo consulta o JSON oficial de vínculos NCM/atributos do Portal Único,
+com cache de uma hora e identificação de versão, vigência e fonte. Considera
+atributos de importação com objetivo Produto, listas oficiais e condições
+aninhadas. A NCM deve ser revisada pela pessoa; este módulo não a classifica.
+
+As sugestões usam gpt-5-mini e só entram quando o valor é válido no domínio
+oficial e o trecho existe literalmente na descrição ou em arquivo recuperado.
+Todo valor sugerido exige revisão humana. A leitura de anexos utiliza uma base
+vetorial temporária removida ao final. Estruturas especiais não suportadas ficam
+sinalizadas para revisão manual; atributos multivalorados são preenchidos
+manualmente nesta etapa.
+
+A auditoria recebe JSON de produtos ou XLSX de até 2 MB/50 linhas. No Excel, use
+colunas NCM, Denominação, Descrição e códigos ATT_...; valores múltiplos são
+separados por |. Fórmulas devem ser coladas como valores. O relatório verifica
+preenchimento, condições e domínio dos atributos, sem confirmar a NCM.
+
+Os downloads são documentos de revisão Portorium, não arquivos prontos para
+importação. Os dados ficam apenas na sessão; baixe antes de sair. A consulta autenticada ao Siscomex está descrita abaixo. Esta etapa
+não transmite cadastros. Usa a autorização já existente
+do Classificador.
+
+Validação: npm test (18 testes), npm run build e conferência de tela em desktop
+e celular. A base oficial completa foi percorrida sem erro de resolução de NCM.
+Os testes de IA usam respostas simuladas; a primeira execução real com OpenAI
+ainda precisa ser conferida no ambiente de revisão.
+
+### Consulta autenticada ao Catálogo (fase 2, versão de teste)
+
+Na aba Catálogo de Produtos, a consulta usa o par Client-Id/Client-Secret gerado no Portal Único com perfil IMPEXP. O usuário informa o CPF do catálogo ou o CNPJ raiz (8 dígitos), escolhe Produção ou Treinamento/Validação e pode filtrar por NCM. As chaves não são persistidas, os campos são apagados ao enviar e os tokens permanecem apenas na execução do servidor. A rota exige a autorização existente e origem do próprio aplicativo; mensagens externas não são devolvidas ao navegador.
+
+O servidor autentica em `/portal/api/autenticar/chave-acesso` e consulta por GET `/catp/api/ext/produto`, sem endpoints de manutenção. Resultados parciais são identificados. O teste limita a consulta a 50 produtos e 2 MB; catálogos maiores precisam de filtro. O resultado pode ser levado à auditoria vigente de atributos. Produtos com modalidade AMBOS também podem ser auditados para importação. Não há sincronização permanente ou transmissão de cadastros.
+
+Contrato conferido em 04/10/2026: https://docs.portalunico.siscomex.gov.br/api/plat/plat-auth.json e https://docs.portalunico.siscomex.gov.br/api/catp/catp.json. Os testes locais usam transporte simulado; a autenticação e a consulta reais dependem do teste pelo usuário com suas chaves. O Siscomex pode bloquear autenticações repetidas em menos de 60 segundos.
+### Atualização de decisões Cosit
+
+Piloto de coleta de ementas oficiais, incorporação direta de íntegra oficial e busca vetorial suplementar: [operação e limites](data/cosit/README.md). O piloto não está ativado no armazenamento de produção; a íntegra oficial e o store dedicado são necessários. Não exige aprovação manual de decisões.
+
+### Publicação conjunta — 10/10/2026
+
+Catálogo e pesquisa suplementar Cosit integrados. Base de atributos oficial versão 358 lida em teste real; consulta de catálogo pessoal e sugestões OpenAI precisam de sessão autenticada para validação real. Coleta oficial atualizada com 56 ementas entre 01/09 e 10/10/2026. A interface informa data de coleta e pendência de íntegra. O workflow publica automaticamente as ementas em main, diariamente às 09h15 de Brasília, sem aprovação documental. A coleta de ementas não substitui a indexação de decisões completas. O store dedicado ainda não está configurado e o manifesto de íntegras permanece vazio.

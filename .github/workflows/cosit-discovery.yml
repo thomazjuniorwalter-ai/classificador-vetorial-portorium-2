@@ -1,0 +1,51 @@
+name: Descobrir decisões Cosit
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 12 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: cosit-discovery
+  cancel-in-progress: false
+jobs:
+  collect:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validar coletor
+        run: python -m unittest discover -s test -p 'test_cosit*.py'
+      - name: Coletar ementas oficiais (janela de 60 dias)
+        run: python scripts/collect-cosit.py
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Sincronizar íntegra diretamente quando configurada
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_COSIT_VECTOR_STORE_ID: ${{ secrets.OPENAI_COSIT_VECTOR_STORE_ID }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ] || [ -z "$OPENAI_COSIT_VECTOR_STORE_ID" ]; then
+            echo 'Sincronização pendente de conexão ao vetorial.'
+            exit 0
+          fi
+          node scripts/sync-cosit.mjs
+      - name: Publicar catálogo de ementas atualizado
+        run: |
+          if git diff --quiet -- data/cosit/candidates.json; then exit 0; fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/cosit/candidates.json
+          git commit -m 'Atualiza ementas Cosit e data da coleta oficial'
+          git pull --rebase origin main
+          git push origin HEAD:main
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: catalogo-cosit-${{ github.run_id }}
+          path: data/cosit/candidates.json
