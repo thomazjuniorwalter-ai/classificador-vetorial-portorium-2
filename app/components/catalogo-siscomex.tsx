@@ -23,18 +23,18 @@ export default function CatalogoSiscomex({ onProdutos, disabled }: { onProdutos:
     <h2>Consultar meu catálogo no Siscomex</h2>
     <p>Consulte os produtos de importação e leve o resultado para auditoria. Esta conexão apenas consulta os cadastros.</p>
     <form onSubmit={consultar} autoComplete='off'>
-      <div className='catalogTwo'>
+      <div className='catalogConnectionGrid'>
         <label htmlFor='siscomex-ambiente'>Ambiente<select id='siscomex-ambiente' value={ambiente} disabled={busy || disabled} onChange={e => { setAmbiente(e.target.value); setProdutos([]); }}><option value='producao'>Produção</option><option value='validacao'>Treinamento / Validação</option></select></label>
-        <label htmlFor='siscomex-documento'>CPF do catálogo ou CNPJ raiz (8 dígitos)<input id='siscomex-documento' required value={documento} disabled={busy || disabled} onChange={e => { setDocumento(e.target.value); setProdutos([]); }} /></label>
-        <label htmlFor='siscomex-client-id'>Identificador da chave (Client-Id)<input id='siscomex-client-id' type='password' autoComplete='off' required value={clientId} disabled={busy || disabled} onChange={e => setClientId(e.target.value)} /></label>
-        <label htmlFor='siscomex-client-secret'>Chave secreta (Client-Secret)<input id='siscomex-client-secret' type='password' autoComplete='new-password' required value={clientSecret} disabled={busy || disabled} onChange={e => setClientSecret(e.target.value)} /></label>
+        <label htmlFor='siscomex-documento'>CPF ou CNPJ raiz do catálogo<input id='siscomex-documento' placeholder='CPF (11) ou CNPJ raiz (8 dígitos)' inputMode='numeric' required value={documento} disabled={busy || disabled} onChange={e => { setDocumento(e.target.value); setProdutos([]); }} /></label>
+        <label htmlFor='siscomex-client-id'>Identificador da chave · Client-Id<input id='siscomex-client-id' type='password' autoComplete='off' required value={clientId} disabled={busy || disabled} onChange={e => setClientId(e.target.value)} /></label>
+        <label htmlFor='siscomex-client-secret'>Chave secreta · Client-Secret<input id='siscomex-client-secret' type='password' autoComplete='new-password' required value={clientSecret} disabled={busy || disabled} onChange={e => setClientSecret(e.target.value)} /></label>
         <label htmlFor='siscomex-filtro-ncm'>Filtrar por NCM (opcional)<input id='siscomex-filtro-ncm' value={ncm} disabled={busy || disabled} placeholder='0000.00.00' onChange={e => { setNcm(e.target.value); setProdutos([]); }} /></label>
       </div>
-      <p className='catalogNotice'>Perfil IMPEXP. As chaves são usadas somente nesta consulta e os campos são apagados ao enviar. Não são salvas pelo aplicativo. Limite deste teste: 50 produtos; use o filtro de NCM se necessário.</p>
+      <p className='catalogNotice'>Use as chaves do perfil IMPEXP. Elas são apagadas dos campos ao enviar a consulta e não são salvas pelo aplicativo. Consulte até 50 produtos; filtre por NCM para restringir o resultado.</p>
       <button className='analyze' disabled={busy || disabled} type='submit'>{busy ? 'Consultando Siscomex…' : 'Consultar produtos'}</button>
     </form>
     {error && <p className='catalogError' role='alert'>{error}</p>}
     {mensagem && <p className='catalogNotice' role='status'>{mensagem}</p>}
-    {produtos.length > 0 && <><ul>{produtos.map((p, i) => <li key={i}>{String(p.denominacao || p.codigo || 'Produto')} · NCM {String(p.ncm || '')} · versão {String(p.versao || '')}</li>)}</ul><button className='batchSecondary' disabled={busy || disabled} onClick={() => onProdutos(produtos)}>Auditar os produtos consultados</button></>}
+    {produtos.length > 0 && <><ul className='catalogProductList'>{produtos.map((p, i) => <li key={i}>{String(p.denominacao || p.codigo || 'Produto')} · NCM {String(p.ncm || '')} · versão {String(p.versao || '')}</li>)}</ul><button className='batchSecondary' disabled={busy || disabled} onClick={() => onProdutos(produtos)}>Auditar os produtos consultados</button></>}
   </section>;
 }
