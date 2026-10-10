@@ -18,12 +18,12 @@ class CollectorTests(unittest.TestCase):
         self.assertEqual(rows[0]['ncm'], ['8429.52.12'])
         self.assertIn('& acessórios', rows[0]['abstract'])
     def test_idempotent_and_preserves_prior_decisions(self):
-        old = {'id':'SC-1', 'sha256':'a', 'abstract':'a', 'ingestionStatus':'pending_full_text'}
+        old = {'id':'SC-1', 'sha256':'a', 'abstract':'a', 'ingestionStatus':'ready_abstract'}
         other = {'id':'SC-2', 'sha256':'c', 'abstract':'c'}
         for r in (old, other): r['decisionDate'] = '2026-09-01'
         self.assertEqual(c.merge([old, other], [old]), [old, other][::-1])
         updated = c.merge([old], [dict(old, sha256='b', abstract='b')])[0]
-        self.assertEqual(updated['ingestionStatus'], 'changed_requires_recapture')
+        self.assertEqual(updated['ingestionStatus'], 'changed_abstract')
         self.assertEqual(updated['previousVersions'], [{'sha256':'a', 'abstract':'a'}])
     def test_large_window_is_split(self):
         class Portal(c.OfficialPortal):

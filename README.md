@@ -121,8 +121,8 @@ O servidor autentica em `/portal/api/autenticar/chave-acesso` e consulta por GET
 Contrato conferido em 04/10/2026: https://docs.portalunico.siscomex.gov.br/api/plat/plat-auth.json e https://docs.portalunico.siscomex.gov.br/api/catp/catp.json. Os testes locais usam transporte simulado; a autenticação e a consulta reais dependem do teste pelo usuário com suas chaves. O Siscomex pode bloquear autenticações repetidas em menos de 60 segundos.
 ### Atualização de decisões Cosit
 
-Piloto de coleta de ementas oficiais, incorporação direta de íntegra oficial e busca vetorial suplementar: [operação e limites](data/cosit/README.md). O piloto não está ativado no armazenamento de produção; a íntegra oficial e o store dedicado são necessários. Não exige aprovação manual de decisões.
+Ementas oficiais da Receita e do DOU incorporadas à busca suplementar, sem exigir inteiro teor ou store dedicado. Atualização por revalidação de 24 horas nas consultas e coleta diária independente como artefato no GitHub. [Operação e limites](data/cosit/README.md).
 
-### Publicação conjunta — 10/10/2026
+### Estado da integração
 
-Catálogo e pesquisa suplementar Cosit integrados. Base de atributos oficial versão 358 lida em teste real; consulta de catálogo pessoal e sugestões OpenAI precisam de sessão autenticada para validação real. Coleta oficial atualizada com 56 ementas entre 01/09 e 10/10/2026. A interface informa data de coleta e pendência de íntegra. O workflow consulta diariamente às 09h15 de Brasília e salva o resultado como artefato da execução, sem permissão para alterar o código ou a produção. Atualização automática do corpus publicado permanece pendente. A coleta de ementas não substitui a indexação de decisões completas. O store dedicado ainda não está configurado e o manifesto de íntegras permanece vazio.
+Catálogo de Produtos e ementas Cosit integrados às classificações individual e em lote. Base oficial de atributos versão 358 validada em teste real. A captura Cosit de 10/10/2026 reúne 82 ementas distintas da Receita e do DOU. A interface informa data de coleta e disponibilidade das fontes. Consulta de catálogo pessoal e classificação real OpenAI precisam de sessão autenticada para validação completa.

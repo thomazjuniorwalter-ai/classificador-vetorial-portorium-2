@@ -151,7 +151,7 @@ export async function POST(request: Request) {
     const text = outputText(data);
     if (!text) return Response.json({ error: "A análise terminou sem uma resposta textual." }, { status: 502 });
     try {
-      return Response.json({ result: JSON.parse(text), responseId: data.id, retrievedSources: [...retrievedSourceNames(data), ...cosit.sources], cositRetrievalStatus: cosit.status });
+      return Response.json({ result: JSON.parse(text), responseId: data.id, retrievedSources: [...retrievedSourceNames(data), ...cosit.sources], cositRetrievalStatus: cosit.status, cositRetrievalMode: cosit.mode, cositMetadata: cosit.metadata });
     } catch {
       return Response.json({ error: "A resposta não estava no formato técnico esperado." }, { status: 502 });
     }

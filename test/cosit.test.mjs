@@ -15,7 +15,7 @@ function library(fetch, records = [record]) {
  const module={exports:{}};
  vm.runInNewContext(ts.transpileModule(fs.readFileSync('app/lib/cosit-retrieval.ts','utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020,esModuleInterop:true}}).outputText,
  {module,exports:module.exports, fetch, AbortSignal, console, process:{env:{OPENAI_COSIT_VECTOR_STORE_ID:'vs_test'}},
- require:name=>name.includes('approved')?{records}: {records:candidates}});
+ require:name=>name.includes('cosit-catalog')?{}:name.includes('cosit-semantic')?{}:name.includes('approved')?{records}:{records:candidates}});
  return module.exports;
 }
 test('somente íntegra coletada e correspondente à ementa atual é elegível',()=>{
@@ -29,17 +29,17 @@ test('pesquisa envia filtros e descarta versões antigas mesmo retornadas pelo s
  const api=library(async(_,init)=>{body=JSON.parse(init.body);return Response.json({data:[
  {attributes:{decision_id:record.id,sha256:'old'},content:[{type:'text',text:'Texto antigo'}]},
  {attributes:{decision_id:record.id,sha256:hash},content:[{type:'text',text:'Texto válido'}]}]});});
- const result=await api.retrieveCosit('Escavadora','test-only');
+ const result=await api.retrieveFullCosit('Escavadora','test-only');
  assert.equal(body.filters.filters.length,4);
  assert.equal(result.status,'retrieved'); assert.match(result.context,/Texto válido/); assert.doesNotMatch(result.context,/Texto antigo/);
  assert.equal(result.sources.length,1);
 });
 test('falha na pesquisa não é apresentada como ausência de decisões',async()=>{
- const result=await library(async()=>Response.json({}, {status:503})).retrieveCosit('Produto','test-only');
+ const result=await library(async()=>Response.json({}, {status:503})).retrieveFullCosit('Produto','test-only');
  assert.equal(result.status,'unavailable'); assert.equal(result.sources.length,0);
 });
 test('manifesto vazio não consulta corpus',async()=>{
- const result=await library(()=>{throw new Error('não deveria chamar')},[]).retrieveCosit('Produto','test-only');
+ const result=await library(()=>{throw new Error('não deveria chamar')},[]).retrieveFullCosit('Produto','test-only');
  assert.equal(result.status,'not_configured');
 });
 test('sincronização valida origem, integridade e hash antes de upload',async()=>{

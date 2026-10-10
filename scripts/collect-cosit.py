@@ -48,7 +48,7 @@ def parse_results(page):
         rows.append(dict(id=f'BR-COSIT-{"SC" if kind == "Solução de Consulta" else "SD"}-{number}-{date_iso[:4]}',
                          sourceRecordId=identifier, jurisdiction='BR', authority='Cosit', type=kind,
                          number=number, decisionDate=date_iso, sourceUrl=SOURCE,
-                         integrity='abstract', ingestionStatus='pending_full_text', validity='unverified',
+                         integrity='abstract', ingestionStatus='ready_abstract', validity='unverified',
                          ncm=sorted(set(re.findall(r'\b\d{4}\.\d{2}\.\d{2}\b', abstract))),
                          abstract=abstract, sha256=digest,
                          hasRelationshipSignals=bool(re.search(r'revog|reform|anul|retific|diverg', abstract, re.I))))
@@ -94,7 +94,7 @@ def merge(previous, discovered):
     for item in discovered:
         old = records.get(item['id'])
         if old and old['sha256'] != item['sha256']:
-            item = dict(item, ingestionStatus='changed_requires_recapture',
+            item = dict(item, ingestionStatus='changed_abstract',
                         previousVersions=old.get('previousVersions', []) + [{k: old[k] for k in ('sha256', 'abstract')}])
         elif old:
             item = old  # Repeated runs don't produce artificial diffs.
