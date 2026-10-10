@@ -1,51 +1,35 @@
-# Piloto Cosit — incorporação direta
+# Ementas oficiais Cosit
 
-Walter autorizou em 04/10/2026 a inclusão direta no vetorial, sem revisão manual prévia de decisões. A autorização vale para documentos completos obtidos de fontes oficiais. O código não exige aprovador nem parecer de vigência para indexar. Validação técnica de origem, identidade, hash, duplicatas e íntegra permanece.
+As ementas são suficientes para a pesquisa suplementar autorizada pelo usuário. A recuperação nas classificações individual e em lote não depende de inteiro teor nem de um vector store dedicado.
 
-## Estado comprovado
+## Fontes e coleta
 
-A consulta oficial entre 01/09/2026 e 04/10/2026 retornou 53 ementas de Soluções de Consulta Cosit sobre classificação, datadas entre 03 e 30/09/2026, e nenhuma Solução de Divergência no intervalo. Os acessos automáticos testados à íntegra em Normas/NormasInternet2 retornaram HTTP403. Nenhuma íntegra real foi indexada. O armazenamento OpenAI do Classificador ainda não está acessível nesta sessão. A integração em produção e a captura automática de íntegra continuam pendentes; retirar a revisão não resolve esses bloqueios técnicos.
+O portal Atos Decisórios da Receita e o DOU da Imprensa Nacional são consultados diretamente. O coletor valida autoridade, assunto Classificação de Mercadorias, tipo, número, data, contagem e paginação. Publicações do DOU podem reunir vários atos: cada ementa recebe sua própria identidade. A data da publicação no DOU delimita a busca; a data da decisão identifica o ato.
 
-## Coleta de ementas
+Identidade: BR/Cosit/tipo/número/ano. SHA-256 identifica o texto. Fontes coincidentes ficam no mesmo registro; diferenças de redação ficam sinalizadas, conservando os links e o texto da Receita. Não se presume que desaparecimento significa revogação.
 
-`python scripts/collect-cosit.py --from 2026-09-01 --to 2026-10-04`
+A captura real de 10/10/2026 reuniu 56 ementas da Receita e 61 ementas do DOU no período de publicação de 01/09 a 10/10/2026: 82 atos distintos após cruzamento. Os atos publicados incluem decisões de agosto. Uma diferença entre fontes ficou sinalizada.
 
-Usa o formulário público do portal Atos Decisórios da Receita, com sessão/ViewState e filtros pelos rótulos oficiais. Confere contagens, datas e tipo; divide intervalos maiores que100 resultados e falha se um único dia exceder100. Falhas preservam o catálogo anterior. Identidade: jurisdição, órgão, tipo, número e ano. SHA-256 identifica mudanças de texto. Não presume que desaparecimento significa revogação. Sinais de alteração/reforma são metadados, sem exigir revisão manual.
+`node scripts/collect-cosit-abstracts.mjs` (Node 24) consulta ambas as fontes e grava o catálogo. O workflow diário às 09h15 de Brasília tem somente `contents: read` e disponibiliza um artefato; não altera main ou publica código. O coletor Python anterior permanece disponível para a Receita.
 
-`candidates.json` contém ementas, com `ingestionStatus=pending_full_text`. Mudanças produzem `changed_requires_recapture` e preservam versões anteriores. Esses estados significam pendência técnica de obter texto completo correspondente, não aprovação humana.
+## Atualização no aplicativo
 
-## Documentos completos
+O servidor coleta as fontes em paralelo e usa o cache de dados do Next com revalidação de 24 horas, acionada pelo acesso. A janela é móvel de 60 dias, somada à captura inicial versionada. Não é uma reconciliação de todo o histórico. O artefato do workflow não é consumido pelo aplicativo; cada caminho coleta diretamente as fontes.
 
-O arquivo `approved.json` mantém seu nome original por compatibilidade, mas agora representa o manifesto técnico e não uma lista de aprovações humanas. Textos oficiais completos devem ser capturados em `data/cosit/full/<identificador>.txt`, com:
+Falha de uma fonte preserva a captura inicial e permite usar a outra, informando disponibilidade. Falha de ambas usa a captura inicial com sua data verdadeira. A revalidação pode servir o resultado anterior enquanto atualiza. A interface mostra a data de coleta e a indisponibilidade; data recente não certifica vigência. Atualizações que saiam da janela móvel exigem reconciliação histórica adicional.
 
-| Campo | Conteúdo |
-|---|---|
-| id | Identidade do catálogo de ementas |
-| title / sourceUrl | Identificação e link oficial específico |
-| textPath / sha256 | Caminho da íntegra e SHA-256 dos bytes UTF-8 |
-| abstractSha256 | Hash da ementa correspondente |
-| jurisdiction / integrity | `BR` / `full` |
-| ingestionStatus | `ready` para inclusão direta; `retired` para retirada |
-| collectedAt | Data da captura oficial |
+## Busca vetorial
 
-Não são necessários `reviewedBy`, `reviewedAt` ou `validityCheckedAt`. A captura deve obter efetivamente a íntegra: apenas declarar `integrity=full` ou superar500 caracteres não prova completude. O sincronizador rejeita origem não oficial, caminho inválido, duplicatas, hash divergente e texto igual à ementa. A captura automática da íntegra por um canal acessível ainda precisa ser conectada; não há conversão automática de ementa em decisão completa.
+A chave OpenAI já usada pelo Classificador gera embeddings com `text-embedding-3-small`, 512 dimensões. Vetores das ementas públicas ficam em cache limitado em memória; descrições dos usuários não entram nesse cache. São selecionadas até oito ementas por similaridade. Se embeddings falharem, a pesquisa textual é usada e a resposta informa `lexical_fallback`.
 
-## Sincronização e busca
+O modelo recebe o texto identificado como ementa oficial, os links e instruções para avaliar pertinência da mercadoria, função, composição e apresentação. Similaridade não transfere automaticamente a NCM. Não deve alegar acesso ao inteiro teor. O prompt salvo, as bases anteriores e a autorização do portal são preservados.
 
-Usar um store dedicado no mesmo projeto OpenAI da aplicação. O sincronizador e o servidor precisam de `OPENAI_COSIT_VECTOR_STORE_ID`; o sincronizador usa `OPENAI_API_KEY` existente, sem chaves no repositório.
+As respostas incluem `cositRetrievalStatus`, `cositRetrievalMode` e `cositMetadata`; o endpoint autenticado `/api/cosit/status` informa o estado da coleta sem consumir embeddings.
 
-`node scripts/sync-cosit.mjs`
-
-Valida todos os documentos antes de alterar o store, reaproveita identidade/hash existentes, retira versões antigas por atributos, envia novos textos e marca `status=indexed` após a indexação completar. Não há aprovação manual. Não cria store nem apaga arquivos ou altera as bases originais. Documentos não disponíveis no manifesto ficam retirados no store dedicado. Em falha entre upload e vinculação, conferir possíveis arquivos órfãos antes de repetir.
-
-O workflow diário, depois de integrado à branch padrão, coleta ementas às 09h15 de Brasília e salva o catálogo como artefato da execução. Tem somente contents:read: não altera main, não publica o aplicativo e não sincroniza o store. A incorporação automática à base publicada e a sincronização vetorial continuam pendentes. O workflow não obtém sozinho a íntegra. Janela móvel de60dias não substitui reconciliação histórica. Artefatos de execuções com falha podem conter o catálogo anterior; conferir status da execução e data da última coleta bem-sucedida.
-
-As rotas individual e em lote preservam ferramentas do prompt salvo e fazem busca suplementar de textos brasileiros completos indexados. Conferem identidade/hash do manifesto e ementa correspondente, excluindo versões antigas. Citam somente trechos recuperados. A data de coleta não certifica vigência ou aplicabilidade jurídica. `cositRetrievalStatus` distingue falta de configuração, recuperação, ausência de correspondência e indisponibilidade. Manifesto inicial vazio: a integração não está ativa em produção.
+A integração anterior de íntegra e `scripts/sync-cosit.mjs` permanece opcional. Só atua com manifesto técnico elegível e `OPENAI_COSIT_VECTOR_STORE_ID` configurado; não é necessária para ementas. O manifesto inicial permanece vazio.
 
 ## Verificação
 
 `npm test`, `python -m unittest discover -s test -p 'test_cosit*.py'`, `npx tsc --noEmit`, `npm run build`.
 
-Os testes cobrem elegibilidade sem aprovador, filtros, versões antigas, indisponibilidade e validação técnica, além do coletor. Busca é simulada; upload/indexação real dependem da íntegra oficial e do acesso ao store. Próximo teste concreto: capturar uma íntegra real, sincronizar sem revisão manual e conferir sua recuperação no Classificador. EUA e outras jurisdições ficam para conectores posteriores.
-
-Em 10/10/2026, coleta real atualizada: 56 ementas no período de 01/09 a 10/10/2026. Nenhuma íntegra indexada; variável OPENAI_COSIT_VECTOR_STORE_ID ausente na Vercel. Seleção de ato no portal Atos Decisórios exigiu captcha. Não se apresenta ementa como texto completo.
+Coletores testados com acessos reais à Receita e ao DOU. Testes automatizados verificam decisões agrupadas, contagem incompleta, deduplicação, diferenças entre fontes, ranking com embeddings simulados, fallback e data da captura anterior. Uma classificação real com sessão autenticada e consumo OpenAI ainda precisa ser verificada.

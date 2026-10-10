@@ -80,7 +80,7 @@ export async function POST(request: Request) {
     if (resultado.ncm && !ncm) {
       return Response.json({ error: "A NCM sugerida veio em formato inválido." }, { status: 502 });
     }
-    return Response.json({ ncm: ncm || "", confianca: ncm ? resultado.confianca : 0, cositRetrievalStatus: cosit.status });
+    return Response.json({ ncm: ncm || "", confianca: ncm ? resultado.confianca : 0, cositRetrievalStatus: cosit.status, cositRetrievalMode: cosit.mode, cositMetadata: cosit.metadata });
   } catch (problema) {
     console.error("[triagem-lote] Falha inesperada", problema instanceof Error ? problema.name : "erro desconhecido");
     return Response.json({ error: "Não foi possível concluir esta mercadoria. Tente novamente." }, { status: 502 });
