@@ -5,12 +5,14 @@ import vm from 'node:vm';
 import ts from 'typescript';
 import { normativeInstructions, retrievedSourceNames } from '../app/lib/classification-grounding.ts';
 
-function loadRoute() {
+function loadRoute(path = "app/api/classificar/route.ts") {
   const module = {exports:{}};
-  vm.runInNewContext(ts.transpileModule(fs.readFileSync('app/api/classificar/route.ts','utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText, {
+  vm.runInNewContext(ts.transpileModule(fs.readFileSync(path,'utf8'), {compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020}}).outputText, {
     module, exports:module.exports, Response, process:{env:{OPENAI_API_KEY:'test-only'}}, setTimeout,
     fetch:(...args)=>globalThis.fetch(...args),
     require:(name)=> {
+      if(name.endsWith('/documentos-temporarios')) return loadRoute('app/lib/documentos-temporarios.ts');
+      if(name.endsWith('/cosit-retrieval')) return {retrieveCosit:async()=>({context:'',sources:[],status:'not_configured'}),cositInstructions:''};
       if(name.endsWith('/auth')) return {getPortalAccess:async()=>({status:'authorized'})};
       if(name.endsWith('/upload-token')) return {verifyUploadToken:()=>({fileId:'file_qa',filename:'Ficha.PDF',size:100})};
       if(name.endsWith('/classificador-prompt')) return {PROMPT_ID:'prompt_qa',PROMPT_VERSION:'1'};

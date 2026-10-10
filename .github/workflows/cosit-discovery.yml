@@ -1,0 +1,29 @@
+name: Descobrir decisões Cosit
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 12 * * *'
+permissions:
+  contents: read
+concurrency:
+  group: cosit-discovery
+  cancel-in-progress: false
+jobs:
+  collect:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Validar coletor
+        run: python -m unittest discover -s test -p 'test_cosit*.py'
+      - name: Coletar ementas oficiais (janela de 60 dias)
+        run: python scripts/collect-cosit.py
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: catalogo-cosit-${{ github.run_id }}
+          path: data/cosit/candidates.json
