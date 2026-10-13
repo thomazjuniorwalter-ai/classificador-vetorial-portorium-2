@@ -1,4 +1,5 @@
 "use client";
+import FileDropZone from "./file-drop-zone";
 
 import { useRef, useState } from "react";
 import {
@@ -202,9 +203,9 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
     </div>
     <section className="batchUpload">
       <div><h2>1. Envie a planilha Excel</h2><p>Arquivo .xlsx, títulos na primeira linha, até {MAX_LINHAS_TRIAGEM} mercadorias e 2 MB.</p></div>
-      <label className="batchUploadButton" htmlFor="planilhaLote">{importando ? "Lendo planilha…" : "Escolher arquivo .xlsx"}</label>
+      <FileDropZone accept=".xlsx" multiple={false} label="Planilha de triagem" disabled={importando || analisando} onFiles={(files) => void importar(files[0])} onError={setErro}><label className="batchUploadButton" htmlFor="planilhaLote">{importando ? "Lendo planilha…" : "Escolher arquivo .xlsx"}</label>
       <input id="planilhaLote" type="file" accept=".xlsx" disabled={importando || analisando}
-        onChange={(event) => { void importar(event.target.files?.[0]); event.target.value = ""; }} />
+        onChange={(event) => { void importar(event.target.files?.[0]); event.target.value = ""; }} /></FileDropZone>
     </section>
     {planilha && <section className="batchConfig">
       <h2>2. Confira as colunas</h2><p><strong>{planilha.planilha}</strong> · aba “{planilha.aba}” · {planilha.linhas.length} mercadorias</p>
