@@ -1,3 +1,4 @@
+import { validateDocuments } from '../../../lib/upload-limits';
 import { getPortalAccess, portalAccessResponse } from '../../../lib/auth';
 import { consultarRegrasCatalogo } from '../../../lib/catalogo-base';
 import { normalizarNcmCatalogo, verificarEvidencia, validarValor, aplicabilidade, type EvidenciaCatalogo } from '../../../lib/catalogo';
@@ -32,7 +33,7 @@ export async function POST(request: Request) {
     const tokens = body.documentos ?? [];
     if (!Array.isArray(tokens) || tokens.length > 10) throw new Error('Envie no máximo 10 documentos.');
     documents = tokens.map(token => verifyUploadToken(token, apiKey));
-    if (documents.reduce((total, file) => total + file.size, 0) > 50 * 1024 * 1024) throw new Error('Os documentos devem ter até 50 MB no conjunto.');
+    validateDocuments(documents.map(file => ({ name: file.filename, size: file.size })));
     if (documents.some(file => !/\.(pdf|doc|docx|txt|md)$/i.test(file.filename))) throw new Error('Use documentos PDF, Word ou texto nesta etapa.');
     if (!descricao && !documents.length) throw new Error('Informe dados técnicos ou anexe um documento.');
   } catch (error) {

@@ -1,5 +1,7 @@
 "use client";
 import { useState } from "react";
+import { uploadDocument } from "./lib/upload-document";
+import { validateDocuments } from "./lib/upload-limits";
 import FileDropZone from "./components/file-drop-zone";
 import dynamic from "next/dynamic";
 const CatalogoProdutos = dynamic(() => import("./components/catalogo-produtos"));
@@ -10,9 +12,6 @@ import type { ClassificationReport } from "./lib/classification-report";
 
 type ClassificationResult = { classificacao:string; ncm:string; confianca:number; descricaoAduaneira:string; justificativa:string; informacoesPendentes:string };
 const bases = [["Brasil","NCM, NESH e RFB","Prioritária"],["Internacional","OMA, UE, EUA, Canadá e Japão","Comparativa"],["Contencioso","CARF e precedentes","Complementar"]];
-const MAX_FILES = 10;
-const MAX_FILE_SIZE = 10 * 1024 * 1024;
-const MAX_TOTAL_FILE_SIZE = 50 * 1024 * 1024;
 
 export default function ClassificadorApp({ user, cosit }: { user: { displayName: string; email: string }; cosit: { abstracts: number; collectedAt: string } }) {
   const [loading,setLoading]=useState(false); const [files,setFiles]=useState<File[]>([]);
@@ -33,12 +32,8 @@ export default function ClassificadorApp({ user, cosit }: { user: { displayName:
       for(let index=0;index<files.length;index+=1){
         const file=files[index];
         setProgress(`Enviando documento ${index+1} de ${files.length}: ${file.name}`);
-        const form=new FormData();form.append("arquivo",file);
-        const upload=await fetch("/api/arquivos",{method:"POST",body:form});
-        const uploadRaw=await upload.text();let uploadData:any;
-        try{uploadData=JSON.parse(uploadRaw)}catch{throw new Error(`Não foi possível enviar ${file.name}. Tente novamente.`)}
-        if(!upload.ok||!uploadData.token)throw new Error(uploadData.error||`Não foi possível enviar ${file.name}.`);
-        tokens.push(uploadData.token);
+        const token=await uploadDocument(file,percent=>setProgress(`Enviando documento ${index+1} de ${files.length}: ${file.name} · ${percent}%`));
+        tokens.push(token);
       }
       setProgress(files.length?"Documentos enviados. Consultando as bases…":"Consultando as bases…");
       analysisStarted=true;
@@ -53,7 +48,14 @@ export default function ClassificadorApp({ user, cosit }: { user: { displayName:
       setError(problem instanceof Error?problem.message:"Erro inesperado.");
     }finally{setLoading(false);setProgress("")}
   };
-  const adicionar=(list:FileList|File[]|null)=>{if(!list)return;const incoming=Array.from(list);const oversized=incoming.find(file=>file.size>MAX_FILE_SIZE);if(oversized){setError(`O arquivo ${oversized.name} ultrapassa o limite de 10 MB.`);return}setFiles(current=>{const unique=incoming.filter(file=>!current.some(item=>item.name===file.name&&item.size===file.size&&item.lastModified===file.lastModified));if(current.length+unique.length>MAX_FILES){setError("É possível anexar no máximo 10 documentos por análise.");return current}const next=[...current,...unique];if(next.reduce((total,file)=>total+file.size,0)>MAX_TOTAL_FILE_SIZE){setError("O conjunto dos documentos deve ter no máximo 50 MB.");return current}setError("");return next})};
+  const adicionar=(list:FileList|File[]|null)=>{
+    if(!list)return;
+    const incoming=Array.from(list);
+    const unique=incoming.filter(file=>!files.some(item=>item.name===file.name&&item.size===file.size&&item.lastModified===file.lastModified));
+    const next=[...files,...unique];
+    try{validateDocuments(next);setFiles(next);setError("")}
+    catch(problem){setError(problem instanceof Error?problem.message:"Não foi possível anexar os documentos.")}
+  };
   const tamanho=(bytes:number)=>bytes<1024*1024?`${Math.max(1,Math.round(bytes/1024))} KB`:`${(bytes/1024/1024).toFixed(1)} MB`;
   const exportar=async(format:"pdf"|"docx")=>{
     if(!reportSnapshot||exporting)return;
@@ -76,7 +78,7 @@ export default function ClassificadorApp({ user, cosit }: { user: { displayName:
       <div className="content"><div hidden={aba!=="catalogo"}><CatalogoProdutos key={catalogoSeed.id} initialNcm={catalogoSeed.ncm} initialDescricao={catalogoSeed.descricao} analyst={user.displayName+" ("+user.email+")"}/></div><div hidden={aba!=="lote"}><TriagemLote onAprofundar={(info)=>{setDescricao(info);setResult(null);setError("");setFiles([]);setAba("individual");window.scrollTo({top:0,behavior:"smooth"})}}/></div><div hidden={aba!=="individual"}>
         <div className="intro"><div><span className="eyebrow">TECNOLOGIA PORTORIUM PARA CLASSIFICAÇÃO FISCAL</span><h1>Identifique. Fundamente.<br/><i>Decida com segurança.</i></h1></div><div className="architectureSeal"><span>◆</span><div><strong>RAG + base vetorial curada</strong><small>Respostas ancoradas em fontes selecionadas</small></div></div></div>
         <section className="protectionPanel"><div><span>01</span><p><strong>Dados protegidos</strong>A chave permanece no servidor. Dados enviados pela API não são usados para treinar modelos da OpenAI por padrão.</p></div><div><span>02</span><p><strong>Conhecimento delimitado</strong>A recuperação aumentada por contexto (RAG) prioriza a base vetorial especializada antes da resposta.</p></div><div><span>03</span><p><strong>Controle de alucinações</strong>Fontes selecionadas, saída estruturada e validação humana reduzem — mas não eliminam — respostas incorretas.</p></div></section>
-        <section className="inputCard"><label>Descreva a mercadoria ou cole as informações técnicas</label><textarea id="descricao" value={descricao} onChange={event=>setDescricao(event.target.value)} placeholder="Ex.: nome técnico, composição, função, funcionamento, marca, modelo e demais características conhecidas."/><FileDropZone accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.md,.png,.jpg,.jpeg,.webp" label="Documentos da mercadoria" disabled={loading} onFiles={adicionar} onError={setError}><input id="documentos" className="fileInput" type="file" multiple disabled={loading} accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.md,.png,.jpg,.jpeg,.webp" onChange={event=>{adicionar(event.target.files);event.target.value=""}}/></FileDropZone>{files.length>0&&<div className="fileList"><div className="fileSummary"><strong>{files.length} {files.length===1?"documento selecionado":"documentos selecionados"}</strong><span>{loading?progress:"Prontos para análise"}</span></div>{files.map((file,index)=><div className="fileItem" key={`${file.name}-${file.size}-${file.lastModified}-${index}`}><span className="fileIcon">▤</span><p><strong>{file.name}</strong><small>{tamanho(file.size)}</small></p><button type="button" disabled={loading} aria-label={`Remover ${file.name}`} onClick={()=>setFiles(current=>current.filter((_,position)=>position!==index))}>×</button></div>)}</div>}<div className="inputFooter"><label htmlFor="documentos" className="attach">＋ Anexar documentos</label><span>Até 10 arquivos de 10 MB · máximo de 50 MB no conjunto</span><button type="button" className="analyze" onClick={analisar} disabled={loading}>{loading?(progress||"Preparando análise…"):files.length?`Analisar com ${files.length} ${files.length===1?"anexo":"anexos"} →`:"Analisar mercadoria →"}</button></div></section>
+        <section className="inputCard"><label>Descreva a mercadoria ou cole as informações técnicas</label><textarea id="descricao" value={descricao} onChange={event=>setDescricao(event.target.value)} placeholder="Ex.: nome técnico, composição, função, funcionamento, marca, modelo e demais características conhecidas."/><FileDropZone accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.md,.png,.jpg,.jpeg,.webp" label="Documentos da mercadoria" disabled={loading} onFiles={adicionar} onError={setError}><input id="documentos" className="fileInput" type="file" multiple disabled={loading} accept=".pdf,.doc,.docx,.xls,.xlsx,.csv,.txt,.md,.png,.jpg,.jpeg,.webp" onChange={event=>{adicionar(event.target.files);event.target.value=""}}/></FileDropZone>{files.length>0&&<div className="fileList"><div className="fileSummary"><strong>{files.length} {files.length===1?"documento selecionado":"documentos selecionados"}</strong><span>{loading?progress:"Prontos para análise"}</span></div>{files.map((file,index)=><div className="fileItem" key={`${file.name}-${file.size}-${file.lastModified}-${index}`}><span className="fileIcon">▤</span><p><strong>{file.name}</strong><small>{tamanho(file.size)}</small></p><button type="button" disabled={loading} aria-label={`Remover ${file.name}`} onClick={()=>setFiles(current=>current.filter((_,position)=>position!==index))}>×</button></div>)}</div>}<div className="inputFooter"><label htmlFor="documentos" className="attach">＋ Anexar documentos</label><span>Até 10 arquivos · 100 MB por documento e no conjunto · planilhas e imagens: menos de 50 MB</span><button type="button" className="analyze" onClick={analisar} disabled={loading}>{loading?(progress||"Preparando análise…"):files.length?`Analisar com ${files.length} ${files.length===1?"anexo":"anexos"} →`:"Analisar mercadoria →"}</button></div></section>
         {error&&<div className="apiError"><strong>Não foi possível concluir</strong><span>{error}</span></div>}
         {result&&reportSnapshot&&<div className="reportDownloads"><strong>Parecer da classificação</strong><button type="button" disabled={!!exporting} onClick={()=>exportar("pdf")}>{exporting==="pdf"?"Gerando PDF…":"Baixar PDF"}</button><button type="button" disabled={!!exporting} onClick={()=>exportar("docx")}>{exporting==="docx"?"Gerando Word…":"Baixar Word"}</button><button type="button" disabled={loading} onClick={()=>{setCatalogoSeed({ncm:result.ncm,descricao,id:catalogoSeed.id+1});setAba("catalogo");window.scrollTo({top:0,behavior:"smooth"})}}>Preparar cadastro no Catálogo</button>{exportError&&<p role="alert">{exportError}</p>}</div>}
         {result?<section className="resultArea"><div className="resultTitle"><div><span className="tag">RESULTADO DA PESQUISA VETORIAL</span><h2>Análise técnica assistida</h2></div><div className="score"><span>CONFIANÇA ESTIMADA</span><strong>{result.confianca}%</strong><div><i style={{width:`${result.confianca}%`}}/></div><small>Indicador do modelo, não garantia de acerto</small></div></div><div className="resultGrid"><article className="answerCard classificationCard"><span className="cardNumber">01</span><div className="cardLabel">SUGESTÃO DE CLASSIFICAÇÃO</div><div className="ncm">{result.ncm||"NCM não determinada"}</div><p>{result.classificacao}</p></article><article className="answerCard"><span className="cardNumber">02</span><div className="cardLabel">DESCRIÇÃO ADUANEIRA · CATÁLOGO DE PRODUTOS</div><p>{result.descricaoAduaneira}</p></article><article className="answerCard"><span className="cardNumber">03</span><div className="cardLabel">JUSTIFICATIVA DA CLASSIFICAÇÃO</div><p>{result.justificativa}</p>{result.informacoesPendentes&&<div className="pending"><strong>Informações pendentes</strong>{result.informacoesPendentes}</div>}</article></div></section>:<section className="emptyResult"><span>⌕</span><h3>Aguardando uma mercadoria</h3><p>Informe as características ou anexe os documentos para iniciar a pesquisa nas bases de classificação fiscal.</p></section>}

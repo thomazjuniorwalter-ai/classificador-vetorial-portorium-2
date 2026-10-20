@@ -18,7 +18,10 @@ Digite uma descrição ou anexe documentos e clique em **Analisar mercadoria**. 
 ## Limites desta versão
 
 - máximo de 10 documentos por análise;
-- máximo de 10 MB por documento;
+- máximo de 100 MB por documento e por conjunto de anexos (PDF, Word e texto);
+- planilhas e imagens: arquivos e soma menores que 50 MB, conforme o limite de entrada direta da API;
+- arquivos acima de 3 MB são enviados em partes autenticadas de até 3 MB, sem exceder o limite de corpo da Vercel; cada parte é vinculada ao usuário, ao envio e à ordem por assinatura no servidor;
+- uploads incompletos são cancelados em caso de falha; os concluídos continuam sendo removidos após a análise e têm expiração de segurança de 24 horas no envio em partes;
 - a chave precisa pertencer ao mesmo projeto OpenAI que contém o Prompt e seus Vector Stores;
 - o Prompt utilizado é a versão 1.
 

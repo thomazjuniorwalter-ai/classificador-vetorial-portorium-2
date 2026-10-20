@@ -1,3 +1,4 @@
+import * as uploadLimits from '../app/lib/upload-limits.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -10,6 +11,7 @@ function load(path, access = 'authorized') {
   vm.runInNewContext(ts.transpileModule(fs.readFileSync(path, 'utf8'), { compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2022 } }).outputText, {
     module, exports: module.exports, Response, Request, File, Buffer, Intl, Date, AbortSignal, setTimeout, process: { env: { OPENAI_API_KEY: 'test-only' } }, fetch: (...args) => globalThis.fetch(...args),
     require: name => {
+      if (name.endsWith('/upload-limits')) return uploadLimits;
       if (name.endsWith('/auth')) return { getPortalAccess: async () => ({ status: access }), portalAccessResponse: () => Response.json({ error: 'Sessão expirada' }, { status: 401 }) };
       if (name.endsWith('/catalogo')) return catalogo;
       if (name.endsWith('/catalogo-base')) return { carregarBaseCatalogo: async () => base, consultarRegrasCatalogo: async ncm => catalogo.regrasPorNcm(base, ncm, '2026-10-03') };

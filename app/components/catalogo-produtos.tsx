@@ -1,5 +1,7 @@
 'use client';
 import FileDropZone from './file-drop-zone';
+import { uploadDocument } from '../lib/upload-document';
+import { validateDocuments } from '../lib/upload-limits';
 import { useState } from 'react';
 import styles from './catalogo-produtos.module.css';
 import CatalogoSiscomex from './catalogo-siscomex';
@@ -49,8 +51,7 @@ export default function CatalogoProdutos({ initialNcm = '', initialDescricao = '
     try {
       for (const file of files) {
         setBusy(`Enviando ${file.name}…`);
-        const form = new FormData(); form.append('arquivo', file);
-        const upload = await resposta(await fetch('/api/arquivos', { method: 'POST', body: form })); tokens.push(upload.token);
+        tokens.push(await uploadDocument(file, percent => setBusy(`Enviando ${file.name} · ${percent}%`)));
       }
       setBusy('Buscando evidências para os atributos…'); enviado = true;
       const data = await resposta(await fetch('/api/catalogo/preparar', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ncm, descricao, documentos: tokens, valores }) }));
@@ -71,9 +72,9 @@ export default function CatalogoProdutos({ initialNcm = '', initialDescricao = '
   function adicionar(list: FileList | File[] | null) {
     if (!list) return;
     const incoming = Array.from(list);
-    if (incoming.some(f => f.size > 10 * 1024 * 1024 || !/\.(pdf|doc|docx|txt|md)$/i.test(f.name))) { setError('Use PDF, Word ou texto, com até 10 MB por documento.'); return; }
+    if (incoming.some(f => !/\.(pdf|doc|docx|txt|md)$/i.test(f.name))) { setError('Use documentos PDF, Word ou texto.'); return; }
     const next = [...files, ...incoming.filter(f => !files.some(old => old.name === f.name && old.size === f.size))];
-    if (next.length > 10 || next.reduce((n, f) => n + f.size, 0) > 50 * 1024 * 1024) { setError('Use até 10 documentos e 50 MB no conjunto.'); return; }
+    try { validateDocuments(next); } catch (problem) { setError((problem as Error).message); return; }
     setFiles(next); setError('');
   }
   async function auditar(file: File | undefined) {
@@ -121,7 +122,7 @@ export default function CatalogoProdutos({ initialNcm = '', initialDescricao = '
       <div className='catalogTwo'><label htmlFor='catalogo-denominacao'>Denominação do produto<input id='catalogo-denominacao' placeholder='Ex.: Bomba centrífuga, modelo ABC' value={denominacao} maxLength={120} disabled={!!busy} onChange={e => setDenominacao(e.target.value)} /></label><label htmlFor='catalogo-descricao-cadastro'>Descrição complementar<textarea id='catalogo-descricao-cadastro' placeholder='Características, composição, função e modelo do produto' value={descricaoCadastro} maxLength={3700} disabled={!!busy} onChange={e => setDescricaoCadastro(e.target.value)} /></label></div>
       </section><section className='catalogPanel'><div className={styles.sectionHeading}><span>3</span><div><h2>Reúna as evidências técnicas</h2><p>Use informações do fabricante ou documentos para sugerir os valores dos atributos.</p></div></div>
       <label htmlFor='catalogo-evidencia'>Informações técnicas para buscar evidências<textarea id='catalogo-evidencia' value={descricao} maxLength={20000} disabled={!!busy} placeholder='Cole as informações originais do fabricante ou do cliente. Inclua valores, unidades e identificação do modelo.' onChange={e => setDescricao(e.target.value)} /></label>
-      <FileDropZone accept=".pdf,.doc,.docx,.txt,.md" label="Documentos técnicos do Catálogo" disabled={!!busy} onFiles={adicionar} onError={setError}><label className='catalogFile'>Documentos técnicos<input type='file' multiple disabled={!!busy} accept='.pdf,.doc,.docx,.txt,.md' onChange={e => { adicionar(e.target.files); e.target.value = ''; }} /></label></FileDropZone><small>Até 10 documentos de 10 MB · máximo de 50 MB no conjunto</small>
+      <FileDropZone accept=".pdf,.doc,.docx,.txt,.md" label="Documentos técnicos do Catálogo" disabled={!!busy} onFiles={adicionar} onError={setError}><label className='catalogFile'>Documentos técnicos<input type='file' multiple disabled={!!busy} accept='.pdf,.doc,.docx,.txt,.md' onChange={e => { adicionar(e.target.files); e.target.value = ''; }} /></label></FileDropZone><small>Até 10 documentos · 100 MB por documento e no conjunto</small>
       {files.length > 0 && <ul className='catalogFiles'>{files.map((file, i) => <li key={`${file.name}-${i}`}><span>{file.name}</span><button disabled={!!busy} aria-label={`Remover ${file.name}`} onClick={() => setFiles(old => old.filter((_, n) => n !== i))}>Remover</button></li>)}</ul>}
       {!regras || !confirmada ? <p className={styles.helper}>Para buscar sugestões, consulte os atributos e confirme a NCM na etapa 1.</p> : !descricao.trim() && !files.length ? <p className={styles.helper}>Adicione informações técnicas ou um documento para buscar sugestões.</p> : null}
       <button className='analyze' disabled={!!busy || !regras || !confirmada || (!descricao.trim() && !files.length)} onClick={preparar}>Sugerir valores com evidências</button>

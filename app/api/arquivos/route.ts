@@ -1,13 +1,10 @@
+import { validateDocument } from "../../lib/upload-limits";
 import { createUploadToken, verifyUploadToken } from "../../lib/upload-token";
 import { getPortalAccess, portalAccessResponse } from "../../lib/auth";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024;
-const ALLOWED_EXTENSIONS = [
-  "pdf", "doc", "docx", "xls", "xlsx", "csv", "txt", "md", "png", "jpg", "jpeg", "webp",
-];
 const FILE_SEARCH_EXTENSIONS = new Set(["pdf", "doc", "docx", "txt", "md"]);
 
 async function readJson(response: Response) {
@@ -39,12 +36,8 @@ export async function POST(request: Request) {
   }
 
   const extension = file.name.split(".").pop()?.toLowerCase() || "";
-  if (!ALLOWED_EXTENSIONS.includes(extension)) {
-    return Response.json({ error: `O formato de ${file.name} não é compatível.` }, { status: 400 });
-  }
-  if (file.size > MAX_FILE_SIZE) {
-    return Response.json({ error: `O arquivo ${file.name} ultrapassa o limite de 10 MB.` }, { status: 400 });
-  }
+  try { validateDocument(file); }
+  catch (error) { return Response.json({ error: (error as Error).message }, { status: 400 }); }
 
   try {
     const form = new FormData();

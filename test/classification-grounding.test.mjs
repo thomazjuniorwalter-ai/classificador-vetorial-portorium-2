@@ -1,3 +1,4 @@
+import * as uploadLimits from '../app/lib/upload-limits.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -11,6 +12,7 @@ function loadRoute(path = "app/api/classificar/route.ts") {
     module, exports:module.exports, Response, process:{env:{OPENAI_API_KEY:'test-only'}}, setTimeout,
     fetch:(...args)=>globalThis.fetch(...args),
     require:(name)=> {
+      if(name.endsWith('/upload-limits')) return uploadLimits;
       if(name.endsWith('/documentos-temporarios')) return loadRoute('app/lib/documentos-temporarios.ts');
       if(name.endsWith('/cosit-retrieval')) return {retrieveCosit:async()=>({context:'',sources:[],status:'not_configured'}),cositInstructions:''};
       if(name.endsWith('/auth')) return {getPortalAccess:async()=>({status:'authorized'})};

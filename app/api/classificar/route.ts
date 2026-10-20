@@ -1,3 +1,4 @@
+import { MAX_FILES, FILE_SEARCH_EXTENSIONS, validateDocuments } from "../../lib/upload-limits";
 import { openAiJson, createTemporaryVectorStore, deleteVectorStore, deleteDocuments, outputText } from "../../lib/documentos-temporarios";
 import { retrieveCosit, cositInstructions } from "../../lib/cosit-retrieval";
 import { verifyUploadToken } from "../../lib/upload-token";
@@ -8,9 +9,6 @@ import { PROMPT_ID, PROMPT_VERSION } from "../../lib/classificador-prompt";
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
-const MAX_FILES = 10;
-const MAX_TOTAL_FILE_SIZE = 50 * 1024 * 1024;
-const FILE_SEARCH_EXTENSIONS = new Set(["pdf", "doc", "docx", "txt", "md"]);
 
 function extension(filename: string) {
   return filename.split(".").pop()?.toLowerCase() || "";
@@ -72,12 +70,10 @@ export async function POST(request: Request) {
   if (!descricao && documents.length === 0) {
     return Response.json({ error: "Informe a mercadoria ou anexe pelo menos um documento." }, { status: 400 });
   }
-  if (documents.reduce((total, file) => total + file.size, 0) > MAX_TOTAL_FILE_SIZE) {
+  try { validateDocuments(documents.map(file => ({ name: file.filename, size: file.size }))); }
+  catch (error) {
     await deleteDocuments(documents, apiKey);
-    return Response.json(
-      { error: "O conjunto dos documentos deve ter no máximo 50 MB. Remova um arquivo e tente novamente." },
-      { status: 400 }
-    );
+    return Response.json({ error: (error as Error).message }, { status: 400 });
   }
 
   try {
