@@ -1,8 +1,8 @@
 import { retrieveCosit, cositInstructions } from "../../../lib/cosit-retrieval";
-import { normativeInstructions } from "../../../lib/classification-grounding";
+import { normativeInstructions, retrievedSourceNames } from "../../../lib/classification-grounding";
 import { getPortalAccess, portalAccessResponse } from "../../../lib/auth";
 import { PROMPT_ID, PROMPT_VERSION } from "../../../lib/classificador-prompt";
-import { normalizarNcm } from "../../../lib/triagem";
+import { normalizarNcm, validarDetalhesTriagem } from "../../../lib/triagem";
 
 export const runtime = "nodejs";
 export const maxDuration = 180;
@@ -11,12 +11,14 @@ const schema = {
   type: "object",
   properties: {
     ncm: { type: "string", description: "NCM sugerida com oito algarismos; vazia se os dados não permitirem sugerir uma NCM." },
+    justificativa: { type: "string", description: "Justificativa objetiva, até 4000 caracteres, com fundamento efetivamente recuperado e limitações." },
+    informacoesPendentes: { type: "array", items: { type: "string" }, description: "Até 20 perguntas técnicas específicas, até 500 caracteres cada. Vazia somente quando os dados forem suficientes." },
     confianca: {
       type: "integer", minimum: 0, maximum: 100,
       description: "Estimativa qualitativa prudente, sem calibração estatística.",
     },
   },
-  required: ["ncm", "confianca"],
+  required: ["ncm", "confianca", "justificativa", "informacoesPendentes"],
   additionalProperties: false,
 };
 
@@ -53,9 +55,10 @@ export async function POST(request: Request) {
       body: JSON.stringify({
         prompt: { id: PROMPT_ID, version: PROMPT_VERSION },
         store: false,
+        include: ["file_search_call.results"],
         input: [{ role: "developer", content: normativeInstructions + "\n" + cositInstructions }, { role: "user", content: [{
           type: "input_text",
-          text: `Faça uma classificação independente da mercadoria abaixo, seguindo o mesmo método do Classificador Portorium. A NCM informada pelo cliente não está disponível nesta consulta. Responda somente com a NCM sugerida e a confiança qualitativa estimada de 0 a 100. Se os dados não permitirem determinar uma NCM, devolva ncm vazia e confiança 0. Não produza justificativa, descrição aduaneira ou informações adicionais.\n\nInformações técnicas da mercadoria:\n${descricao}\n\n${cosit.context}`,
+          text: `Faça uma classificação independente da mercadoria abaixo, seguindo o mesmo método do Classificador Portorium. A NCM informada pelo cliente não está disponível nesta consulta. Responda com NCM, confiança qualitativa estimada, justificativa objetiva e informacoesPendentes. Explique a relação entre características técnicas e fundamento recuperado. Não invente fontes. Quando faltar característica decisiva, devolva ncm vazia, confiança 0 e perguntas específicas sobre o produto. Não preencha lacunas por suposição. Se não recuperar fundamento necessário, registre essa limitação na justificativa e em informacoesPendentes, distinguindo-a de dados técnicos ausentes.\n\nInformações técnicas da mercadoria:\n${descricao}\n\n${cosit.context}`,
         }] }],
         text: { format: { type: "json_schema", name: "triagem_classificacao", strict: true, schema } },
       }),
@@ -73,6 +76,7 @@ export async function POST(request: Request) {
     const texto = extrairTexto(data);
     if (!texto) return Response.json({ error: "A análise terminou sem resultado." }, { status: 502 });
     const resultado = JSON.parse(texto);
+    const detalhes = validarDetalhesTriagem({ ...resultado, fontes: [...new Set([...retrievedSourceNames(data), ...cosit.sources])] });
     const ncm = normalizarNcm(resultado?.ncm);
     if (!Number.isInteger(resultado?.confianca) || resultado.confianca < 0 || resultado.confianca > 100) {
       return Response.json({ error: "A confiança foi devolvida em formato inválido." }, { status: 502 });
@@ -80,7 +84,7 @@ export async function POST(request: Request) {
     if (resultado.ncm && !ncm) {
       return Response.json({ error: "A NCM sugerida veio em formato inválido." }, { status: 502 });
     }
-    return Response.json({ ncm: ncm || "", confianca: ncm ? resultado.confianca : 0, cositRetrievalStatus: cosit.status, cositRetrievalMode: cosit.mode, cositMetadata: cosit.metadata });
+    return Response.json({ ...detalhes, ncm: detalhes.informacoesPendentes.length ? "" : ncm || "", confianca: ncm && !detalhes.informacoesPendentes.length ? resultado.confianca : 0, cositRetrievalStatus: cosit.status, cositRetrievalMode: cosit.mode, cositMetadata: cosit.metadata });
   } catch (problema) {
     console.error("[triagem-lote] Falha inesperada", problema instanceof Error ? problema.name : "erro desconhecido");
     return Response.json({ error: "Não foi possível concluir esta mercadoria. Tente novamente." }, { status: 502 });

@@ -5,12 +5,13 @@ import { useRef, useState } from "react";
 import {
   colunaDeClassificacao, descricaoMercadoria, MAX_ARQUIVO_PLANILHA,
   MAX_LINHAS_TRIAGEM, ncmExibicao, normalizarNcm, sinalizarTriagem,
+  validarDetalhesTriagem, type DetalhesTriagem,
   type ColunaPlanilha, type LinhaPlanilha, type SinalTriagem,
 } from "../lib/triagem";
 
 type Planilha = { planilha: string; aba: string; colunas: ColunaPlanilha[]; linhas: LinhaPlanilha[] };
-type Resultado = { ncm: string; confianca: number; sinal: SinalTriagem } | { erro: string };
-type Item = { linha: number; descricao: string; ncmCliente: string };
+type Resultado = (DetalhesTriagem & { ncm: string; confianca: number; sinal: SinalTriagem }) | { erro: string };
+type Item = { linha: number; codigoProduto: string; descricao: string; ncmCliente: string };
 
 const ROTULO: Record<SinalTriagem, string> = {
   verde: "Coincide · menor prioridade",
@@ -25,6 +26,7 @@ function mensagemResposta(data: unknown, fallback: string): string {
 
 export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao: string) => void }) {
   const [planilha, setPlanilha] = useState<Planilha | null>(null);
+  const [colunaCodigo, setColunaCodigo] = useState<number | "">("");
   const [colunaNcm, setColunaNcm] = useState<number | "">("");
   const [colunasTecnicas, setColunasTecnicas] = useState<number[]>([]);
   const [resultados, setResultados] = useState<Record<number, Resultado>>({});
@@ -54,6 +56,7 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
       const provaveis = elegiveis.filter((coluna) =>
         /produto|mercador|descri|compos|func|aplica|material|tecnic|uso|modelo/i.test(
           coluna.titulo.normalize("NFD").replace(/[\u0300-\u036f]/g, "")));
+      setColunaCodigo(recebida.colunas.find((coluna) => /^(c[oó]digo( do produto)?|sku|refer[eê]ncia|item)$/i.test(coluna.titulo.trim()))?.indice ?? "");
       setPlanilha(recebida);
       setColunaNcm(ncm?.indice ?? "");
       setColunasTecnicas((provaveis.length ? provaveis : elegiveis.slice(0, 1))
@@ -77,6 +80,7 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
     }
     const itens = planilha.linhas.map((linha) => ({
       linha: linha.linha,
+      codigoProduto: colunaCodigo === "" ? "" : linha.celulas[colunaCodigo] || "",
       descricao: descricaoMercadoria(linha, planilha.colunas, colunasTecnicas.filter((indice) => indice !== colunaNcm)),
       ncmCliente: normalizarNcm(linha.celulas[colunaNcm], true) || "",
     }));
@@ -113,13 +117,14 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
         if (!response.ok) throw new Error(mensagemResposta(data, `A análise retornou erro ${response.status}.`));
         if (!data || typeof data !== "object") throw new Error("A análise terminou sem resultado válido.");
         const resultado = data as { ncm: string; confianca: number };
-        const ncm = normalizarNcm(resultado.ncm) || "";
+        const detalhes = validarDetalhesTriagem(data);
+        const ncm = detalhes.informacoesPendentes.length ? "" : normalizarNcm(resultado.ncm) || "";
         if (!Number.isInteger(resultado.confianca) || resultado.confianca < 0 || resultado.confianca > 100) {
           throw new Error("A confiança recebida é inválida.");
         }
         setResultados((atual) => ({ ...atual, [item.linha]: {
-          ncm, confianca: resultado.confianca,
-          sinal: sinalizarTriagem(item.ncmCliente, ncm, resultado.confianca),
+          ...detalhes, ncm, confianca: resultado.confianca,
+          sinal: sinalizarTriagem(item.ncmCliente, ncm, resultado.confianca, detalhes.informacoesPendentes),
         } }));
         falhasEmSerie = 0;
         mensagemAnterior = "";
@@ -167,9 +172,9 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ linhas: itens.map((item) => {
           const resultado = resultados[item.linha];
-          return { linha: item.linha, mercadoria: item.descricao, ncmCliente: item.ncmCliente,
+          return { linha: item.linha, codigoProduto: item.codigoProduto, mercadoria: item.descricao, ncmCliente: item.ncmCliente,
             ...(resultado && "erro" in resultado ? { erro: resultado.erro } :
-              resultado && "confianca" in resultado ? { ncmSugerida: resultado.ncm, confianca: resultado.confianca } : {}),
+              resultado && "confianca" in resultado ? { ncmSugerida: resultado.ncm, confianca: resultado.confianca, justificativa: resultado.justificativa, informacoesPendentes: resultado.informacoesPendentes, fontes: resultado.fontes } : {}),
           };
         }) }),
       });
@@ -209,6 +214,11 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
     </section>
     {planilha && <section className="batchConfig">
       <h2>2. Confira as colunas</h2><p><strong>{planilha.planilha}</strong> · aba “{planilha.aba}” · {planilha.linhas.length} mercadorias</p>
+      <label htmlFor="colunaCodigo">Código do produto (opcional)</label>
+      <select id="colunaCodigo" value={colunaCodigo} disabled={analisando} onChange={(event) => setColunaCodigo(Number(event.target.value) || "")}>
+        <option value="">Usar apenas a linha original</option>
+        {planilha.colunas.map((coluna) => <option key={coluna.indice} value={coluna.indice}>{coluna.titulo}</option>)}
+      </select>
       <div className="batchColumns"><div><label htmlFor="colunaNcm">Em qual coluna está a NCM que você já usa?</label>
         <select id="colunaNcm" value={colunaNcm} disabled={analisando}
           onChange={(event) => { const proximaColuna = Number(event.target.value) || ""; setColunaNcm(proximaColuna); setColunasTecnicas((atual) => atual.filter((indice) => indice !== proximaColuna)); setResultados({}); setFinalizadas(0); setErro(""); }}>
@@ -237,23 +247,30 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
           <span className="signal signalYellow">{totais.amarelo} amarelos</span>
           <span className="signal signalRed">{totais.vermelho} vermelhos</span></div></div>
       <div className="batchTableScroll"><table className="batchTable"><thead><tr>
-        <th>Linha</th><th>Mercadoria</th><th>NCM do cliente</th><th>Sugestão independente</th><th>Confiança estimada</th><th>Sinal</th><th>Próximo passo</th>
+        <th>Linha / código</th><th>Mercadoria</th><th>NCM do cliente</th><th>Sugestão independente</th><th>Confiança estimada</th><th>Sinal</th><th>Próximo passo</th>
       </tr></thead><tbody>{planilha.linhas.map((linha) => {
         const descricao = descricaoMercadoria(linha, planilha.colunas, colunasTecnicas.filter((indice) => indice !== colunaNcm));
         const cliente = normalizarNcm(linha.celulas[colunaNcm as number], true);
         const resultado = resultados[linha.linha];
-        return <tr key={linha.linha}><td>{linha.linha}</td><td className="batchProduct" title={descricao}>{descricao.replace(/\n/g, " · ")}</td>
+        return <tr key={linha.linha}><td>{linha.linha}{colunaCodigo !== "" && <div>{linha.celulas[colunaCodigo]}</div>}</td><td className="batchProduct" title={descricao}>{descricao.replace(/\n/g, " · ")}</td>
           <td>{cliente ? ncmExibicao(cliente) : "—"}</td>
           <td>{resultado && "ncm" in resultado ? resultado.ncm ? ncmExibicao(resultado.ncm) : "Não determinada" : "—"}</td>
           <td>{resultado && "confianca" in resultado ? `${resultado.confianca}%` : "—"}</td>
           <td>{resultado && "sinal" in resultado ? <span className={`signal signal${resultado.sinal[0].toUpperCase()}${resultado.sinal.slice(1)}`}>{ROTULO[resultado.sinal]}</span> :
             resultado && "erro" in resultado ? <span className="batchFailure">Falhou: {resultado.erro}</span> : "Aguardando"}</td>
-          <td><button type="button" className="batchLink" onClick={() => onAprofundar(descricao)}>Aprofundar →</button></td>
+          <td>{resultado && "justificativa" in resultado && <details><summary>Justificativa e pendências</summary>
+            <p>{resultado.justificativa}</p>
+            <strong>Informações a solicitar</strong>
+            {resultado.informacoesPendentes.length ? <ul>{resultado.informacoesPendentes.map((texto, i) => <li key={i}>{texto}</li>)}</ul> : <p>Nenhuma pendência indicada.</p>}
+            <strong>Fontes recuperadas na pesquisa</strong>
+            {resultado.fontes.length ? <ul>{resultado.fontes.map((texto, i) => <li key={i}>{texto}</li>)}</ul> : <p>Nenhuma fonte identificada no retorno da pesquisa.</p>}
+            <p>A recuperação não confirma a aplicabilidade de todas as fontes ao produto.</p>
+          </details>}<button type="button" className="batchLink" onClick={() => onAprofundar(descricao)}>Aprofundar →</button></td>
         </tr>;
       })}</tbody></table></div>
     </section>}
     <div className="batchLegend"><strong>Como ler as cores</strong>
-      <p><b>Verde:</b> NCMs iguais e confiança estimada de 80% ou mais. <b>Amarelo:</b> resultado incerto ou NCM não determinada. <b>Vermelho:</b> NCMs diferentes e confiança estimada de 80% ou mais.</p>
+      <p><b>Verde:</b> NCMs iguais, sem pendências e confiança estimada de 80% ou mais. <b>Amarelo:</b> resultado incerto, informação pendente ou NCM não determinada. <b>Vermelho:</b> NCMs diferentes, sem pendências e confiança estimada de 80% ou mais.</p>
       <p>O percentual é uma estimativa produzida pelo modelo, não uma taxa de acerto medida. As cores servem para priorizar a revisão humana; nenhuma confirma ou rejeita juridicamente a NCM do cliente.</p>
     </div>
   </div>;
