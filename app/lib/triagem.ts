@@ -45,9 +45,31 @@ export function descricaoMercadoria(
 export function sinalizarTriagem(
   ncmCliente: string,
   ncmSugerida: string,
-  confianca: number
+  confianca: number,
+  informacoesPendentes: string[] = []
 ): SinalTriagem {
+  if (informacoesPendentes.length || !Number.isFinite(confianca)) return "amarelo";
+  if (!normalizarNcm(ncmCliente, true)) return "amarelo";
   if (!normalizarNcm(ncmSugerida)) return "amarelo";
   if (confianca < LIMIAR_CONFIANCA_ALTA) return "amarelo";
   return normalizarNcm(ncmCliente, true) === normalizarNcm(ncmSugerida) ? "verde" : "vermelho";
+}
+
+export type DetalhesTriagem = {
+  justificativa: string;
+  informacoesPendentes: string[];
+  fontes: string[];
+};
+
+export function validarDetalhesTriagem(valor: unknown): DetalhesTriagem {
+  if (!valor || typeof valor !== "object") throw new Error("Detalhes da análise inválidos.");
+  const item = valor as Record<string, unknown>;
+  if (typeof item.justificativa !== "string" || !item.justificativa.trim() || item.justificativa.length > 4000 ||
+      !Array.isArray(item.informacoesPendentes) || item.informacoesPendentes.length > 20 ||
+      item.informacoesPendentes.some((x: unknown) => typeof x !== "string" || !x.trim() || x.length > 500) ||
+      !Array.isArray(item.fontes) || item.fontes.length > 100 ||
+      item.fontes.some((x: unknown) => typeof x !== "string" || !x.trim() || x.length > 2000)) {
+    throw new Error("Detalhes da análise inválidos.");
+  }
+  return { justificativa: item.justificativa.trim(), informacoesPendentes: item.informacoesPendentes, fontes: item.fontes };
 }
