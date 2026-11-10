@@ -1,35 +1,92 @@
-# Ementas oficiais Cosit
+# Cosit: fontes oficiais, catálogo cumulativo e publicação controlada
 
-As ementas são suficientes para a pesquisa suplementar autorizada pelo usuário. A recuperação nas classificações individual e em lote não depende de inteiro teor nem de um vector store dedicado.
+## Estado desta alteração
 
-## Fontes e coleta
+Implementação preparada para revisão. Nenhuma configuração de produção é ativada pelo código. Sem os sinalizadores abaixo, continuam o coletor diário anterior e a recuperação por acesso. Não executar coleta, publicação, geração de embeddings ou sincronização externa como parte da revisão local.
 
-O portal Atos Decisórios da Receita e o DOU da Imprensa Nacional são consultados diretamente. O coletor valida autoridade, assunto Classificação de Mercadorias, tipo, número, data, contagem e paginação. Publicações do DOU podem reunir vários atos: cada ementa recebe sua própria identidade. A data da publicação no DOU delimita a busca; a data da decisão identifica o ato.
+Autorização do portal, prompt salvo, bases normativas, documentos temporários de clientes, NCMs e resultados anteriores são preservados. As rotas continuam autenticando antes da pesquisa. Os dados publicados são exclusivamente documentos públicos oficiais e seus vetores; descrições, documentos e identidades de clientes nunca entram no catálogo.
 
-Identidade: BR/Cosit/tipo/número/ano. SHA-256 identifica o texto. Fontes coincidentes ficam no mesmo registro; diferenças de redação ficam sinalizadas, conservando os links e o texto da Receita. Não se presume que desaparecimento significa revogação.
+## Limitação do mecanismo anterior
 
-A captura real de 10/10/2026 reuniu 56 ementas da Receita e 61 ementas do DOU no período de publicação de 01/09 a 10/10/2026: 82 atos distintos após cruzamento. Os atos publicados incluem decisões de agosto. Uma diferença entre fontes ficou sinalizada.
+O workflow executa às 09h15 de Brasília (`15 12 * * *`, UTC) e entrega artefatos; eles não eram consumidos pelo aplicativo. O aplicativo consulta Receita/DOU em paralelo com revalidação de 24 h por acesso, combinando a janela de 60 dias com a captura versionada de 10/10/2026 (82 atos). Isso não acumula atos novos fora da janela, nem reconcilia todo o histórico. Revalidação pode servir cache anterior enquanto atualiza.
 
-`node scripts/collect-cosit-abstracts.mjs` (Node 24) consulta ambas as fontes e grava o catálogo. O workflow diário às 09h15 de Brasília tem somente `contents: read` e disponibiliza um artefato; não altera main ou publica código. O coletor Python anterior permanece disponível para a Receita.
+## Novo caminho, desativado por padrão
 
-## Atualização no aplicativo
+1. O workflow restaura `data/cosit/ledger.json` da branch exclusiva `cosit-catalog-data`.
+2. Coleta diretamente os mesmos portais oficiais, com até três tentativas e intervalos de até 14 dias para reduzir truncamentos. Receita usa data do ato; DOU usa data de publicação. As duas datas permanecem distintas.
+3. Acrescenta observações imutáveis de conteúdo por ato/fonte/URL/hash; somente `lastSeenAt` avança quando o mesmo conteúdo reaparece. Conserva todas as redações, inclusive alterações na mesma URL e divergências Receita/DOU.
+4. Emite recibos por intervalo e fonte: quantidade, resultado, base temporal e SHA do código coletor. Falha parcial ou dupla não apaga textos nem inventa um novo sucesso da fonte que falhou. As execuções com falha ficam vermelhas no Actions e possuem resumo/artefato quando gerados.
+5. Opcionalmente prepara embeddings das ementas públicas, por modelo, dimensões e hash. Só textos novos/alterados consomem geração; consultas dos usuários não são persistidas.
+6. Publica apenas o ledger validado, em um commit Git cumulativo na branch de dados. `main` e os índices normativos não são escritos. Um inventário remoto alterado durante a coleta bloqueia a publicação; o push não força histórico. Cada commit preserva a versão anterior.
+7. Quando ativado no servidor, o aplicativo lê o ledger publicado e usa os mesmos métodos de recuperação semântica/textual. Revalidação de 15 minutos por acesso busca a versão já coletada pelo agendamento, sem repetir a coleta fiscal ao vivo. A rotina diária independe de acessos.
 
-O servidor coleta as fontes em paralelo e usa o cache de dados do Next com revalidação de 24 horas, acionada pelo acesso. A janela é móvel de 60 dias, somada à captura inicial versionada. Não é uma reconciliação de todo o histórico. O artefato do workflow não é consumido pelo aplicativo; cada caminho coleta diretamente as fontes.
+A branch de dados contém somente `data/cosit/ledger.json`. O endereço de leitura é fixo neste repositório e não é configurável por parâmetros de usuário. É um espelho de transporte; as citações fiscais continuam apontando para Receita/DOU. Esta implementação requer que o arquivo dessa branch seja publicamente legível; não colocar segredos ou dados de clientes nele.
 
-Falha de uma fonte preserva a captura inicial e permite usar a outra, informando disponibilidade. Falha de ambas usa a captura inicial com sua data verdadeira. A revalidação pode servir o resultado anterior enquanto atualiza. A interface mostra a data de coleta e a indisponibilidade; data recente não certifica vigência. Atualizações que saiam da janela móvel exigem reconciliação histórica adicional.
+Sem publicação válida ou em falha na primeira leitura, a captura inicial é usada com sua data verdadeira e `persistenceStatus: unavailable`. Após uma leitura bem-sucedida, o cache do Next pode conservar a última versão válida em falha de revalidação. Os indicadores de atualização derivam das datas reais por fonte e da janela recente efetivamente consultada. O seed não inventa o texto de uma segunda fonte perdida na antiga consolidação.
 
-## Busca vetorial
+## Rastreabilidade e vigência
 
-A chave OpenAI já usada pelo Classificador gera embeddings com `text-embedding-3-small`, 512 dimensões. Vetores das ementas públicas ficam em cache limitado em memória; descrições dos usuários não entram nesse cache. São selecionadas até oito ementas por similaridade. Se embeddings falharem, a pesquisa textual é usada e a resposta informa `lexical_fallback`.
+Identidade do ato: `BR-COSIT-SC|SD-número-ano`. Cada observação conserva texto integral da **ementa**, hash SHA-256, fonte, identidade de origem quando disponível, data do ato, data de publicação quando disponível, primeira e última observação. O ledger inteiro possui revisão por hash, verificável antes do uso; a autenticidade do transporte depende do controle de acesso ao repositório, não apenas desse hash.
 
-O modelo recebe o texto identificado como ementa oficial, os links e instruções para avaliar pertinência da mercadoria, função, composição e apresentação. Similaridade não transfere automaticamente a NCM. Não deve alegar acesso ao inteiro teor. O prompt salvo, as bases anteriores e a autorização do portal são preservados.
+Conflitos conservam todos os textos; para recuperação, prefere-se Receita e sinaliza-se a divergência. Isso não equivale a resolver juridicamente a divergência. A versão mais recentemente observada não é declarada vigente. `hasRelationshipSignals` indica necessidade de examinar reforma, revogação, retificação ou divergência. Não há certificação automática de efeitos jurídicos nem inferência de revogação por desaparecimento. Publicações corretivas com outros títulos podem não ser capturadas pelos filtros atuais e exigem verificação complementar. Não afirmar cobertura integral.
 
-As respostas incluem `cositRetrievalStatus`, `cositRetrievalMode` e `cositMetadata`; o endpoint autenticado `/api/cosit/status` informa o estado da coleta sem consumir embeddings.
+As classificações incluem `cositMetadata` com revisão do catálogo, sucesso por fonte, conflitos, disponibilidade da íntegra e IDs/hashes das ementas recuperadas. Os hashes seguem também nas fontes, preservando-os no Excel e nos relatórios; PDF/Word recebem a revisão do catálogo quando existente. Recuperado não significa citado ou aplicável: a fundamentação efetivamente adotada continua na justificativa do modelo, sujeita à revisão profissional. Não é criado banco de análises nem alterados resultados anteriores.
 
-A integração anterior de íntegra e `scripts/sync-cosit.mjs` permanece opcional. Só atua com manifesto técnico elegível e `OPENAI_COSIT_VECTOR_STORE_ID` configurado; não é necessária para ementas. O manifesto inicial permanece vazio.
+## Reconciliação histórica
 
-## Verificação
+A coleta diária é incremental. `workflow_dispatch` aceita `from` e `to` para reconciliação de até 366 dias por execução, dividida em intervalos de 14 dias. Dados anteriores permanecem mesmo quando nenhuma observação é encontrada na nova janela.
 
-`npm test`, `python -m unittest discover -s test -p 'test_cosit*.py'`, `npx tsc --noEmit`, `npm run build`.
+Há um agendamento semanal, domingo às 09h45 de Brasília, **ignorado enquanto a persistência e o primeiro ano não forem configurados**. `COSIT_HISTORY_START_YEAR` define o primeiro ano; a cada semana, um ano do intervalo até o atual é revisitado por rotação. O ciclo leva tantas semanas quantos forem os anos configurados e recomeça; não é promessa de revisão diária de todo o histórico. A janela corrente de 60 dias continua diária. Os recibos permitem auditar intervalos consultados; alterações fora dos filtros continuam uma limitação.
 
-Coletores testados com acessos reais à Receita e ao DOU. Testes automatizados verificam decisões agrupadas, contagem incompleta, deduplicação, diferenças entre fontes, ranking com embeddings simulados, fallback e data da captura anterior. Uma classificação real com sessão autenticada e consumo OpenAI ainda precisa ser verificada.
+## Ativação: somente após aprovação específica
+
+Aprovar separadamente a publicação do catálogo, o consumo pelo aplicativo e eventual geração externa de vetores. Esta PR não cria branch de dados, não muda variáveis/secrets, não dispara workflows e não faz chamadas OpenAI.
+
+| Configuração | Local | Padrão | Efeito após autorização |
+| --- | --- | --- | --- |
+| `COSIT_PERSISTENCE_ENABLED=true` | GitHub repository variable | ausente | Habilita coleta cumulativa e job de publicação |
+| `COSIT_BOOTSTRAP_APPROVED=true` | GitHub repository variable | ausente | Permite criar a branch de dados se ausente; retirar após primeira publicação |
+| `COSIT_HISTORY_START_YEAR` | GitHub repository variable | ausente | Primeiro ano autorizado da rotação histórica semanal |
+| `COSIT_VECTOR_SYNC_ENABLED=true` | GitHub repository variable | ausente | Habilita geração de embeddings públicos, com consumo OpenAI |
+| `OPENAI_API_KEY` | GitHub Actions secret | não alterado | Necessário somente para gerar embeddings no workflow; nunca publicar o valor |
+| `COSIT_PERSISTENT_CATALOG=1` | Ambiente do servidor | ausente | Troca a origem Cosit para o catálogo cumulativo publicado |
+| `COSIT_CATALOG_COMMIT` | Ambiente do servidor | ausente | Fixa um commit Git de 40 caracteres para auditoria/reversão |
+
+Sequência de ativação proposta: revisar/mesclar código somente com aprovação de produção; autorizar a publicação; conferir primeiro artefato e commit; retirar o bootstrap; autorizar separadamente o consumo pelo aplicativo; validar com sessão autenticada e mercadorias representativas. Vetores são opcionais e exigem aprovação de custo/credencial; o código reutiliza o modelo existente, `text-embedding-3-small`, 512 dimensões. Não provisiona chaves nem altera as existentes.
+
+O job coletor mantém `contents: read`. Somente o job publicador opt-in recebe `contents: write`. Recomenda-se proteção da branch de dados e configuração de notificações de falha do Actions pelo responsável; nenhuma mensagem é enviada a terceiros por estes scripts. O provedor de hospedagem deve ignorar builds da branch de dados, que não contém aplicação.
+
+Reversão: fixar `COSIT_CATALOG_COMMIT` em uma publicação anterior, ou retirar `COSIT_PERSISTENT_CATALOG` para retornar ao caminho por acesso. Desativar `COSIT_PERSISTENCE_ENABLED` interrompe publicações futuras. Nenhum documento remoto é removido na reversão.
+
+## Íntegras: integração independente
+
+`approved.json` continua vazio. O catálogo de ementas não transforma ementa em decisão integral. `validateManifest` exige identidade correspondente à ementa, fonte oficial, hash do texto e arquivo original, caminhos restritos e comprovação técnica de completude:
+
+```json
+{
+  "completeness": {
+    "method": "official-full-text",
+    "decisionId": "BR-COSIT-SC-123-2026",
+    "verifiedAt": "2026-11-09T12:00:00Z",
+    "originalPath": "data/cosit/full/original/SC-123-2026.pdf",
+    "originalSha256": "<SHA-256 real dos bytes originais>",
+    "evidence": "Registrar como a identidade, a abertura e o encerramento da íntegra foram conferidos."
+  }
+}
+```
+
+Esse registro exige conferência documental real: comprimento e hash, isoladamente, não provam completude. Não foi implementado downloader automático de íntegras nem certificação jurídica de vigência. Novas íntegras precisam de aquisição oficial e manifesto preenchido antes de uma sincronização elegível.
+
+`node scripts/sync-cosit.mjs` agora apenas gera plano local, mesmo com credenciais presentes. Aplicar requer simultaneamente `--apply`, `COSIT_ALLOW_EXTERNAL_SYNC=1`, `--manifest-sha <hash do plano>` e `--store <ID idêntico ao OPENAI_COSIT_VECTOR_STORE_ID>`. Manifesto vazio é bloqueado. Não há integração automática desse script ao workflow.
+
+A sincronização prepara todos os documentos antes de marcar novas versões como indexadas; nunca retira nem apaga versões anteriores ou outros corpora. O aplicativo filtra resultados pelo manifesto e hashes aprovados. A promoção do manifesto usado no aplicativo deve ocorrer somente depois da sincronização integral bem-sucedida. Não existe transação atômica entre todos os arquivos do provedor; uma falha durante marcação pode deixar parte das novas versões indexada, sem retirar as antigas. Uma nova tentativa é idempotente para arquivos já associados e retoma uploads registrados em `.cosit/full-sync-state.json`. Preservar esse checkpoint entre tentativas; perda de resposta de upload ou falha ao salvá-lo pode exigir reconciliação manual de órfãos, sem exclusão automática.
+
+A API de atributos utilizada foi conferida na [documentação oficial OpenAI](https://developers.openai.com/api/reference/resources/vector_stores/subresources/files/methods/update).
+
+## Verificação e limites
+
+Verificação local, sem serviços reais: `npm test`, `python -m unittest discover -s test -p 'test_cosit*.py'`, `npx tsc --noEmit`, `npm run build`, `node scripts/sync-cosit.mjs` (plano vazio). Os testes cobrem 82 atos do seed, retenção fora da janela, duplicidades, redações divergentes, falhas parciais/duplas, geração incremental com transporte simulado, publicação Git em origem local, concorrência, manifesto vazio, falha de indexação e retomada de upload.
+
+O transporte e a publicação bloqueiam snapshots acima de 32 MiB antes de substituir a versão ativa. Quando o histórico atingir esse limite, o acervo precisará ser dividido em arquivos e um índice versionado; o crescimento não é silenciosamente truncado. Os arquivos Git guardam todas as revisões; observações e recibos não são expurgados. Este desenho é a primeira integração cumulativa, com limite operacional explícito.
+
+Continuam pendentes de aprovação e validação real: execução no Actions com publicação habilitada, leitura da branch de dados pelo ambiente hospedado, geração externa de embeddings, aquisição/indexação de íntegras e classificação autenticada usando o novo catálogo. Testes locais não certificam o estado da produção, a cobertura de todos os atos nem a vigência fiscal.

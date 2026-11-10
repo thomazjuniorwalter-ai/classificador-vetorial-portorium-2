@@ -46,7 +46,7 @@ test('falha de embeddings mantém busca textual e informa fallback',async()=>{
 test('indisponibilidade de ambas as fontes conserva data da captura anterior',async()=>{
  const module={exports:{}};const snapshot={records:[],lastSuccessfulCollectionAt:'2026-09-01T00:00:00Z'};
  vm.runInNewContext(ts.transpileModule(fs.readFileSync('app/lib/cosit-catalog.ts','utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2020,esModuleInterop:true}}).outputText,
- {module,exports:module.exports,Intl,Date,Promise,require:name=>name==='next/cache'?{unstable_cache:fn=>fn}:name.includes('candidates')?snapshot:{collectReceita:async()=>{throw Error('offline')},collectDou:async()=>{throw Error('offline')},mergeAbstracts}});
+ {module,exports:module.exports,Intl,Date,Promise,process:{env:{}},require:name=>name==='next/cache'?{unstable_cache:fn=>fn}:name.includes('candidates')?snapshot:{collectReceita:async()=>{throw Error('offline')},collectDou:async()=>{throw Error('offline')},mergeAbstracts}});
  const catalog=await module.exports.getCositCatalog();assert.equal(catalog.refreshStatus,'fallback');assert.equal(catalog.lastSuccessfulCollectionAt,snapshot.lastSuccessfulCollectionAt);
  assert.equal(module.exports.catalogMetadata(catalog).stale,true);
 });

@@ -11,6 +11,7 @@ export type ClassificationReport = {
   analyst: string;
   responseId?: string;
   retrievedSources?: string[];
+  cositMetadata?: {catalogRevision?:string;collectedAt?:string;fullTextStatus?:string};
 };
 
 export const REPORT_TITLE = "Parecer técnico preliminar de classificação fiscal";
@@ -31,6 +32,8 @@ export function classificationReportSections(report: ClassificationReport) {
     { title: "4. Rastreabilidade da pesquisa", content: [
       "Arquivos retornados pela pesquisa normativa desta execução (a recuperação, por si só, não comprova aplicabilidade, integralidade ou vigência):",
       ...(report.retrievedSources?.length ? report.retrievedSources.map(name => "- " + name) : ["Nenhum nome de arquivo foi registrado no retorno da pesquisa. Isso não comprova ausência de normas na base; a fundamentação necessita conferência."]),
+      ...(report.cositMetadata?.catalogRevision ? ["Versão do catálogo Cosit (SHA-256): " + report.cositMetadata.catalogRevision] : []),
+      ...(report.cositMetadata?.collectedAt ? ["Coleta do catálogo Cosit: " + report.cositMetadata.collectedAt + "; cobertura parcial, vigência não verificada."] : []),
       "Trechos não recuperados devem ser tratados como limitação desta análise, e não como prova de que os documentos não integram a base.",
     ] },
     { title: "5. Conclusão preliminar", content: [

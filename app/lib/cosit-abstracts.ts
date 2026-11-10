@@ -7,10 +7,15 @@ export type CositAbstract = {
   sourceUrl: string; sourceUrls?: string[]; abstract: string; sha256: string;
   ncm: string[]; integrity: string; jurisdiction: string; sourceRecordId?: string;
   hasRelationshipSignals?: boolean; conflictingSources?: boolean;
+  publicationDate?: string; observedAt?: string; validity?: string;
+  versionCount?: number;
 };
 export type CositCatalog = {
   records: CositAbstract[]; lastSuccessfulCollectionAt: string;
   sourceStatus: { receita: string; dou: string }; refreshStatus: string;
+  revision?: string; persistenceStatus?: string;
+  sourceChecks?: Record<string, {lastAttemptAt?: string; lastSuccessAt?: string; window?: {from:string;to:string}; status:string}>;
+  embeddings?: Record<string, number[]>;
 };
 export function plainText(value: string) {
   const named: Record<string, string> = {amp:'&',lt:'<',gt:'>',quot:'"',apos:"'",nbsp:' ',ordm:'º',ordf:'ª',deg:'°'};
@@ -54,7 +59,7 @@ function choice(page: string, field: string, label: string) {
   throw new Error('Receita: filtro oficial indisponível');
 }
 async function readPage(response: Response) {
-  if (!response.ok) throw new Error('Fonte oficial indisponível');
+  if (!response.ok) throw Object.assign(new Error('Fonte oficial indisponível'),{status:response.status});
   const reader = response.body?.getReader(); if (!reader) throw new Error('Fonte vazia');
   const chunks: Uint8Array[] = []; let size = 0;
   try { while (true) { const item = await reader.read(); if (item.done) break; size += item.value.length; if(size > 4*1024*1024) {await reader.cancel(); throw new Error('Resposta oficial excede limite');} chunks.push(item.value); } }
@@ -164,7 +169,8 @@ export async function collectDou(first: string, last: string, transport: typeof 
       if(!item.urlTitle||!/^solucao-de-(?:consulta|divergencia)-[a-zA-Z0-9._-]+-\d+$/.test(item.urlTitle) || item.urlTitle.includes('..')||!item.pubDate) throw new Error('DOU: metadados incompletos');
       const date=dateIso(item.pubDate);if(date<first||date>last) throw new Error('DOU: data fora da janela');
       const url=`https://www.in.gov.br/web/dou/-/${item.urlTitle}`;
-      return parseDouArticle(await readPage(await transport(url,{cache:'no-store',signal,redirect:'error'})),url);
+      return parseDouArticle(await readPage(await transport(url,{cache:'no-store',signal,redirect:'error'})),url)
+        .map(record=>({...record,publicationDate:date}));
     }));
     records.push(...batches.flat());
     if(records.length>1000) throw new Error('DOU: limite da coleta excedido');

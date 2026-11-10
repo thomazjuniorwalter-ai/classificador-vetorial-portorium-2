@@ -1,11 +1,13 @@
 import fs from 'node:fs/promises';
 import {collectReceita,collectDou,mergeAbstracts} from '../app/lib/cosit-abstracts.ts';
+import {logCollectionFailures} from './cosit-diagnostics.mjs';
 
 const path='data/cosit/candidates.json';
 const previous=JSON.parse(await fs.readFile(path,'utf8'));
 const last=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
 const first=new Date(Date.parse(last)-60*86400000).toISOString().slice(0,10);
 const results=await Promise.allSettled([collectReceita(first,last),collectDou(first,last)]);
+logCollectionFailures(results,{window:{from:first,to:last}});
 if(results.every(r=>r.status==='rejected')) throw new Error('Coleta falhou em ambas as fontes; catálogo anterior preservado');
 const rows=results.map(r=>r.status==='fulfilled'?r.value:[]);
 const records=mergeAbstracts(previous.records,rows[0],rows[1]).map(r=>({...r,ingestionStatus:'ready_abstract'}));

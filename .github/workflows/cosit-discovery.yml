@@ -1,8 +1,18 @@
 name: Descobrir decisões Cosit
 on:
   workflow_dispatch:
+    inputs:
+      from:
+        description: 'Reconciliação: data inicial AAAA-MM-DD (opcional, até 366 dias por execução)'
+        required: false
+        type: string
+      to:
+        description: 'Reconciliação: data final AAAA-MM-DD (opcional)'
+        required: false
+        type: string
   schedule:
     - cron: '15 12 * * *'
+    - cron: '45 12 * * 0'
 permissions:
   contents: read
 concurrency:
@@ -10,18 +20,88 @@ concurrency:
   cancel-in-progress: false
 jobs:
   collect:
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/main' && (github.event.schedule != '45 12 * * 0' || (vars.COSIT_PERSISTENCE_ENABLED == 'true' && vars.COSIT_HISTORY_START_YEAR != ''))
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Restaurar catálogo cumulativo quando autorizado
+        if: vars.COSIT_PERSISTENCE_ENABLED == 'true'
+        shell: bash
+        env:
+          COSIT_BOOTSTRAP_APPROVED: ${{ vars.COSIT_BOOTSTRAP_APPROVED }}
+        run: |
+          set -euo pipefail
+          mkdir -p .cosit
+          git ls-remote origin refs/heads/cosit-catalog-data > .cosit/remote-ref
+          awk '{print $1}' .cosit/remote-ref > .cosit/base-sha
+          if [ -s .cosit/base-sha ]; then
+            git fetch --no-tags origin refs/heads/cosit-catalog-data
+            git show FETCH_HEAD:data/cosit/ledger.json > .cosit/ledger.json
+          elif [ "$COSIT_BOOTSTRAP_APPROVED" != 'true' ]; then
+            echo 'Catálogo ausente; inicialização precisa de autorização explícita.' >&2
+            exit 1
+          fi
+      - name: Coletar ementas oficiais (modo atual)
+        if: vars.COSIT_PERSISTENCE_ENABLED != 'true'
+        run: node scripts/collect-cosit-abstracts.mjs
+      - name: Coletar e versionar catálogo cumulativo
+        if: vars.COSIT_PERSISTENCE_ENABLED == 'true'
+        env:
+          COSIT_FROM: ${{ inputs.from }}
+          COSIT_TO: ${{ inputs.to }}
+          COSIT_RECONCILE: ${{ github.event.schedule == '45 12 * * 0' && '1' || '0' }}
+          COSIT_HISTORY_START_YEAR: ${{ vars.COSIT_HISTORY_START_YEAR }}
+        run: node scripts/collect-cosit-catalog.mjs
+      - name: Preparar vetores públicos somente após aprovação específica
+        if: vars.COSIT_PERSISTENCE_ENABLED == 'true' && vars.COSIT_VECTOR_SYNC_ENABLED == 'true'
+        env:
+          COSIT_ALLOW_EXTERNAL_SYNC: '1'
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node scripts/prepare-cosit-vectors.mjs --apply
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: catalogo-cosit-${{ github.run_id }}-${{ github.run_attempt }}
+          include-hidden-files: true
+          path: |
+            data/cosit/candidates.json
+            .cosit/ledger.json
+            .cosit/report.json
+            .cosit/base-sha
+      - name: Resumo de disponibilidade
+        if: always() && vars.COSIT_PERSISTENCE_ENABLED == 'true'
+        run: |
+          if [ -f .cosit/report.json ]; then
+            cat .cosit/report.json >> "$GITHUB_STEP_SUMMARY"
+          fi
+  publish:
+    needs: collect
+    if: always() && !cancelled() && github.ref == 'refs/heads/main' && vars.COSIT_PERSISTENCE_ENABLED == 'true' && needs.collect.result != 'skipped'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '24'
-      - name: Coletar ementas oficiais (janela de 60 dias)
-        run: node scripts/collect-cosit-abstracts.mjs
-      - uses: actions/upload-artifact@v4
-        if: always()
+      - uses: actions/download-artifact@v4
         with:
-          name: catalogo-cosit-${{ github.run_id }}
-          path: data/cosit/candidates.json
+          name: catalogo-cosit-${{ github.run_id }}-${{ github.run_attempt }}
+          path: collected
+      - name: Publicar somente o catálogo validado
+        env:
+          COSIT_PUBLISH_APPROVED: '1'
+        run: |
+          mkdir -p .cosit
+          cp collected/.cosit/ledger.json .cosit/ledger.json
+          cp collected/.cosit/base-sha .cosit/base-sha
+          cp collected/.cosit/report.json .cosit/report.json
+          node scripts/publish-cosit-catalog.mjs
