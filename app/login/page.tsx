@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
-import { createClient } from "../lib/supabase/client";
+import { createClient, passkeysEnabled } from "../lib/supabase/client";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -95,6 +95,30 @@ export default function LoginPage() {
     window.location.replace("/");
   }
 
+
+  async function signInWithPasskey() {
+    if (!passkeysEnabled) return;
+    if (typeof window === "undefined" || !("PublicKeyCredential" in window)) {
+      setError("Este navegador não oferece chaves de acesso. Utilize o código por e-mail.");
+      return;
+    }
+    setLoading(true);
+    setError("");
+    setMessage("");
+    try {
+      const { error: passkeyError } = await createClient().auth.signInWithPasskey();
+      if (passkeyError) {
+        setError("Não foi possível entrar com a chave de acesso. Utilize o código por e-mail ou tente novamente.");
+        return;
+      }
+      window.location.replace("/");
+    } catch {
+      setError("A autenticação biométrica não foi concluída. Utilize o código por e-mail.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <main className="authShell">
       <section className="authCard">
@@ -161,6 +185,11 @@ export default function LoginPage() {
 
         {message && <p className="authMessage">{message}</p>}
         {error && <p className="authError" role="alert">{error}</p>}
+        {passkeysEnabled && !codeSent && (
+          <button type="button" className="authSecondary" onClick={signInWithPasskey} disabled={loading}>
+            Entrar com Face ID ou chave de acesso
+          </button>
+        )}
         <small className="authNotice">
           O código é pessoal, temporário e não deve ser encaminhado.
         </small>
