@@ -4,11 +4,12 @@ import type {CositAbstract, CositCatalog} from './cosit-abstracts.ts';
 export type Source = 'receita' | 'dou';
 export type Observation = {record:CositAbstract; source:Source; firstSeenAt:string; lastSeenAt:string};
 export type CollectionRun = {
-  id:string; at:string; collectorVersion:string; window:{from:string;to:string};
+  id:string; collectionId?:string; at:string; collectorVersion:string; window:{from:string;to:string};
   sources:Record<Source, {status:'available'|'unavailable'; count:number; dateBasis:'decision'|'publication'}>;
 };
 export type Ledger = {
   schemaVersion:2; revision:string; observations:Observation[]; runs:CollectionRun[];
+  seedCollectedAt?:string;
   // Only public-document vectors, keyed by model/dimensions/text hash. Never user queries.
   embeddings:Record<string,number[]>;
 };
@@ -27,7 +28,8 @@ export function sealLedger(value:Omit<Ledger,'revision'>):Ledger {
 }
 export function validateLedger(value:any):Ledger {
   if(value?.schemaVersion!==2 || !Array.isArray(value.observations) || !Array.isArray(value.runs)
-    || !value.embeddings || typeof value.embeddings!=='object' || Array.isArray(value.embeddings)) throw Error('Catálogo persistente inválido');
+    || !value.embeddings || typeof value.embeddings!=='object' || Array.isArray(value.embeddings)
+    || (value.seedCollectedAt!==undefined&&!timestamp(value.seedCollectedAt))) throw Error('Catálogo persistente inválido');
   const {revision,...payload}=value;
   if(revision!==hash(JSON.stringify(payload))) throw Error('Hash do catálogo divergente');
   const seen=new Set<string>();
@@ -47,6 +49,7 @@ export function validateLedger(value:any):Ledger {
   const ids=new Set<string>();
   for(const run of value.runs) {
     if(!run.id || ids.has(run.id) || !timestamp(run.at) || !run.collectorVersion
+      || (run.collectionId!==undefined&&(typeof run.collectionId!=='string'||!run.collectionId||run.collectionId.length>200))
       || !timestamp(run.window?.from) || !timestamp(run.window?.to) || run.window.from>run.window.to
       || sources.some(s=>!['available','unavailable'].includes(run.sources?.[s]?.status)
         || !Number.isInteger(run.sources[s].count) || run.sources[s].count<0
@@ -62,7 +65,7 @@ export function validateLedger(value:any):Ledger {
 }
 export function seedLedger(snapshot:{records:CositAbstract[];lastSuccessfulCollectionAt:string}):Ledger {
   // A merged seed cannot reconstruct an alternate source's original text. Do not invent it.
-  return sealLedger({schemaVersion:2,observations:snapshot.records.map(record=>({
+  return sealLedger({schemaVersion:2,seedCollectedAt:snapshot.lastSuccessfulCollectionAt,observations:snapshot.records.map(record=>({
     record:{...record,sourceUrls:[record.sourceUrl]},source:record.sourceUrl.startsWith('https://www.in.gov.br/')?'dou':'receita',
     firstSeenAt:snapshot.lastSuccessfulCollectionAt,lastSeenAt:snapshot.lastSuccessfulCollectionAt,
   })),runs:[],embeddings:{}});
@@ -80,7 +83,8 @@ export function appendCollection(previous:Ledger, run:CollectionRun, rows:Record
       else observations.push({source,record:{...record,sourceUrls:[record.sourceUrl]},firstSeenAt:run.at,lastSeenAt:run.at});
     }
   }
-  return validateLedger(sealLedger({schemaVersion:2,observations,runs:[...previous.runs,run],embeddings:previous.embeddings}));
+  return validateLedger(sealLedger({schemaVersion:2,seedCollectedAt:previous.seedCollectedAt,
+    observations,runs:[...previous.runs,run],embeddings:previous.embeddings}));
 }
 export function ledgerCatalog(ledger:Ledger):CositCatalog {
   validateLedger(ledger);
@@ -97,14 +101,27 @@ export function ledgerCatalog(ledger:Ledger):CositCatalog {
       observedAt:chosen.lastSeenAt,versionCount:versions.length,validity:'unverified',
       hasRelationshipSignals:versions.some(o=>o.record.hasRelationshipSignals)};
   }).sort((a,b)=>b.decisionDate.localeCompare(a.decisionDate)||a.id.localeCompare(b.id));
+  // One collection spans several windows. A later successful window must not hide an earlier failure.
+  // Legacy receipts have no collectionId and remain independent, without guessing a grouping.
+  const collections=new Map<string,CollectionRun[]>();
+  for(const run of ledger.runs) {
+    const key=run.collectionId?`collection:${run.collectionId}`:`legacy:${run.id}`;
+    collections.set(key,[...(collections.get(key)??[]),run]);
+  }
+  const batches=[...collections.values()];
+  const latest=batches.at(-1)??[];
   const sourceChecks=Object.fromEntries(sources.map(source=>{
     const attempts=ledger.runs.filter(r=>r.sources[source]);
     const last=attempts.at(-1);
     const success=attempts.filter(r=>r.sources[source].status==='available').sort((a,b)=>b.window.to.localeCompare(a.window.to)||b.at.localeCompare(a.at))[0];
-    return [source,{status:last?.sources[source].status??'unverified',lastAttemptAt:last?.at,lastSuccessAt:success?.at,window:success?.window}];
+    const failed=latest.filter(r=>r.sources[source].status==='unavailable').length;
+    const status=!latest.length?'unverified':!failed?'available':failed===latest.length?'unavailable':'partial';
+    return [source,{status,lastAttemptAt:last?.at,lastSuccessAt:success?.at,window:success?.window}];
   }));
-  return {records,lastSuccessfulCollectionAt:ledger.runs.filter(r=>sources.some(s=>r.sources[s].status==='available')).at(-1)?.at
-    ?? ledger.observations.map(o=>o.lastSeenAt).sort().at(-1) ?? '1970-01-01T00:00:00Z',
+  const successful=batches.filter(batch=>batch.every(run=>sources.every(source=>run.sources[source].status==='available'))).at(-1);
+  const seedCollectedAt=ledger.seedCollectedAt??ledger.observations
+    .filter(o=>!ledger.runs.length||o.firstSeenAt<ledger.runs[0].at).map(o=>o.firstSeenAt).sort().at(-1);
+  return {records,lastSuccessfulCollectionAt:successful?.at(-1)?.at??seedCollectedAt??'1970-01-01T00:00:00Z',
     sourceStatus:{receita:sourceChecks.receita.status,dou:sourceChecks.dou.status},sourceChecks,
     refreshStatus:'persistent',persistenceStatus:'available',revision:ledger.revision,embeddings:ledger.embeddings};
 }

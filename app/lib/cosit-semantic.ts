@@ -4,7 +4,7 @@ const MODEL = 'text-embedding-3-small';
 const DIMENSIONS = 512;
 // This bounded cache contains vectors of public official abstracts only, never user queries.
 const vectors = new Map<string,number[]>();
-let corpusPending: Promise<void> | undefined;
+let corpusPending: Promise<Map<string,number[]>> | undefined;
 async function embed(texts: string[], key: string, transport: typeof fetch) {
   const response = await transport('https://api.openai.com/v1/embeddings',{method:'POST',
     headers:{Authorization:`Bearer ${key}`,'Content-Type':'application/json'},signal:AbortSignal.timeout(20000),
@@ -38,26 +38,46 @@ export async function selectAbstracts(query:string,rows:CositAbstract[],key:stri
   const eligible=rows.filter(r=>r.integrity==='abstract'&&r.jurisdiction==='BR'&&r.authority==='Cosit'&&r.abstract);
   if(!eligible.length) return {records:[] as CositAbstract[],mode:'empty'};
   try {
-    const vectorFor=(record:CositAbstract)=>{
+    // Retain this request's vectors even if another classification evicts shared cache entries.
+    const requestVectors=new Map<string,number[]>();
+    for(const record of eligible) {
       const vector=persisted[`${MODEL}:${DIMENSIONS}:${record.sha256}`];
-      return vector?.length===DIMENSIONS&&vector.every(n=>Number.isFinite(n)) ? vector : vectors.get(record.sha256);
-    };
+      const available=vector?.length===DIMENSIONS&&vector.every(n=>Number.isFinite(n)) ? vector : vectors.get(record.sha256);
+      if(available) requestVectors.set(record.sha256,available);
+    }
     // Chunking protects embedding service input limits. Coalesce parallel batch classifications.
-    if(corpusPending) await corpusPending;
-    const missing=eligible.filter(r=>!vectorFor(r));
-    if(missing.length) {
-      corpusPending=(async()=>{
-        for(let start=0;start<missing.length;start+=32){
-          const chunk=missing.slice(start,start+32);
-          const embedded=await embed(chunk.map(r=>r.abstract.slice(0,12000)),key,transport);
-          chunk.forEach((r,i)=>vectors.set(r.sha256,embedded[i]));
+    while(true) {
+      const missing=eligible.filter(r=>!requestVectors.has(r.sha256));
+      if(!missing.length) break;
+      let pending=corpusPending;
+      if(!pending) {
+        pending=(async()=>{
+          const generated=new Map<string,number[]>();
+          for(let start=0;start<missing.length;start+=32){
+            const chunk=missing.slice(start,start+32);
+            const embedded=await embed(chunk.map(r=>r.abstract.slice(0,12000)),key,transport);
+            chunk.forEach((r,i)=>{
+              generated.set(r.sha256,embedded[i]);
+              vectors.set(r.sha256,embedded[i]);
+              if(vectors.size>1000) vectors.delete(vectors.keys().next().value!);
+            });
+          }
+          return generated;
+        })();
+        corpusPending=pending;
+      }
+      try {
+        const generated=await pending;
+        for(const record of missing) {
+          const vector=generated.get(record.sha256);
+          if(vector) requestVectors.set(record.sha256,vector);
         }
-        while(vectors.size>1000) vectors.delete(vectors.keys().next().value!);
-      })().finally(()=>{corpusPending=undefined;});
-      await corpusPending;
+      } finally {
+        if(corpusPending===pending) corpusPending=undefined;
+      }
     }
     const [queryVector]=await embed([query.slice(0,8000)],key,transport);
-    const ranked=eligible.map(r=>({r,score:cosine(queryVector,vectorFor(r)??[])})).sort((a,b)=>b.score-a.score);
+    const ranked=eligible.map(r=>({r,score:cosine(queryVector,requestVectors.get(r.sha256)??[])})).sort((a,b)=>b.score-a.score);
     return {records:ranked.slice(0,8).map(x=>x.r),mode:'semantic'};
   } catch {
     return {records:lexicalCandidates(query,eligible),mode:'lexical_fallback'};

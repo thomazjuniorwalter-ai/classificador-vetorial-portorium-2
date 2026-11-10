@@ -3,6 +3,7 @@ import fs from 'node:fs/promises';
 import {collectionWindow} from '../app/lib/cosit-window.ts';
 import {collectReceita,collectDou} from '../app/lib/cosit-abstracts.ts';
 import {appendCollection,seedLedger,validateLedger,ledgerCatalog} from '../app/lib/cosit-ledger.ts';
+import {logCollectionFailures} from './cosit-diagnostics.mjs';
 const directory='.cosit';
 await fs.mkdir(directory,{recursive:true});
 let previous;
@@ -13,14 +14,16 @@ const today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Sao_Paulo',year:'
 const window=collectionWindow(today,{from:process.env.COSIT_FROM,to:process.env.COSIT_TO,
   reconcile:process.env.COSIT_RECONCILE==='1',startYear:process.env.COSIT_HISTORY_START_YEAR});
 const start=window.from,end=window.to;
+const collectionId=`${process.env.GITHUB_RUN_ID||'local'}-${process.env.GITHUB_RUN_ATTEMPT||'1'}-${new Date().toISOString()}`;
 let failed=false;
 for(let from=start;from<=end;) {
   const to=new Date(Math.min(Date.parse(end),Date.parse(from)+13*86400000)).toISOString().slice(0,10);
   const retry=async(fn)=>{for(let attempt=0;;attempt++){try{return await fn(from,to);}catch(error){if(attempt===2)throw error;await new Promise(resolve=>setTimeout(resolve,500*2**attempt));}}};
   const results=await Promise.allSettled([retry(collectReceita),retry(collectDou)]);
+  logCollectionFailures(results,{window:{from,to}});
   const rows={receita:results[0].status==='fulfilled'?results[0].value:[],dou:results[1].status==='fulfilled'?results[1].value:[]};
   const at=new Date().toISOString();
-  const run={id:`${process.env.GITHUB_RUN_ID||'local'}-${process.env.GITHUB_RUN_ATTEMPT||'1'}-${from}-${at}`,at,
+  const run={id:`${collectionId}-${from}`,collectionId,at,
     collectorVersion:process.env.GITHUB_SHA||'local',window:{from,to},sources:Object.fromEntries(['receita','dou'].map((s,i)=>[s,{
       status:results[i].status==='fulfilled'?'available':'unavailable',count:rows[s].length,dateBasis:s==='receita'?'decision':'publication',
     }]))};

@@ -59,7 +59,7 @@ function choice(page: string, field: string, label: string) {
   throw new Error('Receita: filtro oficial indisponível');
 }
 async function readPage(response: Response) {
-  if (!response.ok) throw new Error('Fonte oficial indisponível');
+  if (!response.ok) throw Object.assign(new Error('Fonte oficial indisponível'),{status:response.status});
   const reader = response.body?.getReader(); if (!reader) throw new Error('Fonte vazia');
   const chunks: Uint8Array[] = []; let size = 0;
   try { while (true) { const item = await reader.read(); if (item.done) break; size += item.value.length; if(size > 4*1024*1024) {await reader.cancel(); throw new Error('Resposta oficial excede limite');} chunks.push(item.value); } }

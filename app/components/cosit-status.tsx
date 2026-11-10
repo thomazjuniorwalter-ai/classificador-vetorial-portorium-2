@@ -18,12 +18,13 @@ export default function CositStatus({initial}:{initial:Status}) {
   const sources=status.sourceStatus;
   const sourceDate=(source:string)=>status.sourceChecks?.[source]?.lastSuccessAt;
   const dateLabel=(date:string)=>new Date(date).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'});
+  const sourceLabel=(source:'receita'|'dou')=>`${source==='receita'?'Receita':'DOU'} ${sources?.[source]==='available'?'disponível':sources?.[source]==='partial'?'com coleta parcial':'indisponível nesta consulta'}`;
   return <div className='source'><span className='sourceDot'/><div><strong>Ementas oficiais Cosit</strong>
     <small>{status.abstracts} ementas · coleta {new Date(status.collectedAt).toLocaleDateString('pt-BR',{timeZone:'America/Sao_Paulo'})}</small>
     <em>{checking?'Consultando atualização…':status.refreshStatus==='fallback'||status.stale?'Última coleta disponível; atualização não confirmada':'Disponíveis como fonte complementar'}</em>
     <small>Cobertura histórica parcial · vigência não verificada</small>
     {!!status.conflicts&&<small>{status.conflicts} atos com divergência entre fontes; exigem verificação</small>}
     {(['receita','dou'] as const).map(source=>sourceDate(source)&&<small key={source}>Última verificação {source==='receita'?'Receita':'DOU'}: {dateLabel(sourceDate(source)!)}</small>)}
-    {sources&&<small>{sources.receita==='available'?'Receita disponível':'Receita indisponível'} · {sources.dou==='available'?'DOU disponível':'DOU indisponível nesta consulta'}</small>}
+    {sources&&<small>{sourceLabel('receita')} · {sourceLabel('dou')}</small>}
   </div></div>;
 }
