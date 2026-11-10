@@ -34,13 +34,17 @@ export function lexicalCandidates(query: string, rows:CositAbstract[]) {
   return rows.map((r,i)=>({r,score:[...tokens].reduce((sum,t)=>sum+(docs[i].has(t)?Math.log(1+rows.length/(frequencies.get(t)??1)):0),0)}))
     .filter(x=>x.score>0).sort((a,b)=>b.score-a.score).slice(0,8).map(x=>x.r);
 }
-export async function selectAbstracts(query:string,rows:CositAbstract[],key:string,transport:typeof fetch=fetch) {
+export async function selectAbstracts(query:string,rows:CositAbstract[],key:string,transport:typeof fetch=fetch,persisted:Record<string,number[]>={}) {
   const eligible=rows.filter(r=>r.integrity==='abstract'&&r.jurisdiction==='BR'&&r.authority==='Cosit'&&r.abstract);
   if(!eligible.length) return {records:[] as CositAbstract[],mode:'empty'};
   try {
+    const vectorFor=(record:CositAbstract)=>{
+      const vector=persisted[`${MODEL}:${DIMENSIONS}:${record.sha256}`];
+      return vector?.length===DIMENSIONS&&vector.every(n=>Number.isFinite(n)) ? vector : vectors.get(record.sha256);
+    };
     // Chunking protects embedding service input limits. Coalesce parallel batch classifications.
     if(corpusPending) await corpusPending;
-    const missing=eligible.filter(r=>!vectors.has(r.sha256));
+    const missing=eligible.filter(r=>!vectorFor(r));
     if(missing.length) {
       corpusPending=(async()=>{
         for(let start=0;start<missing.length;start+=32){
@@ -53,7 +57,7 @@ export async function selectAbstracts(query:string,rows:CositAbstract[],key:stri
       await corpusPending;
     }
     const [queryVector]=await embed([query.slice(0,8000)],key,transport);
-    const ranked=eligible.map(r=>({r,score:cosine(queryVector,vectors.get(r.sha256)??[])})).sort((a,b)=>b.score-a.score);
+    const ranked=eligible.map(r=>({r,score:cosine(queryVector,vectorFor(r)??[])})).sort((a,b)=>b.score-a.score);
     return {records:ranked.slice(0,8).map(x=>x.r),mode:'semantic'};
   } catch {
     return {records:lexicalCandidates(query,eligible),mode:'lexical_fallback'};

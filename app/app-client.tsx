@@ -42,7 +42,7 @@ export default function ClassificadorApp({ user, cosit }: { user: { displayName:
       try{data=JSON.parse(raw)}catch{throw new Error(response.status===504?"A análise ultrapassou o tempo disponível. Tente novamente.":"A função de análise encontrou uma falha temporária na hospedagem.")}
       if(!response.ok)throw new Error(data.error||"Não foi possível concluir a análise.");
       setResult(data.result);
-      setReportSnapshot({result:data.result,description:descricao,filenames:files.map(file=>file.name),analyzedAt:new Date().toISOString(),analyst:user.displayName+" ("+user.email+")",responseId:data.responseId,retrievedSources:data.retrievedSources});
+      setReportSnapshot({result:data.result,description:descricao,filenames:files.map(file=>file.name),analyzedAt:new Date().toISOString(),analyst:user.displayName+" ("+user.email+")",responseId:data.responseId,retrievedSources:data.retrievedSources,cositMetadata:data.cositMetadata});
     }catch(problem){
       if(!analysisStarted&&tokens.length){void fetch("/api/arquivos",{method:"DELETE",headers:{"Content-Type":"application/json"},body:JSON.stringify({tokens})})}
       setError(problem instanceof Error?problem.message:"Erro inesperado.");

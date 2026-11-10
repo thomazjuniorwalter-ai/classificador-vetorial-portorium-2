@@ -9,7 +9,7 @@ const fullText = 'Íntegra fictícia para teste. '.repeat(40);
 const hash = createHash('sha256').update(fullText).digest('hex');
 const record = {id:'BR-COSIT-SC-1-2026', title:'SC Cosit 1/2026', sourceUrl:'https://normas.receita.fazenda.gov.br/test',
  sha256:hash, abstractSha256:'abstract-hash', textPath:'data/cosit/full/test.txt', ingestionStatus:'ready',
- collectedAt:'2026-10-04', integrity:'full', jurisdiction:'BR'};
+ collectedAt:'2026-10-04', integrity:'full', jurisdiction:'BR', completeness:{method:'official-full-text',decisionId:'BR-COSIT-SC-1-2026',verifiedAt:'2026-10-04',originalSha256:hash,originalPath:'data/cosit/full/original/test.html',evidence:'Conferência de cabeçalho, identificação e fechamento da decisão oficial.'}};
 const candidates = [{id:record.id, sha256:'abstract-hash', abstract:'Somente ementa'}];
 function library(fetch, records = [record]) {
  const module={exports:{}};
@@ -43,9 +43,9 @@ test('manifesto vazio não consulta corpus',async()=>{
  assert.equal(result.status,'not_configured');
 });
 test('sincronização valida origem, integridade e hash antes de upload',async()=>{
- assert.equal((await validateManifest([record],candidates,async()=>fullText)).length,1);
+ assert.equal((await validateManifest([record],candidates,async()=>fullText,async()=>Buffer.from(fullText))).length,1);
  assert.equal(Object.hasOwn(record,'reviewedBy'),false); // No manual review required.
- for (const change of [{sourceUrl:'https://example.com/ato'},{integrity:'abstract'},{sha256:'0'.repeat(64)}, {textPath:'../../secret.txt'}, {abstractSha256:'old'}])
-  await assert.rejects(validateManifest([{...record,...change}],candidates,async()=>fullText));
- await assert.rejects(validateManifest([record,record],candidates,async()=>fullText));
+ for (const change of [{sourceUrl:'https://example.com/ato'},{integrity:'abstract'},{sha256:'0'.repeat(64)}, {textPath:'../../secret.txt'}, {abstractSha256:'old'}, {completeness:undefined}])
+  await assert.rejects(validateManifest([{...record,...change}],candidates,async()=>fullText,async()=>Buffer.from(fullText)));
+ await assert.rejects(validateManifest([record,record],candidates,async()=>fullText,async()=>Buffer.from(fullText)));
 });
