@@ -114,7 +114,8 @@ export function parseDouSearch(page: string) {
   // Read label text so inline tags, nonbreaking spaces and a singular label
   // do not invalidate a count. Script templates are not evidence of results.
   const labelText = plainText(page.replace(/<!--[\s\S]*?-->/g, '')
-    .replace(/<(script|style|template|noscript)\b[^>]*>[\s\S]*?<\/\1>/gi, ''));
+    .replace(/<(script|style|template|noscript)\b[^>]*>[\s\S]*?<\/\1>/gi, '')
+    .replace(/<\/?(?:div|section|article|p|li|h[1-6]|tr|td)\b[^>]*>/gi, ' '));
   const count = labelText.match(/\bExibindo\s+(\d+)\s*[-\u2013\u2014]\s*(\d+)\s+de\s+(\d+)\s+resultados?\b/i);
   if (!Array.isArray(data?.jsonArray) || !count) {
     throw new Error('DOU: contagem ou paginação não confirmada');

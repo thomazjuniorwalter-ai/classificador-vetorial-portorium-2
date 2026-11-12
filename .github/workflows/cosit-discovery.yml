@@ -2,6 +2,11 @@ name: Descobrir decisões Cosit
 on:
   workflow_dispatch:
     inputs:
+      validate_only:
+        description: 'Somente validar DOU, sem publicar catálogo nem chamar IA (datas vazias: duas janelas do incidente)'
+        required: false
+        type: boolean
+        default: false
       from:
         description: 'Reconciliação: data inicial AAAA-MM-DD (opcional, até 366 dias por execução)'
         required: false
@@ -16,11 +21,37 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: cosit-discovery
+  group: ${{ inputs.validate_only && format('cosit-validation-{0}', github.ref) || 'cosit-discovery' }}
   cancel-in-progress: false
 jobs:
+  validate:
+    if: github.event_name == 'workflow_dispatch' && inputs.validate_only
+    runs-on: ubuntu-latest
+    timeout-minutes: 7
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - name: Validar consultas públicas sem publicar
+        env:
+          COSIT_FROM: ${{ inputs.from }}
+          COSIT_TO: ${{ inputs.to }}
+        run: node scripts/validate-dou-search.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: validacao-dou-${{ github.run_id }}-${{ github.run_attempt }}
+          path: .cosit-validation/report.json
+          include-hidden-files: true
+          retention-days: 7
+          if-no-files-found: error
   collect:
-    if: github.ref == 'refs/heads/main' && (github.event.schedule != '45 12 * * 0' || (vars.COSIT_PERSISTENCE_ENABLED == 'true' && vars.COSIT_HISTORY_START_YEAR != ''))
+    if: github.ref == 'refs/heads/main' && !inputs.validate_only && (github.event.schedule != '45 12 * * 0' || (vars.COSIT_PERSISTENCE_ENABLED == 'true' && vars.COSIT_HISTORY_START_YEAR != ''))
     runs-on: ubuntu-latest
     timeout-minutes: 120
     steps:
@@ -82,7 +113,7 @@ jobs:
           fi
   publish:
     needs: collect
-    if: always() && !cancelled() && github.ref == 'refs/heads/main' && vars.COSIT_PERSISTENCE_ENABLED == 'true' && needs.collect.result != 'skipped'
+    if: always() && !cancelled() && github.ref == 'refs/heads/main' && !inputs.validate_only && vars.COSIT_PERSISTENCE_ENABLED == 'true' && needs.collect.result != 'skipped'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
