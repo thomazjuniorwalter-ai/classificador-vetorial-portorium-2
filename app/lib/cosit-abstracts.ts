@@ -102,13 +102,39 @@ export function parseDouSearch(page: string) {
   if (!payload) throw new Error('DOU: resposta sem catálogo estruturado');
   const data = JSON.parse(payload);
   const request = page.match(/var request\s*=\s*\{([\s\S]*?)\}/)?.[1] ?? '';
-  const pages = request.match(/totalPages\s*:\s*(\d+)/)?.[1];
-  const currentPage = request.match(/currentPage\s*:\s*(\d+)/)?.[1];
-  const count = page.match(/Exibindo\s+(\d+)\s*-\s*(\d+)\s+de\s+(\d+)\s+resultados/i);
-  if (!Array.isArray(data.jsonArray) || !pages || !currentPage || !count || Number(pages)>6 || Number(count[3])>450
-    || data.jsonArray.length !== Number(count[2])-Number(count[1])+1) throw new Error('DOU: contagem ou paginação não confirmada');
+  const paginationNumber = (field: string) => {
+    const matches = [...request.matchAll(new RegExp(`(?:^|,)\\s*${field}\\s*:\\s*([^,]*)`, 'g'))];
+    const value = matches[0]?.[1].trim();
+    if (matches.length !== 1 || !value || !/^\d+$/.test(value) || !Number.isSafeInteger(Number(value))) {
+      throw new Error('DOU: contagem ou paginação não confirmada');
+    }
+    return Number(value);
+  };
+  const totalPages = paginationNumber('totalPages'), pageNumber = paginationNumber('currentPage');
+  // Read label text so inline tags, nonbreaking spaces and a singular label
+  // do not invalidate a count. Script templates are not evidence of results.
+  const labelText = plainText(page.replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<(script|style|template|noscript)\b[^>]*>[\s\S]*?<\/\1>/gi, ''));
+  const count = labelText.match(/\bExibindo\s+(\d+)\s*[-\u2013\u2014]\s*(\d+)\s+de\s+(\d+)\s+resultados?\b/i);
+  if (!Array.isArray(data?.jsonArray) || !count) {
+    throw new Error('DOU: contagem ou paginação não confirmada');
+  }
+  const first = Number(count[1]), last = Number(count[2]), total = Number(count[3]);
+  if (data.jsonArray.length === 0) {
+    // An empty array alone can be a failed or incomplete page. Require an
+    // explicit zero count and pagination; a generic empty banner is insufficient.
+    if (first !== 0 || last !== 0 || total !== 0 || (totalPages !== 0 && totalPages !== 1)
+      || pageNumber !== 1) throw new Error('DOU: contagem ou paginação não confirmada');
+    return {items:[],totalPages:0,currentPage:1,total:0};
+  }
+  if (totalPages < 1 || totalPages > 6 || pageNumber < 1 || pageNumber > totalPages
+    || !Number.isSafeInteger(total) || total < 1 || total > 450 || first < 1 || last < first || last > total
+    || data.jsonArray.length !== last - first + 1 || (pageNumber === 1 && first !== 1)
+    || (pageNumber > 1 && first === 1) || (pageNumber === totalPages ? last !== total : last >= total)) {
+    throw new Error('DOU: contagem ou paginação não confirmada');
+  }
   return {items:data.jsonArray as {title?:string;urlTitle?:string;hierarchyStr?:string;pubDate?:string;classPK?:string;score?:number;displayDateSortable?:string}[],
-    totalPages:Number(pages),currentPage:Number(currentPage),total:Number(count[3])};
+    totalPages,currentPage:pageNumber,total};
 }
 export function parseDouArticle(page: string, url: string): CositAbstract[] {
   const parsedUrl = new URL(url);
