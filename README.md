@@ -129,3 +129,27 @@ Ementas oficiais da Receita e do DOU incorporadas à busca suplementar, sem exig
 ### Estado da integração
 
 Catálogo de Produtos e ementas Cosit integrados às classificações individual e em lote. Base oficial de atributos versão 358 validada em teste real. A captura Cosit de 10/10/2026 reúne 82 ementas distintas da Receita e do DOU. A interface informa data de coleta e disponibilidade das fontes. Consulta de catálogo pessoal e classificação real OpenAI precisam de sessão autenticada para validação completa.
+
+### Referências químicas ECICS
+
+As análises individual e em lote consultam também o extrato ECICS da Comissão
+Europeia/DG TAXUD fornecido em 24/11/2026: 112.927 registros, 106.652 números CAS
+válidos distintos. O índice compacto fica no servidor. A pesquisa por CAS é
+exata e valida o dígito verificador; usa a descrição digitada e o resumo técnico
+dos documentos, imagens e planilhas anexados. Na triagem, selecione a coluna CAS entre as informações
+técnicas. Há busca nominal conservadora por nomes completos, sem tradução ou
+similaridade aproximada. Ela não garante reconhecimento de qualquer sinônimo.
+
+O resultado conserva CUS, CAS, código europeu, nome, data da exportação e a
+impressão SHA-256 do arquivo. A interface e os relatórios PDF/Word identificam
+essas referências; a exportação de lote mantém as fontes recuperadas. A CN
+europeia não preenche automaticamente a NCM brasileira: códigos curtos não são
+completados com zeros, vários registros de um CAS são preservados e substâncias
+isoladas são confrontadas com preparações que contenham o mesmo componente.
+As bases normativas e as ferramentas do prompt existente continuam disponíveis.
+
+Não há sincronização automática nem chamada externa à OpenAI para consultar o
+índice ECICS. Quando há anexos, uma leitura técnica prévia extrai os identificadores;
+essa etapa imagens e planilhas também são processadas antes da classificação e
+consomem uma chamada de leitura, além da chamada final já existente. O extrato não informa edição da CN ou vigência.
+Procedimento de atualização, atribuição e schema: [data/ecics/README.md](data/ecics/README.md).

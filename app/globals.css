@@ -79,3 +79,23 @@
 @media(max-width:850px){.catalogTwo{grid-template-columns:1fr}.catalogPanel,.catalogField{padding:18px}.catalogSummary b{font-size:25px}.catalogRow label{max-width:none;flex-basis:100%}.catalogFieldHead{display:grid}.catalogArea .batchIntro h1{font-size:32px}}
 
 .portoriumDropZone{border:2px dashed #b6c5cf;border-radius:10px;padding:14px;margin:12px 0;min-width:0;background:#f8fafc;transition:border-color .15s,background .15s}.portoriumDropZone:focus-within,.portoriumDropZone:focus-visible{outline:2px solid #1f6680;outline-offset:3px}.portoriumDropZone.isDragging{border-color:#d52c3e;background:#fff1f3}.portoriumDropZone.isDisabled{opacity:.65}.portoriumDropZone .portoriumDropPrompt{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;width:100%;padding:18px 10px;border:0;background:transparent;color:#183d52;text-align:center;cursor:pointer;white-space:normal}.portoriumDropPrompt strong{font-size:14px;line-height:1.4}.portoriumDropPrompt span{font-size:12px;line-height:1.5;font-weight:400}.portoriumDropPrompt:disabled{cursor:not-allowed}
+
+/* ECICS: códigos estrangeiros identificados separadamente da NCM sugerida. */
+.ecicsSource a{display:inline-block;color:#f3cbd0;text-decoration:underline;font-size:11px;line-height:1.5;margin-top:6px}
+.ecicsEvidence{background:#fff;border:1px solid var(--line);border-radius:8px;margin:22px 0;padding:22px;min-width:0;overflow-wrap:anywhere}
+.ecicsHeading{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.ecicsHeading h3{font-size:20px;line-height:1.3;margin:9px 0;color:#33373b}
+.ecicsHeading a{color:#a91d2d;text-decoration:underline;font-size:13px;line-height:1.5}
+.ecicsEvidence p{font-size:14px;line-height:1.55;margin:10px 0;color:#54585b}
+.ecicsEvidence .ecicsNotice{border-left:3px solid #c89420;padding:9px 12px;background:#fff8e6;color:#675018}
+.ecicsTableScroll{max-width:100%;overflow-x:auto;margin-top:14px}
+.ecicsEvidence table{width:100%;border-collapse:collapse;font-size:13px;min-width:580px;table-layout:fixed}
+.ecicsEvidence caption{text-align:left;font-size:12px;color:#62666b;padding:0 0 9px}
+.ecicsEvidence th,.ecicsEvidence td{text-align:left;padding:12px 10px;vertical-align:top;border-bottom:1px solid #e3e5e7;overflow-wrap:anywhere}
+.ecicsEvidence th{background:#f3f4f5;color:#3c4249}
+.ecicsEvidence th:first-child{width:44%}.ecicsEvidence th:nth-child(2){width:24%}
+.ecicsEvidence small{display:block;font-size:11px;line-height:1.45;color:#666d73;margin-top:5px}
+.ecicsEvidence .ecicsFootnote{font-size:12px;color:#62666b;margin-top:15px}
+.batchTable .ecicsEvidence{min-width:400px;max-width:720px;margin:12px 0;padding:14px}
+.batchTable .ecicsHeading h3{font-size:16px}
+@media(max-width:850px){.ecicsEvidence{padding:16px}.ecicsHeading h3{font-size:18px}}

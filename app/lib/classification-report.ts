@@ -1,3 +1,5 @@
+import { ecicsReportLines, type EcicsEvidenceSummary } from './ecics-presentation.ts';
+
 export type ClassificationResult = {
   classificacao: string; ncm: string; confianca: number;
   descricaoAduaneira: string; justificativa: string; informacoesPendentes: string;
@@ -12,6 +14,7 @@ export type ClassificationReport = {
   responseId?: string;
   retrievedSources?: string[];
   cositMetadata?: {catalogRevision?:string;collectedAt?:string;fullTextStatus?:string};
+  ecics?: EcicsEvidenceSummary;
 };
 
 export const REPORT_TITLE = "Parecer técnico preliminar de classificação fiscal";
@@ -30,10 +33,11 @@ export function classificationReportSections(report: ClassificationReport) {
       "Documentos apresentados:", ...(report.filenames.length ? report.filenames.map(name => "- " + name) : ["Nenhum documento anexado."]) ] },
     { title: "3. Fundamentação técnica e normativa", content: [result.justificativa || "Não informada."] },
     { title: "4. Rastreabilidade da pesquisa", content: [
-      "Arquivos retornados pela pesquisa normativa desta execução (a recuperação, por si só, não comprova aplicabilidade, integralidade ou vigência):",
+      "Fontes e referências recuperadas nesta execução (a recuperação, por si só, não comprova aplicabilidade, integralidade ou vigência):",
       ...(report.retrievedSources?.length ? report.retrievedSources.map(name => "- " + name) : ["Nenhum nome de arquivo foi registrado no retorno da pesquisa. Isso não comprova ausência de normas na base; a fundamentação necessita conferência."]),
       ...(report.cositMetadata?.catalogRevision ? ["Versão do catálogo Cosit (SHA-256): " + report.cositMetadata.catalogRevision] : []),
       ...(report.cositMetadata?.collectedAt ? ["Coleta do catálogo Cosit: " + report.cositMetadata.collectedAt + "; cobertura parcial, vigência não verificada."] : []),
+      ...ecicsReportLines(report.ecics),
       "Trechos não recuperados devem ser tratados como limitação desta análise, e não como prova de que os documentos não integram a base.",
     ] },
     { title: "5. Conclusão preliminar", content: [

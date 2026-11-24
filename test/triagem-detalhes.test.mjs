@@ -20,6 +20,8 @@ function load(file, { access = 'authorized', resposta, calls = [] } = {}) {
       if (name.endsWith('/classification-grounding')) return grounding;
       if (name.endsWith('/classificador-prompt')) return { PROMPT_ID: 'test', PROMPT_VERSION: '1' };
       if (name.endsWith('/cosit-retrieval')) return { retrieveCosit: async () => ({sources: ['Ementa oficial: teste'], context: 'Ementa', status: 'retrieved'}), cositInstructions: '' };
+      if (name.endsWith('/ecics-retrieval')) return { retrieveEcics: async () => ({sources: [], context: '', status: 'not_applicable'}), ecicsInstructions: '' };
+      if (name.endsWith('/ecics-presentation')) return {ecicsEvidenceSummary: () => undefined};
       if (name.endsWith('/auth')) return { getPortalAccess: async () => ({status: access}), portalAccessResponse: () => Response.json({}, {status: 401}) };
       throw new Error(name);
     }

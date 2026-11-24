@@ -1,3 +1,5 @@
+import { ecicsReportLines, validateEcicsEvidenceSummary, type EcicsEvidenceSummary } from "./ecics-presentation.ts";
+
 export const MAX_LINHAS_TRIAGEM = 50;
 export const MAX_ARQUIVO_PLANILHA = 2 * 1024 * 1024;
 export const LIMIAR_CONFIANCA_ALTA = 80;
@@ -59,6 +61,7 @@ export type DetalhesTriagem = {
   justificativa: string;
   informacoesPendentes: string[];
   fontes: string[];
+  ecics?: EcicsEvidenceSummary;
 };
 
 export function validarDetalhesTriagem(valor: unknown): DetalhesTriagem {
@@ -71,5 +74,25 @@ export function validarDetalhesTriagem(valor: unknown): DetalhesTriagem {
       item.fontes.some((x: unknown) => typeof x !== "string" || !x.trim() || x.length > 2000)) {
     throw new Error("Detalhes da análise inválidos.");
   }
-  return { justificativa: item.justificativa.trim(), informacoesPendentes: item.informacoesPendentes, fontes: item.fontes };
+  const ecics = validateEcicsEvidenceSummary(item.ecics);
+  return { justificativa: item.justificativa.trim(), informacoesPendentes: item.informacoesPendentes, fontes: item.fontes, ...(ecics ? { ecics } : {}) };
+}
+
+
+/** Plain cell text: no HTML, formulas or hyperlinks are interpreted from input. */
+export function referenciasEcicsParaExcel(evidence?: EcicsEvidenceSummary): string {
+  const lines = ecicsReportLines(evidence);
+  const raw = lines.join("\n").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "");
+  const maxLength = 32_767;
+  if (raw.length <= maxLength) return raw;
+  const notices = [
+    evidence?.ambiguousCas.length ? "CAS com códigos CN diferentes: " + evidence.ambiguousCas.join(", ") + ". Conferir composição, pureza e apresentação." : "",
+    evidence?.truncated || evidence?.queryTruncated ? "A recuperação ECICS foi limitada; os registros não são exaustivos." : "",
+    "CN europeu não é NCM brasileira. A coincidência do CAS não confirma identidade, composição ou enquadramento.",
+  ].filter(Boolean).join("\n") + "\n";
+  const suffix = "\n[Referências ECICS abreviadas no Excel pelo limite de 32.767 caracteres. Consulte os registros CUS na fonte e os detalhes completos da análise.]";
+  let excerpt = raw.slice(0, maxLength - notices.length - suffix.length);
+  // Do not leave half of a Unicode surrogate pair at the cell boundary.
+  if (/[\uD800-\uDBFF]$/.test(excerpt)) excerpt = excerpt.slice(0, -1);
+  return notices + excerpt + suffix;
 }

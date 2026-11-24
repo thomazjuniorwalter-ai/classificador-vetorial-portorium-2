@@ -1,5 +1,7 @@
 "use client";
 import FileDropZone from "./file-drop-zone";
+import EcicsEvidence from "./ecics-evidence";
+import type { EcicsEvidenceSummary } from "../lib/ecics-presentation";
 
 import { useRef, useState } from "react";
 import {
@@ -10,7 +12,7 @@ import {
 } from "../lib/triagem";
 
 type Planilha = { planilha: string; aba: string; colunas: ColunaPlanilha[]; linhas: LinhaPlanilha[] };
-type Resultado = (DetalhesTriagem & { ncm: string; confianca: number; sinal: SinalTriagem }) | { erro: string };
+type Resultado = (DetalhesTriagem & { ncm: string; confianca: number; sinal: SinalTriagem; ecics?: EcicsEvidenceSummary }) | { erro: string };
 type Item = { linha: number; codigoProduto: string; descricao: string; ncmCliente: string };
 
 const ROTULO: Record<SinalTriagem, string> = {
@@ -54,7 +56,7 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
       const elegiveis = recebida.colunas.filter((coluna) => coluna.indice !== ncm?.indice &&
         !colunaDeClassificacao(coluna.titulo));
       const provaveis = elegiveis.filter((coluna) =>
-        /produto|mercador|descri|compos|func|aplica|material|tecnic|uso|modelo/i.test(
+        /produto|mercador|descri|compos|func|aplica|material|tecnic|uso|modelo|\bcas\b/i.test(
           coluna.titulo.normalize("NFD").replace(/[\u0300-\u036f]/g, "")));
       setColunaCodigo(recebida.colunas.find((coluna) => /^(c[oó]digo( do produto)?|sku|refer[eê]ncia|item)$/i.test(coluna.titulo.trim()))?.indice ?? "");
       setPlanilha(recebida);
@@ -116,7 +118,7 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
         const data = await response.json().catch(() => null);
         if (!response.ok) throw new Error(mensagemResposta(data, `A análise retornou erro ${response.status}.`));
         if (!data || typeof data !== "object") throw new Error("A análise terminou sem resultado válido.");
-        const resultado = data as { ncm: string; confianca: number };
+        const resultado = data as { ncm: string; confianca: number; ecics?: EcicsEvidenceSummary };
         const detalhes = validarDetalhesTriagem(data);
         const ncm = detalhes.informacoesPendentes.length ? "" : normalizarNcm(resultado.ncm) || "";
         if (!Number.isInteger(resultado.confianca) || resultado.confianca < 0 || resultado.confianca > 100) {
@@ -174,7 +176,7 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
           const resultado = resultados[item.linha];
           return { linha: item.linha, codigoProduto: item.codigoProduto, mercadoria: item.descricao, ncmCliente: item.ncmCliente,
             ...(resultado && "erro" in resultado ? { erro: resultado.erro } :
-              resultado && "confianca" in resultado ? { ncmSugerida: resultado.ncm, confianca: resultado.confianca, justificativa: resultado.justificativa, informacoesPendentes: resultado.informacoesPendentes, fontes: resultado.fontes } : {}),
+              resultado && "confianca" in resultado ? { ncmSugerida: resultado.ncm, confianca: resultado.confianca, justificativa: resultado.justificativa, informacoesPendentes: resultado.informacoesPendentes, fontes: resultado.fontes, ecics: resultado.ecics } : {}),
           };
         }) }),
       });
@@ -265,6 +267,7 @@ export default function TriagemLote({ onAprofundar }: { onAprofundar: (descricao
             <strong>Fontes recuperadas na pesquisa</strong>
             {resultado.fontes.length ? <ul>{resultado.fontes.map((texto, i) => <li key={i}>{texto}</li>)}</ul> : <p>Nenhuma fonte identificada no retorno da pesquisa.</p>}
             <p>A recuperação não confirma a aplicabilidade de todas as fontes ao produto.</p>
+            <EcicsEvidence evidence={resultado.ecics} />
           </details>}<button type="button" className="batchLink" onClick={() => onAprofundar(descricao)}>Aprofundar →</button></td>
         </tr>;
       })}</tbody></table></div>
