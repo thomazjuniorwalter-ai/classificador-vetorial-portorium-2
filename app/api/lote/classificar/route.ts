@@ -1,4 +1,6 @@
 import { retrieveCosit, cositInstructions } from "../../../lib/cosit-retrieval";
+import { retrieveEcics, ecicsInstructions } from "../../../lib/ecics-retrieval";
+import { ecicsEvidenceSummary } from "../../../lib/ecics-presentation";
 import { normativeInstructions, retrievedSourceNames } from "../../../lib/classification-grounding";
 import { getPortalAccess, portalAccessResponse } from "../../../lib/auth";
 import { PROMPT_ID, PROMPT_VERSION } from "../../../lib/classificador-prompt";
@@ -48,7 +50,7 @@ export async function POST(request: Request) {
   }
 
   try {
-    const cosit = await retrieveCosit(descricao, key);
+    const [cosit, ecics] = await Promise.all([retrieveCosit(descricao, key), retrieveEcics(descricao)]);
     const response = await fetch("https://api.openai.com/v1/responses", {
       method: "POST",
       headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
@@ -56,9 +58,9 @@ export async function POST(request: Request) {
         prompt: { id: PROMPT_ID, version: PROMPT_VERSION },
         store: false,
         include: ["file_search_call.results"],
-        input: [{ role: "developer", content: normativeInstructions + "\n" + cositInstructions }, { role: "user", content: [{
+        input: [{ role: "developer", content: normativeInstructions + "\n" + cositInstructions + "\n" + ecicsInstructions }, { role: "user", content: [{
           type: "input_text",
-          text: `Faça uma classificação independente da mercadoria abaixo, seguindo o mesmo método do Classificador Portorium. A NCM informada pelo cliente não está disponível nesta consulta. Responda com NCM, confiança qualitativa estimada, justificativa objetiva e informacoesPendentes. Explique a relação entre características técnicas e fundamento recuperado. Não invente fontes. Quando faltar característica decisiva, devolva ncm vazia, confiança 0 e perguntas específicas sobre o produto. Não preencha lacunas por suposição. Se não recuperar fundamento necessário, registre essa limitação na justificativa e em informacoesPendentes, distinguindo-a de dados técnicos ausentes.\n\nInformações técnicas da mercadoria:\n${descricao}\n\n${cosit.context}`,
+          text: `Faça uma classificação independente da mercadoria abaixo, seguindo o mesmo método do Classificador Portorium. A NCM informada pelo cliente não está disponível nesta consulta. Responda com NCM, confiança qualitativa estimada, justificativa objetiva e informacoesPendentes. Explique a relação entre características técnicas e fundamento recuperado. Não invente fontes. Quando faltar característica decisiva, devolva ncm vazia, confiança 0 e perguntas específicas sobre o produto. Não preencha lacunas por suposição. Se não recuperar fundamento necessário, registre essa limitação na justificativa e em informacoesPendentes, distinguindo-a de dados técnicos ausentes.\n\nInformações técnicas da mercadoria:\n${descricao}\n\n${cosit.context}\n\n${ecics.context}`,
         }] }],
         text: { format: { type: "json_schema", name: "triagem_classificacao", strict: true, schema } },
       }),
@@ -76,7 +78,7 @@ export async function POST(request: Request) {
     const texto = extrairTexto(data);
     if (!texto) return Response.json({ error: "A análise terminou sem resultado." }, { status: 502 });
     const resultado = JSON.parse(texto);
-    const detalhes = validarDetalhesTriagem({ ...resultado, fontes: [...new Set([...retrievedSourceNames(data), ...cosit.sources])] });
+    const detalhes = validarDetalhesTriagem({ ...resultado, fontes: [...new Set([...retrievedSourceNames(data), ...cosit.sources, ...ecics.sources])] });
     const ncm = normalizarNcm(resultado?.ncm);
     if (!Number.isInteger(resultado?.confianca) || resultado.confianca < 0 || resultado.confianca > 100) {
       return Response.json({ error: "A confiança foi devolvida em formato inválido." }, { status: 502 });
@@ -84,7 +86,7 @@ export async function POST(request: Request) {
     if (resultado.ncm && !ncm) {
       return Response.json({ error: "A NCM sugerida veio em formato inválido." }, { status: 502 });
     }
-    return Response.json({ ...detalhes, ncm: detalhes.informacoesPendentes.length ? "" : ncm || "", confianca: ncm && !detalhes.informacoesPendentes.length ? resultado.confianca : 0, cositRetrievalStatus: cosit.status, cositRetrievalMode: cosit.mode, cositMetadata: cosit.metadata });
+    return Response.json({ ...detalhes, ncm: detalhes.informacoesPendentes.length ? "" : ncm || "", confianca: ncm && !detalhes.informacoesPendentes.length ? resultado.confianca : 0, cositRetrievalStatus: cosit.status, cositRetrievalMode: cosit.mode, cositMetadata: cosit.metadata, ecics: ecicsEvidenceSummary(ecics) });
   } catch (problema) {
     console.error("[triagem-lote] Falha inesperada", problema instanceof Error ? problema.name : "erro desconhecido");
     return Response.json({ error: "Não foi possível concluir esta mercadoria. Tente novamente." }, { status: 502 });

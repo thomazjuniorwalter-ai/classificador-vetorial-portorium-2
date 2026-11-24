@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import candidates from "../data/cosit/candidates.json";
 import ClassificadorApp from "./app-client";
 import { getPortalAccess } from "./lib/auth";
+import { getEcicsStatus } from "./lib/ecics-retrieval";
 
 export default async function Home() {
   const access = await getPortalAccess("classificador");
@@ -16,6 +17,7 @@ export default async function Home() {
         abstracts: candidates.records.length,
         collectedAt: candidates.lastSuccessfulCollectionAt,
       }}
+      ecics={await getEcicsStatus()}
     />
   );
 }

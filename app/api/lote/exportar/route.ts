@@ -1,7 +1,8 @@
 import ExcelJS from "exceljs";
 import { getPortalAccess, portalAccessResponse } from "../../../lib/auth";
+import type { EcicsEvidenceSummary } from "../../../lib/ecics-presentation";
 import {
-  MAX_LINHAS_TRIAGEM, normalizarNcm, ncmExibicao, sinalizarTriagem, validarDetalhesTriagem,
+  MAX_LINHAS_TRIAGEM, normalizarNcm, ncmExibicao, sinalizarTriagem, validarDetalhesTriagem, referenciasEcicsParaExcel,
 } from "../../../lib/triagem";
 
 export const runtime = "nodejs";
@@ -18,6 +19,7 @@ type LinhaRecebida = {
   ncmSugerida?: string;
   confianca?: number;
   erro?: string;
+  ecics?: EcicsEvidenceSummary;
 };
 
 export async function POST(request: Request) {
@@ -31,7 +33,10 @@ export async function POST(request: Request) {
     }
     linhas = body.linhas;
     for (const item of linhas) {
-      if ((item?.confianca !== undefined && !item.erro) || item?.justificativa !== undefined || item?.informacoesPendentes !== undefined || item?.fontes !== undefined) validarDetalhesTriagem(item);
+      if ((item?.confianca !== undefined && !item.erro) || item?.justificativa !== undefined || item?.informacoesPendentes !== undefined || item?.fontes !== undefined || item?.ecics !== undefined) {
+        const details = validarDetalhesTriagem(item);
+        item.ecics = details.ecics;
+      }
       if ((item?.codigoProduto !== undefined && (typeof item.codigoProduto !== "string" || item.codigoProduto.length > 350)) ||
           (item?.erro !== undefined && (typeof item.erro !== "string" || item.erro.length > 4000))) throw new Error("Dados inválidos.");
     }
@@ -61,11 +66,12 @@ export async function POST(request: Request) {
     { header: "Informações a solicitar", key: "pendencias", width: 55 },
     { header: "Fontes recuperadas na pesquisa", key: "fontes", width: 65 },
     { header: "Erro de processamento", key: "erro", width: 45 },
+    { header: "Referências ECICS", key: "ecics", width: 90 },
   ];
   sheet.getRow(1).height = 28;
   sheet.getRow(1).font = { name: "Arial", bold: true, color: { argb: "FFFFFFFF" } };
   sheet.getRow(1).fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FFE52B3B" } };
-  sheet.autoFilter = { from: "A1", to: "K1" };
+  sheet.autoFilter = { from: "A1", to: "L1" };
 
   for (const item of linhas) {
     const cliente = normalizarNcm(item.ncmCliente, true)!;
@@ -79,6 +85,7 @@ export async function POST(request: Request) {
       pendencias: (item.informacoesPendentes || []).join("\n"),
       fontes: (item.fontes || []).join("\n"),
       erro: item.erro || "",
+      ecics: referenciasEcicsParaExcel(item.ecics),
       mercadoria: item.mercadoria.slice(0, 2_500),
       cliente: ncmExibicao(cliente),
       sugerida: sugestao ? ncmExibicao(sugestao) : "",
@@ -99,6 +106,8 @@ export async function POST(request: Request) {
     "Vermelho: códigos divergentes com confiança de pelo menos 80% e sem pendências. Requer revisão técnica.",
     "Confiança é estimativa do modelo, não probabilidade de acerto medida.",
     "Fontes recuperadas são documentos retornados na pesquisa. A recuperação não comprova aplicabilidade ou vigência.",
+    "Referências ECICS preservam os identificadores CAS/CUS, a CN europeia e as condições recuperadas. CN europeu não é NCM brasileira; o mesmo CAS pode aparecer em substâncias, misturas e preparações com códigos distintos.",
+    "A data de exportação ECICS não certifica vigência. Avisos de recuperação limitada e de texto abreviado indicam que é necessário consultar os registros completos na fonte.",
     "FALHA e NÃO ANALISADO não são resultados de classificação. Consulte o erro e retome as linhas pendentes.",
   ]) { legenda.addRow({ texto }).alignment = { wrapText: true, vertical: "top" }; }
   const bytes = await workbook.xlsx.writeBuffer();
